@@ -60,11 +60,7 @@ class Suggest(commands.Cog):
                         name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
                     )
                     await suggestion_channel.send(embed=embed)
-                     suggestion_channel.send(embed).then(embedMessage = {
-      embedMessage.add_reaction('👍');
-      embedMessage.add_reaction('👎');
-    });
-                    await ctx.message.add_reaction("\N{WHITE HEAVY CHECK MARK}")
+                    await message.add_reaction("\N{THUMBS UP SIGN}")
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
