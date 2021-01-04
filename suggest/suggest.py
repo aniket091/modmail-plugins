@@ -59,7 +59,8 @@ class Suggest(commands.Cog):
                     embed.set_author(
                         name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
                     )
-                    await suggestion_channel.send(embed=embed)
+                    message_ = await suggestion_channel.send(embed=embed)
+                    await message_.add_reaction("\N{THUMBS UP SIGN}")
                     await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
