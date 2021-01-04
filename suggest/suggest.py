@@ -38,7 +38,7 @@ class Suggest(commands.Cog):
         """
         Suggest something!
         **Usage**:
-        [p]suggest more plugins!
+        [p]suggest something!
         """
         if str(ctx.author.id) not in self.banlist:
             async with ctx.channel.typing():
@@ -60,7 +60,7 @@ class Suggest(commands.Cog):
                         name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
                     )
                     await suggestion_channel.send(embed=embed)
-                    await message.add_reaction("\N{THUMBS UP SIGN}")
+                    await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
@@ -113,7 +113,7 @@ class Suggest(commands.Cog):
         """
         Block a user from using the suggest command.
         **Examples:**
-        [p]suggestmod block @RealCyGuy for abuse!
+        [p]suggestmod block @aniket for abuse!
         [p]suggestmod ban 543225108135673877 `cause he's the same person!!!
         """
         if str(user.id) in self.banlist:
