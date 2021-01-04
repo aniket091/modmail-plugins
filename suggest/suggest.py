@@ -141,7 +141,7 @@ class Suggest(commands.Cog):
         """
         Unblock a user from using the suggest command.
         **Examples:**
-        [p]suggestmod unblock @RealCyGuy
+        [p]suggestmod unblock @aniket
         [p]suggestmod unban 543225108135673877
         """
         if str(user.id) not in self.banlist:
