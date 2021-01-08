@@ -10,6 +10,7 @@ from core.models import PermissionLevel
 class StarboardPlugin(commands.Cog):
     """
     A starboard is a popular feature in bots that serve as a channel of messages that users of the server find funny, stupid, or both.
+    With this plugin, you can add starboard service to your Modmail bot.
     """
 
     def __init__(self, bot):
