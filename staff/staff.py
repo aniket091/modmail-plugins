@@ -1,16 +1,15 @@
 import discord
-from discord.ext import commands, tasks
-import asyncio
+from discord.ext import commands
 
 class staff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-@commands.command()
-async def ping(self, ctx, member : discord.Member):
-    await ctx.message.delete()
-    await ctx.send(f"an{member} reporting 10-41 an")
+    @commands.command()
+    async def online(self, ctx, member : discord.Member):
+        await ctx.message.delete()
+        await ctx.send(f"{member} reporting 10-41")
         
-              
+        
 def setup(bot):
     bot.add_cog(staff(bot))
