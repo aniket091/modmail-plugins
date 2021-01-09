@@ -17,7 +17,7 @@ class staff(commands.Cog):
         await ctx.send(embed=embed)
         
         @commands.command()
-        async def on(self, ctx, member : discord.Member):
+        async def online(self, ctx, member : discord.Member):
             await ctx.send(f"{member} reporting 10-41")
         
 def setup(bot):
