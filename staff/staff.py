@@ -8,6 +8,7 @@ class staff(commands.Cog):
     
 @commands.command()
 async def online(self, ctx, member : discord.Member):
+    await ctx.message.delete()
     await ctx.send(f" an{member} reporting 10-41 an")
         
               
