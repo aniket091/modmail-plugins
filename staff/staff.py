@@ -16,6 +16,9 @@ class staff(commands.Cog):
         embed.set_footer(text="Management Team", icon_url="https://cdn.discordapp.com/attachments/726193232798810132/740629657191186562/7S-.gif")
         await ctx.send(embed=embed)
         
+        @commands.command()
+        async def on(self, ctx, member : discord.Member):
+            await ctx.send(f"{member} reporting 10-41")
         
 def setup(bot):
     bot.add_cog(staff(bot))
