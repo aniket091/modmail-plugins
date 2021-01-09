@@ -7,9 +7,9 @@ class staff(commands.Cog):
         self.bot = bot
     
 @commands.command()
-async def online(self, ctx, member : discord.Member):
+async def ping(self, ctx, member : discord.Member):
     await ctx.message.delete()
-    await ctx.send(f" an{member} reporting 10-41 an")
+    await ctx.send(f"an{member} reporting 10-41 an")
         
               
 def setup(bot):
