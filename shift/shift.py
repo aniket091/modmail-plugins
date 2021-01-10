@@ -59,7 +59,7 @@ class Shift(commands.Cog):
             
     @commands.command(aliases=["es"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def endshift(self, ctx, *, msgID: str):
+    async def endshift(self, ctx):
         """End a shift."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["shift_channel"])
@@ -68,7 +68,7 @@ class Shift(commands.Cog):
         except KeyError:
             shift_mention = ""
         try: 
-            msgID: int(msgID)
+            msgID: int(797892803283648532)
             message = await channel.fetch_message(msgID)
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the shift channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
