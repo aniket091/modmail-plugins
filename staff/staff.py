@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from core import checks
 import asyncio
 
 class staff(commands.Cog):
