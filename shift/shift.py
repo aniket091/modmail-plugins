@@ -48,16 +48,10 @@ class Shift(commands.Cog):
         except KeyError:
             shift_mention = ""
         
-        embed = discord.Embed(description="Salutations, a shift is currently being hosted at the hotel! Come to the hotel for a nice and comfy room! Active staff may get a chance of promotion.", timestamp=datetime.datetime.utcnow())
+        embed = discord.Embed(description="{ctx.author.mention} <:online:797692836911906816>", timestamp=datetime.datetime.utcnow())
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed.color = self.bot.main_color
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/633681171879952384/767355349870182430/image0.png")
-        embed.set_footer(text="Vinns Hotel")
-        
-        embed.add_field(name="Host:", value=f"{ctx.author.mention} | {ctx.author.name}#{ctx.author.discriminator} | {ctx.author.nick}", inline=False)
-        embed.add_field(name="Session Status:", value=f"On-going", inline=False)
-        embed.add_field(name="Hotel Link:", value=f"Click [here](https://www.roblox.com/games/4766198689/Vinns-Hotels-and-Resorts-V1#).", inline=False)
-
+   
         msggg = await setchannel.send(shift_mention, embed=embed)
         asyncio.sleep(5)
         await msggg.edit(content=f"{shift_mention} | msgID: {msggg.id}", embed=embed)
@@ -79,9 +73,7 @@ class Shift(commands.Cog):
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the shift channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
-        embed2=discord.Embed(title="Vinns Hotel Shifts", description=f"aniket op", color=0xe74c3c)
-        embed2.set_thumbnail(url="https://cdn.discordapp.com/attachments/633681171879952384/767355349870182430/image0.png")
-        embed2.set_footer(text="Vinns Hotel")
+        embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         await message.edit(embed=embed2, content=shift_mention) # <@&695243187043696650>
         await ctx.send("<a:check:742680789262663710> | Shift announcement has been edited and the shift has ended!")
         await asyncio.sleep(600)
