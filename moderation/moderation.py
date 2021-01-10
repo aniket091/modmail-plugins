@@ -183,7 +183,15 @@ class Moderation(commands.Cog):
         """Kicks the specified member."""
         if member == None:
             return await ctx.send_help(ctx.command)
-
+        else:
+            if member.id == ctx.message.author.id:
+                embed = discord.Embed(
+                    title = "Kick Error",
+                    description = "You can't kick yourself!",
+                    color = self.blurple
+                )
+                await ctx.send(embed = embed)
+        
         if reason != None:
             if not reason.endswith("."):
                 reason = reason + "."
