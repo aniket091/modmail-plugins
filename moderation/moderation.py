@@ -1,4 +1,3 @@
-  
 import asyncio
 import discord
 from discord.ext import commands
@@ -6,6 +5,17 @@ from core import checks
 from core.models import PermissionLevel
 
 
+# This prevents staff members from being punished 
+class Sinner(commands.Converter):
+    async def convert(self, ctx, argument):
+        argument = await commands.MemberConverter().convert(ctx, argument) # gets a member object
+        permission = argument.guild_permissions.manage_messages # can change into any permission
+        if not permission: # checks if user has the permission
+            return argument # returns user object
+        else:
+            raise commands.BadArgument("You cannot punish other staff members") # tells user that target is a staff member
+
+            
 class Moderation(commands.Cog):
     """
     Commands to moderate your server.*
