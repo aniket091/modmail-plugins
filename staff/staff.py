@@ -7,7 +7,6 @@ class staff(commands.Cog):
     
     @commands.command()
     async def online(self, ctx, member : discord.Member):
-        await ctx.message.delete()
         await message.channel.send(message.author.mention)
         
         
