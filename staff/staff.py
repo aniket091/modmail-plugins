@@ -6,7 +6,7 @@ class staff(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def online(self, ctx, member : discord.Member):
+    async def online(self, ctx):
         await message.channel.send(message.author.mention)
         
         
