@@ -6,7 +6,7 @@ class help(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def send_s(self, ctx):
+    async def help(self, ctx):
         embed = discord.Embed(
             title="***PARTH YT*** BOT COMMANDS!",
             description="aniket",
