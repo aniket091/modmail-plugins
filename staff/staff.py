@@ -22,6 +22,12 @@ class staff(commands.Cog):
     async def tenseven(self, ctx):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>") 
+        
+        
+    @commands.command()
+    async def teneight(self, ctx):
+        await ctx.message.delete()
+        await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:online:797692836911906816>") 
                 
         
 def setup(bot):
