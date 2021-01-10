@@ -8,7 +8,7 @@ class help(commands.Cog):
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed(
-            title="***PARTH YT*** BOT COMMANDS!",
+            title="**__PARTH YT__** BOT COMMANDS!",
             description="aniket",
             color=0xee3463,
             timestamp=ctx.message.created_at
