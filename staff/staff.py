@@ -5,7 +5,7 @@ import asyncio
 class staff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.coll = bot.plugin_db.get_partition(self)
+        self.db = bot.api.get_plugin_partition(self)
     
     @commands.command()
     async def online(self, ctx):
@@ -17,12 +17,6 @@ class staff(commands.Cog):
     async def offline(self, ctx):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")  
-        
-        
-    @commands.command()
-    async def break(self, ctx):
-        await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>") 
         
         
 def setup(bot):
