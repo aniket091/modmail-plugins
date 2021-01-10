@@ -5,7 +5,6 @@ import asyncio
 class staff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.db = bot.api.get_plugin_partition(self)
     
     @commands.command()
     async def online(self, ctx):
