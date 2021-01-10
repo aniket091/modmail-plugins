@@ -11,7 +11,6 @@ class staff(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>") 
         
-    
     @commands.command()
     async def offline(self, ctx):
         await ctx.message.delete()
