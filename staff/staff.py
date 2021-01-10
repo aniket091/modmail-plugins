@@ -7,7 +7,7 @@ class staff(commands.Cog):
     
     @commands.command()
     async def online(self, ctx):
-        await ctx.send(f"{0.author.mention}")
+        await ctx.send(f"{author.mention}")
         
         
 def setup(bot):
