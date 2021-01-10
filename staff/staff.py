@@ -6,7 +6,7 @@ class staff(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def online(self, ctx, member : discord.Member):
+    async def online(self, ctx):
         await ctx.message.delete()
         await ctx.send(f"{0.author.mention} reporting 10-41")
         
