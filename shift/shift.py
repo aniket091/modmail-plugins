@@ -74,7 +74,7 @@ class Shift(commands.Cog):
             embed=discord.Embed(title="Please include a valid Message ID that is in the shift channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
-        await message.edit(embed=embed2, content=shift_mention) # <@&695243187043696650>
+        await message.edit(embed=embed, description=f"{ctx.author.mention}") # <@&695243187043696650>
         await ctx.send("<a:check:742680789262663710> | Shift announcement has been edited and the shift has ended!")
         await asyncio.sleep(600)
         await message.delete()
