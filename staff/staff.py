@@ -100,8 +100,8 @@ class staff(commands.Cog):
         embed3=discord.Embed(description=f"**__Status__**\n**Offline** <:dnd:797692836745183232>", color=0xFF0000, timestamp=datetime.datetime.utcnow())
         embed3.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
-        asyncio.sleep(20)
-        await message.edit(embed=embed6, content=training_mention)
+        asyncio.sleep(5)
+        await message.edit(embed=embed6)
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
@@ -148,8 +148,8 @@ class staff(commands.Cog):
         embed5=discord.Embed(description=f"**__Status__**\n**Back (10-8)** <:streaming:798080684778061835>", color=0x9900cc, timestamp=datetime.datetime.utcnow())
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
-        asyncio.sleep(20)
-        await message.edit(embed=embed2, content=training_mention)
+        asyncio.sleep(5)
+        await message.edit(embed=embed2)
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
