@@ -98,12 +98,37 @@ class Training(commands.Cog):
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
-        embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
+        embed2=discord.Embed(description=f"**Online Staff**\n{ctx.author.mention} <:idle:797695058207178753><:invisible:798080684991971348>")
         embed2.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed2.color = self.bot.main_color
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
+        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753><:invisible:798080684991971348>")
+        
+     @commands.command()
+    @checks.has_permissions(PermissionLevel.OWNER)
+    async def tenseven(self, ctx, *, msgID: str):
+        """BREAK FOR STAFF"""
+        config = await self.db.find_one({"_id": "config"})
+        channel = self.bot.get_channel(config["training_channel"])
+        try:
+            training_mention = config["training_mention"]
+        except KeyError:
+            training_mention = ""
+        try: 
+            msgID: int(msgID)
+            message = await channel.fetch_message(msgID)
+        except:
+            embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
+            await ctx.send(embed=embed)
+        embed2=discord.Embed(description=f"**Online Staff**\n{ctx.author.mention} <:streaming:798080684778061835><:online:797692836911906816>", color=0xe74c3c)
+        embed2.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed2.color = self.bot.main_color
+        await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
+        
+        await ctx.message.delete()
+        await ctx.send(f"{ctx.author.mention}, reporting back 10-8 <:streaming:798080684778061835><:online:797692836911906816>")
             
 def setup(bot):
     bot.add_cog(Training(bot))
