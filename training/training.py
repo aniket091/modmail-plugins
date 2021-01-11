@@ -82,7 +82,7 @@ class Training(commands.Cog):
         await asyncio.sleep(20)
         await message.delete()
         
-    @commands.command(aliases=["et"])
+    @commands.command()
     @checks.has_permissions(PermissionLevel.OWNER)
     async def tenseven(self, ctx, *, msgID: str):
         """End a training."""
