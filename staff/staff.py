@@ -35,9 +35,9 @@ class staff(commands.Cog):
         
         await ctx.send(embed=embed)
             
-    @commands.command()
+    @commands.command(aliases=["tnew"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def new(self, ctx):
+    async def embednew(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
         training_channel = config["training_channel"]
