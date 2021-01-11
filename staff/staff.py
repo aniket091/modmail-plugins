@@ -99,7 +99,7 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed3=discord.Embed(description=f"**__Status__**\n**Offline** <:dnd:797692836745183232>", color=0xFF0000, timestamp=datetime.datetime.utcnow())
         embed3.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed3) # <@&695243187043696650>
+        await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
@@ -122,7 +122,7 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed4=discord.Embed(description=f"**__Status__**\n**Break (10-7)** <:idle:797695058207178753>", color=0xffff00, timestamp=datetime.datetime.utcnow())
         embed4.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed4) # <@&695243187043696650>
+        await message.edit(embed=embed4, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
@@ -145,7 +145,7 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed5=discord.Embed(description=f"**__Status__**\n**Back (10-8)** <:streaming:798080684778061835>", color=0x9900cc, timestamp=datetime.datetime.utcnow())
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed5) # <@&695243187043696650>
+        await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
