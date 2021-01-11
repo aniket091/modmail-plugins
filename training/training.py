@@ -55,6 +55,7 @@ class Training(commands.Cog):
         msggg = await setchannel.send(training_mention, embed=embed)
         asyncio.sleep(5)
         await msggg.edit(content=f"{training_mention} | msgID: {msggg.id}", embed=embed)
+        await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
             
     @commands.command(aliases=["et"])
