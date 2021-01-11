@@ -37,7 +37,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["train"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def online(self, ctx):
+    async def training(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
         training_channel = config["training_channel"]
@@ -59,7 +59,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["et"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def offline(self, ctx, *, msgID: str):
+    async def endtraining(self, ctx, *, msgID: str):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
