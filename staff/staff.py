@@ -75,6 +75,7 @@ class staff(commands.Cog):
             embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
         embed2=discord.Embed(description=f"{ctx.author.mention}\n**__Status__**\n**Offline** <:dnd:797692836745183232>", color=0xFF0000, timestamp=datetime.datetime.utcnow())
+        embed2.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
