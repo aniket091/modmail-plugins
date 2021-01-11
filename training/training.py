@@ -1,4 +1,3 @@
-import datetime
 import asyncio
 import discord
 from discord.ext import commands
@@ -48,7 +47,7 @@ class Training(commands.Cog):
         except KeyError:
             training_mention = ""
         
-        embed = discord.Embed(description=f"{ctx.author.mention} <:online:797692836911906816>", timestamp=datetime.datetime.utcnow)
+        embed = discord.Embed(description=f"{ctx.author.mention} <:online:797692836911906816>", timestamp=datetime.datetime.utcnow())
         embed.color = self.bot.main_color
 
         msggg = await setchannel.send(training_mention, embed=embed)
