@@ -57,14 +57,18 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["et"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def endtraining(self, ctx, *):
+    async def endtraining(self, ctx, msg_id: int = None, channel: discord.TextChannel = None):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
-        channel = self.bot.get_channel(config["training_channel"])
-        message = self.bot.get_message({msggg.id})
+        if not msg_id:
+            channel = selfbot.get_channel(config["training_channel"])
+            msg_id = {msggg.id}
+        elif not channel:
+            channel = ctx.channel
+        msg = await channel.fetch_message(msg_id)
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         embed2.color = self.bot.main_color
-        await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
+        await msg.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
         await ctx.send("<a:check:742680789262663710> | Training announcement has been edited and the training has ended!")
         await asyncio.sleep(5)
