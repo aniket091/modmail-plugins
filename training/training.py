@@ -81,6 +81,29 @@ class Training(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
         await asyncio.sleep(60)
         await message.delete()
+        
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.OWNER)
+    async def tenseven(self, ctx, *, msgID: str):
+        """break for staff."""
+        config = await self.db.find_one({"_id": "config"})
+        channel = self.bot.get_channel(config["training_channel"])
+        try:
+            training_mention = config["training_mention"]
+        except KeyError:
+            training_mention = ""
+        try: 
+            msgID: int(msgID)
+            message = await channel.fetch_message(msgID)
+        except:
+            embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
+            await ctx.send(embed=embed)
+        embed3=discord.Embed(description=f"{ctx.author.mention}\n**__Status__**\n**10-7** <:idle:797695058207178753><:invisible:798080684991971348>", color=0xe74c3c)
+        await message.edit(embed=embed3) # <@&695243187043696650>
+        
+        await ctx.message.delete()
+        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753><:invisible:798080684991971348>")
+
             
 def setup(bot):
     bot.add_cog(Training(bot))
