@@ -36,7 +36,7 @@ class Training(commands.Cog):
         await ctx.send(embed=embed)
             
     @commands.command(aliases=["n"])
-    @checks.has_permissions(PermissionLevel.OWNER)
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def online(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
@@ -59,7 +59,7 @@ class Training(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
             
     @commands.command(aliases=["f"])
-    @checks.has_permissions(PermissionLevel.OWNER)
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def offline(self, ctx, *, msgID: str):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
@@ -83,7 +83,7 @@ class Training(commands.Cog):
         await message.delete()
         
     @commands.command(aliases=["10-7"])
-    @checks.has_permissions(PermissionLevel.OWNER)
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def tenseven(self, ctx, *, msgID: str):
         """break for staff."""
         config = await self.db.find_one({"_id": "config"})
@@ -105,7 +105,7 @@ class Training(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
         
     @commands.command(aliases=["10-8"])
-    @checks.has_permissions(PermissionLevel.OWNER)
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def teneight(self, ctx, *, msgID: str):
         """back for staff."""
         config = await self.db.find_one({"_id": "config"})
