@@ -37,7 +37,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["train"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def training(self, ctx):
+    async def online(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
         training_channel = config["training_channel"]
@@ -59,7 +59,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["et"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def endtraining(self, ctx, *, msgID: str):
+    async def offline(self, ctx, *, msgID: str):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
@@ -76,7 +76,7 @@ class Training(commands.Cog):
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
-        await ctx.send("<a:check:742680789262663710> | Training announcement has been edited and the training has ended!")
+        await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
         await asyncio.sleep(5)
         await message.delete()
             
