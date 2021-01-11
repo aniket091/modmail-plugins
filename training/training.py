@@ -37,7 +37,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["train"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def training(self, ctx):
+    async def online(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
         training_channel = config["training_channel"]
@@ -48,7 +48,7 @@ class Training(commands.Cog):
         except KeyError:
             training_mention = ""
         
-        embed = discord.Embed(description=f"{ctx.author.mention} <:online:797692836911906816>", timestamp=datetime.datetime.utcnow())
+        embed = discord.Embed(description=f"{ctx.author.mention} <:online:797692836911906816>")
         embed.color = self.bot.main_color
 
         msggg = await setchannel.send(training_mention, embed=embed)
@@ -57,20 +57,24 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["et"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def endtraining(self, ctx, msg_id: int = None, channel: discord.TextChannel = None):
+    async def offline(self, ctx, * msgID: str):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
-        if not msg_id:
-            channel = selfbot.get_channel(config["training_channel"])
-            msg_id = {msggg.id}
-        elif not channel:
-            channel = ctx.channel
-        msg = await channel.fetch_message(msg_id)
+        channel = self.bot.get_channel(config["training_channel"])
+        try:
+            training_mention = config["training_mention"]
+        except KeyError:
+            training_mention = ""
+        try: 
+            msgID: int(msgID)
+            message = await channel.fetch_message(msgID)
+        except:
+            embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", color=0xe74c3c)
+            await ctx.send(embed=embed)
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         embed2.color = self.bot.main_color
-        await msg.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
+        await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
-        await ctx.send("<a:check:742680789262663710> | Training announcement has been edited and the training has ended!")
         await asyncio.sleep(5)
         await message.delete()
             
