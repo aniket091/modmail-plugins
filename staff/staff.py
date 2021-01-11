@@ -13,9 +13,9 @@ class staff(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
-    @commands.command(aliases=["schannel"])
+    @commands.command(aliases=["tchannel"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def staffchannel(self, ctx, channel: discord.TextChannel):
+    async def trainingchannel(self, ctx, channel: discord.TextChannel):
         """Set the training channel!"""
         await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_channel": channel.id}}, upsert=True)
         
@@ -24,7 +24,7 @@ class staff(commands.Cog):
         
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["smention"])
+    @commands.command(aliases=["tmention"])
     @checks.has_permissions(PermissionLevel.OWNER)
     async def trainingmention(self, ctx, *, mention: str):
         """Sets the training mention"""
@@ -35,9 +35,9 @@ class staff(commands.Cog):
         
         await ctx.send(embed=embed)
             
-    @commands.command()
+    @commands.command(aliases=["n"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def new(self, ctx):
+    async def online(self, ctx):
         """Host a training."""
         config = await self.db.find_one({"_id": "config"})
         training_channel = config["training_channel"]
@@ -53,8 +53,10 @@ class staff(commands.Cog):
         embed.color = self.bot.main_color
 
         msggg = await setchannel.send(training_mention, embed=embed)
+        asyncio.sleep(5)
+        await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed)
         await ctx.message.delete()
-        await ctx.send(f"<:yes:793742648141545482> a new status embed is created. MessageID: {msggg.id} ")
+        await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
             
     @commands.command(aliases=["f"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
