@@ -57,7 +57,7 @@ class Training(commands.Cog):
             
     @commands.command(aliases=["et"])
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def endtraining(self, ctx, *, msgID: str):
+    async def endtraining(self, ctx, *):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
