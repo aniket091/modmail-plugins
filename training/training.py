@@ -77,8 +77,9 @@ class Training(commands.Cog):
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
+        await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
-        await asyncio.sleep(5)
+        await asyncio.sleep(20)
         await message.delete()
             
 def setup(bot):
