@@ -7,11 +7,11 @@ class stafff(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def online(self, ctx):
-        message = await ctx.send('testing')
-        await asyncio.sleep(0.3)
-        await message.edit(content='v2')
-
+    async def test(ctx):
+      message = await ctx.send("hello")
+      await asyncio.sleep(1)
+      await message.edit(content="newcontent")
+   
         
 def setup(bot):
     bot.add_cog(stafff(bot))
