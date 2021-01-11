@@ -61,7 +61,7 @@ class Training(commands.Cog):
         """End a training."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
-        message = await channel.fetch_message({msggg.id})
+        message = {msggg.id}
         embed2=discord.Embed(description=f"{ctx.author.mention} <:dnd:797692836745183232>", color=0xe74c3c)
         embed2.color = self.bot.main_color
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
