@@ -108,7 +108,7 @@ class Training(commands.Cog):
         
      @commands.command()
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def tenseven(self, ctx, *, msgID: str):
+    async def teneight(self, ctx, *, msgID: str):
         """BREAK FOR STAFF"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
