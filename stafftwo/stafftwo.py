@@ -83,7 +83,7 @@ class stafftwo(commands.Cog):
         
     @commands.command(aliases=["f"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def offlineasad(self, ctx):
+    async def offlineasad(self, ctx, *, msgID: str):
         """offline for staff."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
