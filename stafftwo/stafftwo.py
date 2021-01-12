@@ -13,29 +13,6 @@ class stafftwo(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
-              
-    @commands.command(aliases=["tnew"])
-    @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def embednew(self, ctx):
-        """make a new status message."""
-        config = await self.db.find_one({"_id": "config"})
-        training_channel = config["training_channel"]
-        setchannel = discord.utils.get(ctx.guild.channels, id=int(training_channel))
-        
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
-        
-        embed = discord.Embed(description=f"{ctx.author.mention}\n**__Status__**\n**Online** <:online:797692836911906816>", timestamp=datetime.datetime.utcnow())
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        embed.color = self.bot.main_color
-
-        msggg = await setchannel.send(training_mention, embed=embed)
-        asyncio.sleep(5)
-        await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed)
-        await ctx.message.delete()
-        await ctx.send(f"<:yes:793742648141545482> you have created a new status message")
         
     @commands.command(aliases=["offline"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
