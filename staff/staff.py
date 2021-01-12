@@ -61,7 +61,7 @@ class staff(commands.Cog):
     @commands.command(aliases=["n"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def online(self, ctx, *, msgID: str):
-        """be online"""
+        """Online Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
@@ -84,7 +84,7 @@ class staff(commands.Cog):
     @commands.command(aliases=["f"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def offline(self, ctx, *, msgID: str):
-        """offline for staff."""
+        """Offline Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
@@ -111,7 +111,7 @@ class staff(commands.Cog):
     @commands.command(aliases=["10-7"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def tenseven(self, ctx, *, msgID: str):
-        """break for staff."""
+        """10-7 Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
@@ -134,7 +134,7 @@ class staff(commands.Cog):
     @commands.command(aliases=["10-8"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def teneight(self, ctx, *, msgID: str):
-        """back for staff."""
+        """10-8 Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
