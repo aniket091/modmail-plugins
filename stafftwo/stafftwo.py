@@ -35,7 +35,7 @@ class stafftwo(commands.Cog):
         await asyncio.sleep(5)
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
         
-    @commands.command(aliases=["10-8"])
+    @commands.command()
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def teneighttwo(self, ctx, *, msgID: str):
         """break for staff."""
