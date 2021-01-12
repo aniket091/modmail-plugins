@@ -102,9 +102,9 @@ class stafftwo(commands.Cog):
         await asyncio.sleep(5)
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
         
-    @commands.command(aliases=["10-7"])
+    @commands.command(aliases=["10-8"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def tenseven(self, ctx, *, msgID: str):
+    async def teneighttwo(self, ctx, *, msgID: str):
         """break for staff."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
@@ -118,8 +118,9 @@ class stafftwo(commands.Cog):
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
-        embed4=discord.Embed(description=f"**__Status__**\n**Break (10-7)** <:idle:797695058207178753>", color=0xffff00, timestamp=datetime.datetime.utcnow())
+        embed4=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embed4.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        await asyncio.sleep(5)
         await message.edit(embed=embed4, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
