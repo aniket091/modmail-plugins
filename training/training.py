@@ -7,17 +7,27 @@ from core import checks
 from core.models import PermissionLevel
 
 class training(commands.Cog): 
-    """An easy way for HR's to manage training announcements."""
+    """second commands for the staff plugin"""
     
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.OWNER)
+    async def changechannel(self, ctx, channel: discord.TextChannel):
+        """Set the training channel!"""
+        await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_channel": channel.id}}, upsert=True)
         
+        embed = discord.Embed(color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
+        embed.add_field(name="Set Channel", value=f"Successfully set the training channel to {channel.mention}", inline=False)
+        
+        await ctx.send(embed=embed)
+    
     @commands.command(aliases=["offline"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def offlinetwo(self, ctx, *, msgID: str):
-        """offline for staff."""
+    async def changeone(self, ctx, *, msgID: str):
+        """gone invisible command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
@@ -37,8 +47,8 @@ class training(commands.Cog):
         
     @commands.command()
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def teneighttwo(self, ctx, *, msgID: str):
-        """break for staff."""
+    async def changetwo(self, ctx, *, msgID: str):
+        """back online command two"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
