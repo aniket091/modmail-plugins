@@ -13,17 +13,7 @@ class stafftwo(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
-    @commands.command(aliases=["tmention"])
-    @checks.has_permissions(PermissionLevel.OWNER)
-    async def trainingmention(self, ctx, *, mention: str):
-        """Sets the training mention"""
-        await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_mention": mention}}, upsert=True)
-        
-        embed = discord.Embed(color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
-        embed.add_field(name="Changed Mention", value=f"Successfully changed the training mention to {mention}", inline=False)
-        
-        await ctx.send(embed=embed)
-            
+              
     @commands.command(aliases=["tnew"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def embednew(self, ctx):
