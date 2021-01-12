@@ -123,9 +123,6 @@ class stafftwo(commands.Cog):
         await asyncio.sleep(5)
         await message.edit(embed=embed4, content=training_mention) # <@&695243187043696650>
         
-        await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
-        
              
 def setup(bot):
     bot.add_cog(stafftwo(bot))
