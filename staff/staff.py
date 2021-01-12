@@ -13,7 +13,7 @@ class staff(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
-    @commands.command(aliases=["tchannel"])
+    @commands.command()
     @checks.has_permissions(PermissionLevel.OWNER)
     async def staffchannel(self, ctx, channel: discord.TextChannel):
         """Set the training channel!"""
