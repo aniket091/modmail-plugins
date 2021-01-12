@@ -53,8 +53,8 @@ class stafftwo(commands.Cog):
         embed.color = self.bot.main_color
 
         msggg = await setchannel.send(training_mention, embed=embed)
-        asyncio.sleep(5)
-        await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed)
+        asyncio.sleep(20)
+        await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed3)
         await ctx.message.delete()
         await ctx.send(f"<:yes:793742648141545482> you have created a new status message")
             
