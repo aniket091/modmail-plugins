@@ -127,7 +127,7 @@ class stafftwo(commands.Cog):
         
     @commands.command(aliases=["10-8"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def teneight(self, ctx, *, msgID: str):
+    async def teneighttwo(self, ctx, *, msgID: str):
         """back for staff."""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
@@ -141,12 +141,10 @@ class stafftwo(commands.Cog):
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
             await ctx.send(embed=embed)
-        embed5=discord.Embed(description=f"**__Status__**\n**Back (10-8)** <:streaming:798080684778061835>", color=0x9900cc, timestamp=datetime.datetime.utcnow())
+        embed5=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        await asyncio.sleep(5)
         await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
-        
-        await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
         
     @commands.command()
     @checks.has_permissions(PermissionLevel.SUPPORTER)
