@@ -80,6 +80,8 @@ class staff(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
+        await asyncio.sleep(5)
+        await message.edit(embed=embed2, content=training_mention)
         
     @commands.command(aliases=["f"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
