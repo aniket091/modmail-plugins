@@ -147,10 +147,14 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed5=discord.Embed(description=f"**__Status__**\n**Back (10-8)** <:streaming:798080684778061835>", color=0x9900cc, timestamp=datetime.datetime.utcnow())
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed7=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x009dff, timestamp=datetime.datetime.utcnow())
+        embed7.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
+        await asyncio.sleep(5)
+        await message.edit(embed=embed7, content=training_mention)
         
     @commands.command(aliases=["bye"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
