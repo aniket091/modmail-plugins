@@ -58,7 +58,7 @@ class staff(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"<:yes:793742648141545482> you have created a new status message")
             
-    @commands.command(aliases=["n"])
+    @commands.command(aliases=["n, 10-41"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def online(self, ctx, *, msgID: str):
         """Online Command"""
@@ -81,7 +81,7 @@ class staff(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
         
-    @commands.command(aliases=["f"])
+    @commands.command(aliases=["f, 10-42"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def offline(self, ctx, *, msgID: str):
         """Offline Command"""
