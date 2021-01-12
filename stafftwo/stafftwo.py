@@ -57,29 +57,6 @@ class stafftwo(commands.Cog):
         await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed)
         await ctx.message.delete()
         await ctx.send(f"<:yes:793742648141545482> you have created a new status message")
-            
-    @commands.command(aliases=["n"])
-    @checks.has_permissions(PermissionLevel.SUPPORTER)
-    async def online(self, ctx, *, msgID: str):
-        """be online"""
-        config = await self.db.find_one({"_id": "config"})
-        channel = self.bot.get_channel(config["training_channel"])
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
-        try: 
-            msgID: int(msgID)
-            message = await channel.fetch_message(msgID)
-        except:
-            embed=discord.Embed(title="Please include a valid Message ID that is in the training channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
-            await ctx.send(embed=embed)
-        embed2=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x009dff, timestamp=datetime.datetime.utcnow())
-        embed2.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
-        
-        await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
         
     @commands.command(aliases=["offline"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
