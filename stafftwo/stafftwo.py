@@ -99,9 +99,8 @@ class stafftwo(commands.Cog):
             await ctx.send(embed=embed)
         embed3=discord.Embed(description=f"**__Status__**\n**Offline** <:dnd:797692836745183232>", color=0xFF0000, timestamp=datetime.datetime.utcnow())
         embed3.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        asyncio.sleep(5)
+        asyncio.sleep(20)
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
-        
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
         
