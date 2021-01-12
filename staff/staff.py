@@ -150,7 +150,7 @@ class staff(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
         
-    @commands.command(aliases=["offline"])
+    @commands.command(aliases=["bye"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def tennight(self, ctx, *, msgID: str):
         """godnight for staff."""
