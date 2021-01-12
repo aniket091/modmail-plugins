@@ -13,17 +13,6 @@ class stafftwo(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
     
-    @commands.command(aliases=["tchannel"])
-    @checks.has_permissions(PermissionLevel.OWNER)
-    async def trainingchannel(self, ctx, channel: discord.TextChannel):
-        """Set the training channel!"""
-        await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_channel": channel.id}}, upsert=True)
-        
-        embed = discord.Embed(color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
-        embed.add_field(name="Set Channel", value=f"Successfully set the training channel to {channel.mention}", inline=False)
-        
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=["tmention"])
     @checks.has_permissions(PermissionLevel.OWNER)
     async def trainingmention(self, ctx, *, mention: str):
