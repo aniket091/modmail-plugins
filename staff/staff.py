@@ -105,7 +105,7 @@ class staff(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
-        await asyncio.sleep(5)
+        await asyncio.sleep(100)
         await message.edit(embed=embed7, content=training_mention)
         
     @commands.command(aliases=["10-7"])
@@ -155,7 +155,7 @@ class staff(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
-        await asyncio.sleep(5)
+        await asyncio.sleep(100)
         await message.edit(embed=embed6, content=training_mention)
 
         
