@@ -81,7 +81,7 @@ class stafftwo(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
         
-    @commands.command(aliases=["f"])
+    @commands.command(aliases=["offline"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def offlinetwo(self, ctx, *, msgID: str):
         """offline for staff."""
