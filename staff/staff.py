@@ -53,7 +53,7 @@ class staff(commands.Cog):
         embed.color = self.bot.main_color
 
         msggg = await setchannel.send(training_mention, embed=embed)
-        asyncio.sleep(5)
+        asyncio.sleep(120)
         await msggg.edit(content=f"{training_mention} | MessageID: {msggg.id}", embed=embed)
         await ctx.message.delete()
         await ctx.send(f"<:yes:793742648141545482> you have created a new status message")
@@ -105,7 +105,7 @@ class staff(commands.Cog):
         
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
-        await asyncio.sleep(5)
+        await asyncio.sleep(120)
         await message.edit(embed=embed7, content=training_mention)
         
     @commands.command(aliases=["10-7"])
