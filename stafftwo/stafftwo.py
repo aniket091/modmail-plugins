@@ -102,9 +102,6 @@ class stafftwo(commands.Cog):
         await asyncio.sleep(5)
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
         
-        await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
-        
     @commands.command(aliases=["10-7"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def tenseven(self, ctx, *, msgID: str):
