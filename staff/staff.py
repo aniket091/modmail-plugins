@@ -150,7 +150,7 @@ class staff(commands.Cog):
         await ctx.message.delete()
         await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
         
-    @commands.command()
+    @commands.command(aliases=["offline"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def tennight(self, ctx, *, msgID: str):
         """godnight for staff."""
@@ -168,6 +168,7 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed6=discord.Embed(description=f"**__Status__**\n**Offline** <:invisible:798080684991971348>", color=0x009dff, timestamp=datetime.datetime.utcnow())
         embed6.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        await asyncio.sleep(20)
         await message.edit(embed=embed6, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
