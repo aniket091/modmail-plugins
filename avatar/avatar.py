@@ -7,9 +7,10 @@ class avatar(commands.Cog):
         self.bot = bot
         
     @commands.command()
-    async def avatar(self, ctx, *, member : discord.Member = None):
-        embed2 = discord.Embed(title=f"{member}'s Avatar!", color=0x00ff00)
-        embed2.set_image(url==member.avatar_url)
+    async def avatar(self, ctx, *, member: typing.Union[discord.Member, str] = None):
+        m: discord.Member = self.member
+        embed = discord.Embed(title=f"{str(m)}'s Avatar!", color=0x00ff00)
+        embed2.set_image(url=m.avatar_url)
         await ctx.send(embed=embed2)
 
 def setup(bot):
