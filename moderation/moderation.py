@@ -196,6 +196,13 @@ class Moderation(commands.Cog):
                     color = self.blurple
                 )
                 await ctx.send(embed = embed)
+            try:
+                await ctx.guild.ban(user, delete_message_days=0, reason=reason)
+            except discord.errors.Forbidden:
+                if user.top_role.position == ctx.me.top_role.position:
+                    await ctx.send(Language.get("moderation.no_ban_highest_role", ctx))
+                elif user.top_role.position > ctx.me.top_role.position:
+                    await ctx.send(Language.get("moderation.no_ban_higher_role", ctx))
             else:
                 if reason == None:
                     await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
