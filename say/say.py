@@ -6,10 +6,10 @@ class Say(commands.Cog):
         self.bot = bot
         
     @commands.command()
-    async def say(self, ctx, *, message):
+    async def say(self, ctx, *, message=None):
         """Make the bot say something"""
         await ctx.message.delete()
-        await ctx.send(message.replace("@everyone", "@\u200beveryone").replace("@here", "@\u200bhere"))
+        await ctx.send(message)
 
 def setup(bot):
     bot.add_cog(Say(bot))
