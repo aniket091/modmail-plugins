@@ -5,7 +5,7 @@ class Say(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command()
+    @commands.command(aliases=["r"])
     async def reason(self, ctx, *, message=None):
         """Make the bot say something"""
         await ctx.message.delete()
