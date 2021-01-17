@@ -62,6 +62,9 @@ class staff(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def online(self, ctx, *, msgID: str):
         """Online Command"""
+        if msgID == None:
+            return await ctx.send_help(ctx.command)
+        
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
         try:
