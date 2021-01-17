@@ -10,7 +10,7 @@ class HelloPlugin(commands.Cog):
             return
 
         if message.content.startswith("hello"):
-            await message.channel.send(f"{ctx.author.mention}, Hello whats up")
+            await message.channel.send("Hello whats up")
 
 def setup(bot):
     bot.add_cog(HelloPlugin(bot))
