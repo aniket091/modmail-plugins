@@ -10,9 +10,9 @@ class HelloPlugin(commands.Cog):
             return
 
         if message.content.startswith("hello"):
-            await message.channel.send("Hello whats up")
-        elif message.content.startswith("hi"):
             await message.channel.send("hey")
+        elif message.content.startswith("hi"):
+            await message.channel.send("hello")
         elif message.content.startswith("good morning"):
             await message.channel.send("Good Morning !")
         elif message.content.startswith("good night"):
