@@ -81,7 +81,7 @@ class staff(commands.Cog):
         await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
+        await ctx.send(f"> {ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
         
     @commands.command(aliases=["f"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
@@ -106,7 +106,7 @@ class staff(commands.Cog):
         await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
+        await ctx.send(f"> {ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
         await asyncio.sleep(100)
         await message.edit(embed=embed7, content=training_mention)
         
@@ -131,7 +131,7 @@ class staff(commands.Cog):
         await message.edit(embed=embed4, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
+        await ctx.send(f"> {ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
         
     @commands.command(aliases=["10-8"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
@@ -156,7 +156,7 @@ class staff(commands.Cog):
         await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
         
         await ctx.message.delete()
-        await ctx.send(f"{ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
+        await ctx.send(f"> {ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
         await asyncio.sleep(100)
         await message.edit(embed=embed6, content=training_mention)
 
