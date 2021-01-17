@@ -64,6 +64,8 @@ class staff(commands.Cog):
         """Online Command"""
         if msgID == None:
             return await ctx.send_help(ctx.command)
+            await asyncio.sleep(5)
+            await message.delete() 
         
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
