@@ -11,6 +11,16 @@ class HelloPlugin(commands.Cog):
 
         if message.content.startswith("hello"):
             await message.channel.send("Hello whats up")
+        elif message.content.startswith("hi"):
+            await message.channel.send("Hello whats up")
+        elif message.content.startswith("good morning"):
+            await message.channel.send("Good Morning !")
+        elif message.content.startswith("good night"):
+            await message.channel.send("Good Night !")
+        elif message.content.startswith("gm"):
+            await message.channel.send("Good Morning !")
+        elif message.content.startswith("gn"):
+            await message.channel.send("Good Night !")
 
 def setup(bot):
     bot.add_cog(HelloPlugin(bot))
