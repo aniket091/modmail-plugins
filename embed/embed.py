@@ -125,7 +125,7 @@ class embed(commands.Cog):
             embed = discord.Embed()
             await ctx.send(
                 embed=await self.generate_embed(
-                    "Should the embed have a description?`[y/n]`"
+                    "Is there any message! [y/n]`"
                 )
             )
             d_res: discord.Message = await self.bot.wait_for("message", check=check)
@@ -135,7 +135,7 @@ class embed(commands.Cog):
             elif cancel_check(d_res) is False and d_res.content.lower() == "y":
                 await ctx.send(
                     embed=await self.generate_embed(
-                        "What do you want as the description for the embed?"
+                        "type your message"
                         "\n**Must not exceed 2048 characters**"
                     )
                 )
@@ -143,7 +143,7 @@ class embed(commands.Cog):
                 embed.description = des.content
 
             await ctx.send(
-                embed=await self.generate_embed("Should the embed have a image?`[y/n]`")
+                embed=await self.generate_embed("is there any image to send`[y/n]`")
             )
             i_res: discord.Message = await self.bot.wait_for("message", check=check)
             if cancel_check(i_res) is True:
@@ -152,7 +152,7 @@ class embed(commands.Cog):
             elif cancel_check(i_res) is False and i_res.content.lower() == "y":
                 await ctx.send(
                     embed=await self.generate_embed(
-                        "What's the image of the embed? Enter a " "valid URL"
+                        "What's the image of the message? Enter a " "valid URL"
                     )
                 )
                 i = await self.bot.wait_for("message", check=check)
@@ -160,7 +160,7 @@ class embed(commands.Cog):
            
             await ctx.send(
                 embed=await self.generate_embed(
-                    "In which channel should I send the announcement?"
+                    "tag the logs channel"
                 )
             )
             channel: discord.Message = await self.bot.wait_for("message", check=check)
@@ -174,7 +174,7 @@ class embed(commands.Cog):
                 else:
                     schan = channel.channel_mentions[0]
             await ctx.send(
-                "Here is how the embed looks like: Send it? `[y/n]`", embed=embed
+                "Here is how the message looks like: Send it? `[y/n]`", embed=embed
             )
             s_res = await self.bot.wait_for("message", check=check)
             if cancel_check(s_res) is True or s_res.content.lower() == "n":
@@ -187,45 +187,7 @@ class embed(commands.Cog):
             grole: discord.Role = guild.get_role(role.id)
             if grole.mentionable is True:
                 await grole.edit(mentionable=False)
-
-    @announcement.command(aliases=["native", "n", "q"])
-    @checks.has_permissions(PermissionLevel.ADMIN)
-    async def quick(
-        self,
-        ctx: commands.Context,
-        channel: discord.TextChannel,
-        role: typing.Optional[typing.Union[discord.Role, str]],
-        *,
-        msg: str,
-    ):
-        """
-        An old way of making announcements
-        **Usage:**
-        {prefix}announcement quick #channel <OPTIONAL role> message
-        """
-        if isinstance(role, discord.Role):
-            guild: discord.Guild = ctx.guild
-            grole: discord.Role = guild.get_role(role.id)
-            await grole.edit(mentionable=True)
-            role_mention = f"<@&{role.id}>"
-        elif isinstance(role, str):
-            if role == "here" or role == "@here":
-                role_mention = "@here"
-            elif role == "everyone" or role == "@everyone":
-                role_mention = "@everyone"
-            else:
-                msg = f"{role} {msg}"
-                role_mention = ""
-
-        await channel.send(f"{role_mention}\n{msg}")
-        await ctx.send("Done")
-
-        if isinstance(role, discord.Role):
-            guild: discord.Guild = ctx.guild
-            grole: discord.Role = guild.get_role(role.id)
-            if grole.mentionable is True:
-                await grole.edit(mentionable=False)
-
+   
     @commands.Cog.listener()
     async def on_ready(self):
         async with self.bot.session.post(
