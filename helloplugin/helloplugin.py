@@ -9,7 +9,7 @@ class HelloPlugin(commands.Cog):
         if message.author.bot:
             return
 
-        if "hello" in message.content.lower():
+        if "hello" in message.content.startswith():
             await message.channel.send("Hey")
         elif "gm" in message.content.lower():
             await message.channel.send("Good Morning")
