@@ -63,4 +63,3 @@ class Suggest(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Suggest(bot))
-© 2021 GitHub, Inc.
