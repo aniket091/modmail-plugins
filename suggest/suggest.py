@@ -37,7 +37,7 @@ class Suggest(commands.Cog):
         """
         Suggest something!
         **Usage**:
-        {prefix}suggest something!
+        {prefix}suggest add coffee to bar!
         """
         if str(ctx.author.id) not in self.banlist:
             async with ctx.channel.typing():
@@ -72,9 +72,9 @@ class Suggest(commands.Cog):
         """
         Set the channel where suggestions go.
         **Usage**:
-        [p]setsuggestchannel #suggestions
-        [p]ssc suggestions
-        [p]ssc 515085600047628288
+        {prefix}setsuggestchannel #suggestions
+        {prefix}ssc suggestions
+        {prefix}ssc 515085600047628288
         """
         await self.coll.find_one_and_update(
             {"_id": "config"},
@@ -115,8 +115,8 @@ class Suggest(commands.Cog):
         """
         Block a user from using the suggest command.
         **Examples:**
-        [p]suggestmod block @aniket for abuse!
-        [p]suggestmod ban 543225108135673877 `cause he's the same person!!!
+        {prefix}suggestmod block @aniket for abuse!
+        {prefix}suggestmod ban 474255126228500480 `cause he's the same person!!!
         """
         if str(user.id) in self.banlist:
             embed = discord.Embed(
@@ -141,8 +141,8 @@ class Suggest(commands.Cog):
         """
         Unblock a user from using the suggest command.
         **Examples:**
-        [p]suggestmod unblock @aniket
-        [p]suggestmod unban 543225108135673877
+        {prefix}suggestmod unblock @aniket
+        {prefix}suggestmod unban 474255126228500480
         """
         if str(user.id) not in self.banlist:
             embed = discord.Embed(
