@@ -22,9 +22,9 @@ class Suggest(commands.Cog):
         -suggest Add coffee to the bar.
         """
 
-        discChannel = self.bot.get_channel(686858225743822883)
-        trainingChannel = self.bot.get_channel(686253519350923280)
-        hotelChannel = self.bot.get_channel(777656824098062385)
+        discChannel = self.bot.get_channel(793687944804171777)
+        trainingChannel = self.bot.get_channel(795003049029533717)
+        hotelChannel = self.bot.get_channel(795206775850663937)
         texta = """**React with the type of your suggestion:**
 <:Discord:795240449103233024> | Discord Suggestion
 🏨 | Hotel Suggestion
