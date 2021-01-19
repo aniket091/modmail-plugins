@@ -11,13 +11,13 @@ class ChangeStatus(commands.Cog):
 
     @tasks.loop(seconds=10)
     async def start_the_status(self):
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{self.first}"))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"ANIKET'S SERVER"))
         await asyncio.sleep(10)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{self.second}"))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"?help"))
         await asyncio.sleep(10)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{self.third}"))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{server.member_count} Members!"))
         await asyncio.sleep(10)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"my mods!"))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=f"Modmail Threads!"))
         await asyncio.sleep(10)
 
     @commands.group(name="statusy", invoke_without_command=True)
