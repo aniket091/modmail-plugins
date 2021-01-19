@@ -31,11 +31,8 @@ class ChangeStatus(commands.Cog):
 
     @status_group.command(name="start")
     async def statusy_start(self, ctx):
-        if self.first == None or self.second == None or self.third == None:
-            await ctx.send("Please set the 3 Status's first!")
-        else:
-            self.start_the_status.start()
-            await ctx.send("Done! If you experience any problems just run this command again!")
+           self.start_the_status.start()
+           await ctx.send("Done! If you experience any problems just run this command again!")
 
     @status_group.command(name="one")
     async def first_set(self, ctx, *, first):
