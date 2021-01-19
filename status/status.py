@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands,tasks
 import asyncio
+from discord.enums import ActivityType
 
 class Status(commands.Cog):
     def __init__(self, bot):
