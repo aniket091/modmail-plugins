@@ -17,6 +17,8 @@ class ChangeStatus(commands.Cog):
         await asyncio.sleep(10)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{self.third}"))
         await asyncio.sleep(10)
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"my mods!"))
+        await asyncio.sleep(10)
 
     @commands.group(name="statusy", invoke_without_command=True)
     async def status_group(self, ctx):
