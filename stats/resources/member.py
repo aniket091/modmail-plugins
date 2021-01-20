@@ -87,8 +87,6 @@ class MemberResource:
 
         embed.set_author(name=f"{str(m)}'s Avatar")
 
-        embed.add_field(name="Avatar", value=f"[Link]({m.avatar_url})")
-
         embed.set_image(url=m.avatar_url)
         embed.set_footer(text=f"User ID: {m.id}")
 
