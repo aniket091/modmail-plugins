@@ -173,6 +173,10 @@ class Moderation(commands.Cog):
         if member == None:
             return await ctx.send_help(ctx.command)
 
+        base_roles = bot.get_role(793695132180021340)
+        if member.top_role >= base_role:
+            return await ctx.send('Can\'t ban each other...') 
+        
         if reason != None:
             if not reason.endswith("."):
                 reason = reason + "."
