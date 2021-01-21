@@ -11,6 +11,7 @@ class HelloPlugin(commands.Cog):
 
         if message.content.startswith("hello"):
             await message.channel.send("Hello !")
+            await ctx.message.add_reaction("👋")
         elif message.content.startswith("Hello"):
             await message.channel.send("Hello !")
         elif message.content.startswith("HELLO"):
