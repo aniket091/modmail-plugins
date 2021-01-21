@@ -135,7 +135,7 @@ class moderation(commands.Cog):
                 description = "You are missing the **Moderator** permission level!",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            await ctx.send(embed = embed)
 
     #Ban command
     @commands.command()
