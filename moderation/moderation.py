@@ -5,17 +5,6 @@ from core import checks
 from core.models import PermissionLevel
 
 
-# This prevents staff members from being punished 
-class Sinner(commands.Converter):
-    async def convert(self, ctx, argument):
-        argument = await commands.MemberConverter().convert(ctx, argument) # gets a member object
-        permission = argument.guild_permissions.manage_messages # can change into any permission
-        if not permission: # checks if user has the permission
-            return argument # returns user object
-        else:
-            raise commands.BadArgument("You cannot punish other staff members") # tells user that target is a staff member
-
-            
 class Moderation(commands.Cog):
     """
     Commands to moderate your server.*
@@ -182,75 +171,51 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: discord.Member = None, *, reason=None):
         """Kicks the specified member."""
         if member == None:
-            embed = discord.Embed(
-                title = "Kick Error",
-                description = "Please specify a member!",
-                color = self.errorcolor
-            )
-            await ctx.send(embed = embed, delete_after = 5.0)
-        else:
-            if member.id == ctx.message.author.id:
-                embed = discord.Embed(
-                    title = "Kick Error",
-                    description = "You can't kick yourself!",
-                    color = self.blurple
-                )
-                await ctx.send(embed = embed)
-            try:
-                await ctx.guild.ban(user, delete_message_days=0, reason=reason)
-            except discord.errors.Forbidden:
-                if user.top_role.position == ctx.me.top_role.position:
-                    await ctx.send(Language.get("moderation.no_ban_highest_role", ctx))
-                elif user.top_role.position > ctx.me.top_role.position:
-                    await ctx.send(Language.get("moderation.no_ban_higher_role", ctx))
-            else:
-                if reason == None:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
-                    embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention}.",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "modlog")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
-                else:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
-                    embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention} for {reason}",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "modlog")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
+            return await ctx.send_help(ctx.command)
 
-    @kick.error
-    async def kick_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            embed = discord.Embed(
-                title = "Missing Permissions",
-                description = "You are missing the **Moderator** permission level!",
-                color = self.errorcolor
-            )
-            await ctx.send(embed = embed, delete_after = 5.0)
+        if reason != None:
+            if not reason.endswith("."):
+                reason = reason + "."
 
+        msg = f"You have been kicked from {ctx.guild.name}" + (
+            f" for: {reason}" if reason else "."
+        )
+
+        try:
+            await member.send(msg)
+        except discord.errors.Forbidden:
+            pass
+
+        try:
+            await member.kick(reason=reason)
+        except discord.errors.Forbidden:
+            return await ctx.send(
+                embed=discord.Embed(
+                    title="Error",
+                    description="I don't have enough permissions to kick them.",
+                    color=discord.Color.red(),
+                ).set_footer(text="Please fix the permissions.")
+            )
+
+        case = await self.get_case()
+
+        await self.log(
+            guild=ctx.guild,
+            embed=discord.Embed(
+                title="Kick",
+                description=f"{member} has been kicked by {ctx.author.mention}"
+                + (f" for: {reason}" if reason else "."),
+                color=self.bot.main_color,
+            ).set_footer(text=f"This is the {case} case."),
+        )
+
+        await ctx.send(
+            embed=discord.Embed(
+                title="Success",
+                description=f"{member} has been kicked.",
+                color=self.bot.main_color,
+            ).set_footer(text=f"This is the {case} case.")
+        )
 
     @commands.command(usage="<member> [reason]")
     @checks.has_permissions(PermissionLevel.MODERATOR)
