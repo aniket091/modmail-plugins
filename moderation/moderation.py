@@ -11,15 +11,7 @@ class moderation(commands.Cog):
         self.errorcolor = 0xFF2B2B
         self.blurple = 0x7289DA
 
-    #On channel create set up mute stuff
-    @commands.Cog.listener()
-    async def on_guild_channel_create(self, channel):
-        guild = channel.guild
-        role = discord.utils.get(guild.roles, name = "Muted")
-        if role == None:
-            role = await guild.create_role(name = "Muted")
-        await channel.set_permissions(role, send_messages = False)
-        
+          
     @moderation.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
