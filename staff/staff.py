@@ -15,7 +15,7 @@ class staff(commands.Cog):
     
     @commands.command()
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def trainingchannel(self, ctx, channel: discord.TextChannel):
+    async def staffchannel(self, ctx, channel: discord.TextChannel):
         """Set the training channel!"""
         await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_channel": channel.id}}, upsert=True)
         
