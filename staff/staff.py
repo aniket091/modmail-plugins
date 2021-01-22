@@ -134,6 +134,7 @@ class staff(commands.Cog):
         await message.edit(embed=embed6)
         
     @commands.command()
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def staff(self, ctx):
         """A commnad for message ID's of staff"""
         await ctx.message.delete()
@@ -141,6 +142,7 @@ class staff(commands.Cog):
         await ctx.send(embed=embed7, delete_after = 100.0)
         
     @commands.command(aliases=["r"])
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def reason(self, ctx, *, message=None):
         """Command for yt staff log"""
         await ctx.message.delete()
