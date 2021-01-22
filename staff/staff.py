@@ -140,12 +140,12 @@ class staff(commands.Cog):
         
     @commands.command()
     async def staff(self, ctx):
-        """Message ID's of staff members""""
         await ctx.message.delete()
         embed7=discord.Embed(title="Staff message id's", description=f"**Aniket  __msgid __: `798418282951999518`\nBlackstorm  __msgid __: `798418289218945064`\nThakur  __msgid__: `798418293690073088`\nGorav  __msgid__: `798418297208045598`\nOmkar  __msgid__ : `798418300143927316`\nHarshak  __msgid__: `798418304523436032`\nPrem Bharti  __msgid__: `798418306394357792`\nRishabh __msgid__: `798418309522784266`\nBhargav  __msgid__: `798418312215527454`\nSourish  __msgid__: `798418314921377812`\nJagbir  __msgid__: `798418326438019132`\nDevuu  __msgid__: `798418327952556093`**", color=0x00ffff, timestamp=datetime.datetime.utcnow())
         await ctx.send(embed=embed7)
         await asyncio.sleep(10)
         await message.delete()
+        
                 
 def setup(bot):
     bot.add_cog(staff(bot))
