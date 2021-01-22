@@ -7,7 +7,7 @@ from core import checks
 from core.models import PermissionLevel
 
 class staff(commands.Cog): 
-    """An easy way to message staff's status."""
+    """Commands only for staff members!😼"""
     
     def __init__(self, bot):
         self.bot = bot
