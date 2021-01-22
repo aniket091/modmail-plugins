@@ -12,7 +12,7 @@ class moderation(commands.Cog):
         self.blurple = 0x7289DA
 
           
-    @moderation.command()
+    @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
         """
