@@ -152,8 +152,6 @@ class staff(commands.Cog):
         """Make the bot say something"""
         await ctx.message.delete()
         await ctx.send(message)
-
-
         
 def setup(bot):
     bot.add_cog(staff(bot))
