@@ -20,6 +20,7 @@ class moderation(commands.Cog):
             role = await guild.create_role(name = "Muted")
         await channel.set_permissions(role, send_messages = False)
     
+    #log channel
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
@@ -38,6 +39,9 @@ class moderation(commands.Cog):
     @commands.command(aliases = ["clear"])
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def purge(self, ctx, amount = 10):
+        """
+        Purge the specified amount of messages.
+        """
         max_purge = 2000
         if amount >= 1 and amount <= max_purge:
             await ctx.channel.purge(limit = amount + 1)
@@ -89,6 +93,9 @@ class moderation(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def kick(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Kicks the specified member.
+        """
         if member == None:
             embed = discord.Embed(
                 title = "Kick Error",
@@ -156,6 +163,9 @@ class moderation(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def ban(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Bans the specified member.
+        """
         if member == None:
             embed = discord.Embed(
                 title = "Ban Error",
@@ -222,6 +232,9 @@ class moderation(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def unban(self, ctx, *, member : discord.User = None):
+        """
+        Unbans the specified member.
+        """
         if member == None:
             embed = discord.Embed(
                 title = "Unban Error",
@@ -268,6 +281,9 @@ class moderation(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def mute(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Mutes the specified member.
+        """
         if member == None:
             embed = discord.Embed(
                 title = "Mute Error",
@@ -345,6 +361,9 @@ class moderation(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def unmute(self, ctx, member : discord.Member = None):
+        """
+        Unmutes the specified member.
+        """
         if member == None:
             embed = discord.Embed(
                 title = "Unmute Error",
@@ -386,75 +405,6 @@ class moderation(commands.Cog):
             embed = discord.Embed(
                 title = "Missing Permissions!",
                 description = "You are missing the **Moderator** permission level!",
-                color = self.errorcolor
-            )
-            await ctx.send(embed = embed)
-
-    #Softban
-    @commands.command(aliases = ["lightban"])
-    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def softban(self, ctx, member : discord.Member = None, *, reason = None):
-        if member == None:
-            embed = discord.Embed(
-                title = "Softban Error",
-                description = "Please specify a user!",
-                color = self.errorcolor
-            )
-            await ctx.send(embed = embed, delete_after = 5.0)
-        else:
-            if member.id == ctx.message.author.id:
-                embed = discord.Embed(
-                    title = "Softban Error",
-                    description = "You can't softban yourself!",
-                    color = self.blurple
-                )
-                await ctx.send(embed = embed)
-            else:
-                if reason == None:
-                    await member.ban(reason = f"Softban by {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No Reason Provided.")
-                    await member.unban()
-                    embed = discord.Embed(
-                        title = "Softban",
-                        description = f"{member.mention} has been softbanned by {ctx.message.author.mention}",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Softban",
-                            description = f"{member.mention} has been softbanned by {ctx.message.author.mention}.",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
-                else:
-                    await member.ban(reason = f"Softban by {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}.")
-                    await member.unban()
-                    embed = discord.Embed(
-                        title = "Softban",
-                        description = f"{member.mention} has been softbanned by {ctx.message.author.mention} for {reason}",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Softban",
-                            description = f"{member.mention} has been softbanned by {ctx.message.author.mention} for {reason}.",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
-
-    @softban.error
-    async def softban_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            embed = discord.Embed(
-                title = "Missing Permissions!",
-                description = "You are missing the **Administrator** permission level!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed)
