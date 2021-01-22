@@ -4,7 +4,10 @@ from core import checks
 from core.models import PermissionLevel
 
 class moderation(commands.Cog):
-
+    """
+    Moderation commands to moerate your server!😼
+    """
+    
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
