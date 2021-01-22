@@ -58,7 +58,7 @@ class staff(commands.Cog):
             message = await channel.fetch_message(msgID)
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the staff status channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after = 5.0)
             await asyncio.sleep(10)
             await message.delete()
         embed2=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00e600, timestamp=datetime.datetime.utcnow())
@@ -79,7 +79,7 @@ class staff(commands.Cog):
             message = await channel.fetch_message(msgID)
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the staff status channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after = 5.0)
         embed3=discord.Embed(description=f"**__Status__**\n**Offline** <:dnd:797692836745183232>", color=0xfa1313, timestamp=datetime.datetime.utcnow())
         embed3.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed7=discord.Embed(description=f"**__Status__**\n**Offline** <:invisible:798080684991971348>", color=0xa9a9a9, timestamp=datetime.datetime.utcnow())
@@ -102,7 +102,7 @@ class staff(commands.Cog):
             message = await channel.fetch_message(msgID)
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the staff status channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after = 5.0)
         embed4=discord.Embed(description=f"**__Status__**\n**Break (10-7)** <:idle:797695058207178753>", color=0xffff00, timestamp=datetime.datetime.utcnow())
         embed4.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed4) # <@&695243187043696650>
@@ -121,7 +121,7 @@ class staff(commands.Cog):
             message = await channel.fetch_message(msgID)
         except:
             embed=discord.Embed(title="Please include a valid Message ID that is in the staff status channel.", description="[Where can I find a Message ID?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)", color=0xe74c3c)
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, delete_after = 5.0)
         embed5=discord.Embed(description=f"**__Status__**\n**Back (10-8)** <:streaming:798080684778061835>", color=0x9900cc, timestamp=datetime.datetime.utcnow())
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed6=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00ff00, timestamp=datetime.datetime.utcnow())
