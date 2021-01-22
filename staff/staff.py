@@ -141,7 +141,7 @@ class staff(commands.Cog):
         await ctx.send(embed=embed7, delete_after = 100.0)
         
     @commands.command()
-    async def yt(self, ctx, *, message=None):
+    async def reason(self, ctx, *, message=None):
         """Make the bot say something"""
         await ctx.message.delete()
         await ctx.send(message)
