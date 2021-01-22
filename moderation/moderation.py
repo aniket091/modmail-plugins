@@ -5,7 +5,7 @@ from core.models import PermissionLevel
 
 class moderation(commands.Cog):
     """
-    Moderation commands to moerate your server!😼
+    Moderation commands to moderate the server!😼
     """
     
     def __init__(self, bot):
