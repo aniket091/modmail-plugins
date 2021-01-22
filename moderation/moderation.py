@@ -19,6 +19,20 @@ class moderation(commands.Cog):
         if role == None:
             role = await guild.create_role(name = "Muted")
         await channel.set_permissions(role, send_messages = False)
+        
+    @moderation.command()
+    @checks.has_permissions(PermissionLevel.ADMIN)
+    async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
+        """
+        Set the log channel for moderation actions.
+        """
+
+        await self.db.find_one_and_update(
+            {"_id": "config"}, {"$set": {"channel": channel.id}}, upsert=True
+        )
+
+        await ctx.send("Done!")
+        return
 
     #Purge command
     @commands.command(aliases = ["clear"])
