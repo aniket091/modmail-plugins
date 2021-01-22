@@ -30,8 +30,8 @@ class ChangeStatus(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @status_group.command(name="start")
-    async def statusy_start(self, ctx):
+    @commands.Cog.listener()
+    async def on_ready(self):
            self.start_the_status.start()
            await ctx.send("Done! If you experience any problems just run this command again!")
 
