@@ -146,12 +146,6 @@ class staff(commands.Cog):
         await ctx.send(embed=embed7)
         await asyncio.sleep(10)
         await message.delete()
-        
-    @commands.command(aliases=["r"])
-    async def reason(self, ctx, *, message=None):
-        """Make the bot say something"""
-        await ctx.message.delete()
-        await ctx.send(message)
-        
+                
 def setup(bot):
     bot.add_cog(staff(bot))
