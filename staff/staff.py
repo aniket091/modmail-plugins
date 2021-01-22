@@ -58,10 +58,6 @@ class staff(commands.Cog):
         
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
         try: 
             msgID: int(msgID)
             message = await channel.fetch_message(msgID)
@@ -72,7 +68,7 @@ class staff(commands.Cog):
             await message.delete()
         embed2=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00e600, timestamp=datetime.datetime.utcnow())
         embed2.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed2, content=training_mention) # <@&695243187043696650>
+        await message.edit(embed=embed2) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"> {ctx.author.mention}, reporting 10-41 <:online:797692836911906816>")
@@ -83,10 +79,6 @@ class staff(commands.Cog):
         """Offline Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
         try: 
             msgID: int(msgID)
             message = await channel.fetch_message(msgID)
@@ -97,7 +89,7 @@ class staff(commands.Cog):
         embed3.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed7=discord.Embed(description=f"**__Status__**\n**Offline** <:invisible:798080684991971348>", color=0xa9a9a9, timestamp=datetime.datetime.utcnow())
         embed7.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed3, content=training_mention) # <@&695243187043696650>
+        await message.edit(embed=embed3) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"> {ctx.author.mention}, reporting 10-42 <:dnd:797692836745183232>")
@@ -110,10 +102,6 @@ class staff(commands.Cog):
         """10-7 Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
         try: 
             msgID: int(msgID)
             message = await channel.fetch_message(msgID)
@@ -122,7 +110,7 @@ class staff(commands.Cog):
             await ctx.send(embed=embed)
         embed4=discord.Embed(description=f"**__Status__**\n**Break (10-7)** <:idle:797695058207178753>", color=0xffff00, timestamp=datetime.datetime.utcnow())
         embed4.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed4, content=training_mention) # <@&695243187043696650>
+        await message.edit(embed=embed4) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"> {ctx.author.mention}, reporting 10-7 <:idle:797695058207178753>")
@@ -133,10 +121,6 @@ class staff(commands.Cog):
         """10-8 Command"""
         config = await self.db.find_one({"_id": "config"})
         channel = self.bot.get_channel(config["training_channel"])
-        try:
-            training_mention = config["training_mention"]
-        except KeyError:
-            training_mention = ""
         try: 
             msgID: int(msgID)
             message = await channel.fetch_message(msgID)
@@ -147,12 +131,12 @@ class staff(commands.Cog):
         embed5.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
         embed6=discord.Embed(description=f"**__Status__**\n**Online** <:online:797692836911906816>", color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embed6.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        await message.edit(embed=embed5, content=training_mention) # <@&695243187043696650>
+        await message.edit(embed=embed5) # <@&695243187043696650>
         
         await ctx.message.delete()
         await ctx.send(f"> {ctx.author.mention}, reporting 10-8 <:streaming:798080684778061835>")
         await asyncio.sleep(100)
-        await message.edit(embed=embed6, content=training_mention)
+        await message.edit(embed=embed6)
         
     @commands.command()
     async def staff(self, ctx):
