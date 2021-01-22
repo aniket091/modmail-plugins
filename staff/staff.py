@@ -20,7 +20,7 @@ class staff(commands.Cog):
         await self.db.find_one_and_update({"_id": "config"}, {"$set": {"training_channel": channel.id}}, upsert=True)
         
         embed = discord.Embed(color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
-        embed.add_field(name="Set Channel", value=f"Successfully set the training channel to {channel.mention}", inline=False)
+        embed.add_field(name="Set Channel", value=f"Successfully set the staff channel to {channel.mention}", inline=False)
         
         await ctx.send(embed=embed)
             
