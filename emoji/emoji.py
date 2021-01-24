@@ -10,6 +10,10 @@ class emoji(commands.Cog):
     async def on_message(self, message):
         if 'BANANA' in message.content.upper():
             await message.add_reaction('\N{BANANA}')
+        elif 'APPLE' in message.content.upper():
+            await message.add_reaction('\N{APPLE}')
+        elif 'ANIKET' in message.content.upper():
+            await message.add_reaction('\N{STAR}')
 
 def setup(bot):
     bot.add_cog(emoji(bot))
