@@ -11,9 +11,9 @@
 
 # Author
 
-* [Piyush](https://github.com/officialpiyush)
+* [Aniket](https://github.com/aniket091)
 
-> Support is provided on Piyush's discord server or #plugin-support channel in Development server of Modmail.
+> Support is provided on Piyush's discord server or #plugin-support channel in my [discord server](https://discord.gg/GaczkwfgV9).
 
 # Avaialable Plugins
 
