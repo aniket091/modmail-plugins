@@ -31,7 +31,7 @@ class MemberOrID(commands.IDConverter):
         return result
 
 
-class Moderation(commands.Cog):
+class Mod(commands.Cog):
     """Basic moderation commands"""
 
     def __init__(self, bot):
@@ -493,4 +493,4 @@ class Moderation(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Moderation(bot))
+    bot.add_cog(Mod(bot))
