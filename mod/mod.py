@@ -34,7 +34,7 @@ class MemberOrID(commands.IDConverter):
 class Moderation(commands.Cog):
     """Basic moderation commands"""
 
-    def __init__(self, bot: rainbot) -> None:
+    def __init__(self, bot):
         self.bot = bot
         self.order = 2
 
@@ -492,5 +492,5 @@ class Moderation(commands.Cog):
         await self.send_log(ctx, member, reason)
 
 
-def setup(bot: rainbot) -> None:
+def setup(bot):
     bot.add_cog(Moderation(bot))
