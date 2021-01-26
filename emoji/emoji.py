@@ -8,8 +8,8 @@ class emoji(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if '<@474255126228500480>' in message.content.upper():
-            await message.add_reaction('\N{BANANA}')
+        if 'ANIKET' in message.content.upper():
+            await message.add_reaction('<:ANI:803680804508401744>')
         elif 'BANANA' in message.content.upper():
             await message.add_reaction('\N{BANANA}')
 
