@@ -8,39 +8,41 @@ class SlowMode(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(usage='[duration] [channel]')
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def slowmode(self, ctx, time, channel: discord.TextChannel = None):
-        """Set a slowmode to a channel
-        It is not possible to set a slowmode longer than 6 hours
+    async def slowmode(self, ctx: commands.Context, *, time: UserFriendlyTime(converter=commands.TextChannelConverter, default=False, assume_reason=True)) -> None:
+        """Enables slowmode, max 6h
+        Examples:
+        !!slowmode 2h
+        !!slowmode 2h #general
+        !!slowmode off
+        !!slowmode 0s #general
         """
-        if not channel:
-            channel = discord.TextChannel = None
+        duration = timedelta()
+        channel = ctx.channel
+        if time.dt:
+            duration = time.dt - ctx.message.created_at
+        if time.arg:
+            if isinstance(time.arg, str):
+                try:
+                    channel = await commands.TextChannelConverter().convert(ctx, time.arg)
+                except commands.BadArgument:
+                    if time.arg != 'off':
+                        raise
+            else:
+                channel = time.arg
 
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", time)
-        if not match:
-            embed = discord.Embed(description="⚠ I dont understand your time format!",color = 0xff0000)
-            return await ctx.send(embed=embed)
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
+        seconds = int(duration.total_seconds())
+
         if seconds > 21600:
-            embed = discord.Embed(description="⚠ You can't slowmode a channel for longer than 6 hours!", color=0xff0000)
-            return await ctx.send(embed=embed)
-        try:
-            await channel.edit(slowmode_delay=seconds)
-        except discord.errors.Forbidden:
-            embed = discord.Embed(description="⚠ I don't have permission to do this!", color=0xff0000)
-            return await ctx.send(embed=embed)
-        embed=discord.Embed(description=f"{ctx.author.mention} set a slowmode delay of `{time}` in {channel.mention}", color=0x06c9ff)
-        embed.set_author(name="Slow Mode")
-        await ctx.send(embed=embed)
+            await ctx.send('Slowmode only supports up to 6h max at the moment')
+        else:
+            fmt = format_timedelta(duration, assume_forever=False)
+            await channel.edit(slowmode_delay=int(duration.total_seconds()))
+            if duration.total_seconds():
+                await ctx.send(f'Enabled `{fmt}` slowmode on {channel.mention}')
+            else:
+                await ctx.send(f'Disabled slowmode on {channel.mention}')
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
