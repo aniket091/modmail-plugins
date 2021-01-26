@@ -11,8 +11,8 @@ class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
-        self.errorcolor = 0xFF2B2B
-        self.blurple = 0x7289DA
+        self.errorcolor = 0xFF0000
+        self.blurple = 0x03A9F4
 
     #On channel create set up mute stuff
     @commands.Cog.listener()
