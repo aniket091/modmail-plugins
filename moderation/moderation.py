@@ -106,51 +106,54 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-        else:
-            if member.id == ctx.message.author.id:
-                embed = discord.Embed(
-                    title = "Kick Error",
-                    description = "You can't kick yourself!",
-                    color = self.blurple
-                )
-                await ctx.send(embed = embed)
+        else: 
+            if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
+                await ctx.send('User has insufficient permissions')
             else:
-                if reason == None:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
+                if member.id == ctx.message.author.id:
                     embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention}.",
+                        title = "Kick Error",
+                        description = "You can't kick yourself!",
                         color = self.blurple
                     )
                     await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
                 else:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
-                    embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention} for {reason}",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
+                    if reason == None:
+                        await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
                         embed = discord.Embed(
                             title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            description = f"{member.mention} has been kicked by {ctx.message.author.mention}.",
                             color = self.blurple
                         )
-                        await modlog.send(embed = embed)
+                        await ctx.send(embed = embed)
+                        modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                        if modlog == None:
+                            return
+                        if modlog != None:
+                            embed = discord.Embed(
+                                title = "Kick",
+                                description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                                color = self.blurple
+                            )
+                            await modlog.send(embed = embed)
+                     else:
+                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                         embed = discord.Embed(
+                             title = "Kick",
+                             description = f"{member.mention} has been kicked by {ctx.message.author.mention} for {reason}",
+                             color = self.blurple
+                         )
+                         await ctx.send(embed = embed)
+                         modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                         if modlog == None:
+                             return
+                         if modlog != None:
+                             embed = discord.Embed(
+                                 title = "Kick",
+                                 description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                                 color = self.blurple
+                             )
+                             await modlog.send(embed = embed)
 
     @kick.error
     async def kick_error(self, ctx, error):
