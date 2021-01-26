@@ -1,496 +1,541 @@
-import asyncio
-import re
-import string
-from datetime import timedelta
-from typing import Union
-
 import discord
 from discord.ext import commands
+from core import checks
+from core.models import PermissionLevel
 
-from bot import rainbot
-from ext.command import command, group
-from ext.database import DEFAULT, DBDict
-from ext.time import UserFriendlyTime
-from ext.utility import format_timedelta, get_perm_level, tryint, SafeFormat
-
-MEMBER_ID_REGEX = re.compile(r'<@!?([0-9]+)>$')
-
-
-class MemberOrID(commands.IDConverter):
-    async def convert(self, ctx: commands.Context, argument: str) -> Union[discord.Member, discord.User]:
-        result: Union[discord.Member, discord.User]
-        try:
-            result = await commands.MemberConverter().convert(ctx, argument)
-        except commands.BadArgument:
-            match = self._get_id_match(argument) or MEMBER_ID_REGEX.match(argument)
-            try:
-                result = await ctx.bot.fetch_user(int(match.group(1)))
-            except discord.NotFound as e:
-                raise commands.BadArgument(f'Member {argument} not found') from e
-
-        return result
-
-
-class Mod(commands.Cog):
-    """Basic moderation commands"""
-
+class moderation(commands.Cog):
+    """
+    Moderation commands to moderate the server!😼
+    """
+    
     def __init__(self, bot):
         self.bot = bot
-        self.order = 2
+        self.db = bot.plugin_db.get_partition(self)
+        self.errorcolor = 0xFF2B2B
+        self.blurple = 0x7289DA
 
-    async def cog_error(self, ctx: commands.Context, error: Exception) -> None:
-        """Handles discord.Forbidden"""
-        if isinstance(error, discord.Forbidden):
-            await ctx.send(f'I do not have the required permissions needed to run `{ctx.command.name}`.')
-
-    async def alert_user(self, ctx: commands.Context, member, reason, *, duration=None) -> None:
-        guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-        offset = guild_config.time_offset
-        current_time = (ctx.message.created_at + timedelta(hours=offset)).strftime('%H:%M:%S')
-
-        if guild_config.alert[ctx.command.name]:
-            fmt = string.Formatter().vformat(guild_config.alert[ctx.command.name], [], SafeFormat(
-                time=current_time,
-                author=ctx.author,
-                user=member,
-                reason=reason,
-                duration=duration,
-                channel=ctx.channel,
-                guild=ctx.guild
-            ))
-
-            try:
-                await member.send(fmt)
-            except discord.Forbidden:
-                pass
-
-    async def send_log(self, ctx: commands.Context, *args) -> None:
-        guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-        offset = guild_config.time_offset
-        current_time = (ctx.message.created_at + timedelta(hours=offset)).strftime('%H:%M:%S')
-
-        modlogs = DBDict({i: tryint(guild_config.modlog[i]) for i in guild_config.modlog if i}, default=DEFAULT['modlog'])
-
-        try:
-            if ctx.command.name == 'purge':
-                fmt = f'`{current_time}` {ctx.author} purged {args[0]} messages in **#{ctx.channel.name}**'
-                if args[1]:
-                    fmt += f', from {args[1]}'
-                await ctx.bot.get_channel(modlogs.message_purge).send(fmt)
-            elif ctx.command.name == 'kick':
-                fmt = f'`{current_time}` {ctx.author} kicked {args[0]} ({args[0].id}), reason: {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_kick).send(fmt)
-            elif ctx.command.name == 'softban':
-                fmt = f'`{current_time}` {ctx.author} softbanned {args[0]} ({args[0].id}), reason: {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_softban).send(fmt)
-            elif ctx.command.name == 'ban':
-                name = getattr(args[0], 'name', '(no name)')
-                fmt = f'`{current_time}` {ctx.author} banned {name} ({args[0].id}), reason: {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_ban).send(fmt)
-            elif ctx.command.name == 'unban':
-                name = getattr(args[0], 'name', '(no name)')
-                fmt = f'`{current_time}` {ctx.author} unbanned {name} ({args[0].id}), reason: {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_unban).send(fmt)
-            elif ctx.command.qualified_name == 'warn add':
-                fmt = f'`{current_time}` {ctx.author} warned #{args[2]} {args[0]} ({args[0].id}), reason: {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_warn).send(fmt)
-            elif ctx.command.qualified_name == 'warn remove':
-                fmt = f'`{current_time}` {ctx.author} has deleted warn #{args[0]} - {args[1]}'
-                await ctx.bot.get_channel(modlogs.member_warn).send(fmt)
-            elif ctx.command.name == 'lockdown':
-                fmt = f'`{current_time}` {ctx.author} has {"enabled" if args[0] else "disabled"} lockdown for {args[1].mention}'
-                await ctx.bot.get_channel(modlogs.channel_lockdown).send(fmt)
-            elif ctx.command.name == 'slowmode':
-                fmt = f'`{current_time}` {ctx.author} has enabled slowmode for {args[0].mention} for {args[1]}'
-                await ctx.bot.get_channel(modlogs.channel_slowmode).send(fmt)
-
-            else:
-                raise NotImplementedError(f'{ctx.command.name} not implemented for commands/send_log')
-        except AttributeError:
-            # channel not found [None.send()]
-            pass
-
-    @command(5)
-    async def user(self, ctx: commands.Context, member: discord.Member) -> None:
-        """Get a user's info"""
-        async def timestamp(created):
-            delta = format_timedelta(ctx.message.created_at - created)
-            guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-            created += timedelta(hours=guild_config.time_offset)
-
-            return f"{delta} ago ({created.strftime('%H:%M:%S')})"
-
-        created = await timestamp(member.created_at)
-        joined = await timestamp(member.joined_at)
-        member_info = f'**Joined** {joined}\n'
-
-        for n, i in enumerate(reversed(member.roles)):
-            if i != ctx.guild.default_role:
-                if n == 0:
-                    member_info += '**Roles**: '
-                member_info += i.name
-                if n != len(member.roles) - 2:
-                    member_info += ', '
-                else:
-                    member_info += '\n'
-
-        em = discord.Embed(color=member.color)
-        em.set_author(name=str(member), icon_url=str(member.avatar_url))
-        em.add_field(name='Basic Information', value=f'**ID**: {member.id}\n**Nickname**: {member.nick}\n**Mention**: {member.mention}\n**Created** {created}', inline=False)
-        em.add_field(name='Member Information', value=member_info, inline=False)
-        await ctx.send(embed=em)
-
-    @group(6, invoke_without_command=True)
-    async def note(self, ctx: commands.Context) -> None:
-        """Manage notes"""
-        await ctx.invoke(self.bot.get_command('help'), command_or_cog='note')
-
-    @note.command(6)
-    async def add(self, ctx: commands.Context, member: MemberOrID, *, note):
-        """Add a note"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
-        else:
-            guild_data = await self.bot.db.get_guild_config(ctx.guild.id)
-            notes = guild_data.notes
-
-            guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-            current_date = (ctx.message.created_at + timedelta(hours=guild_config.time_offset)).strftime('%Y-%m-%d')
-            if len(notes) == 0:
-                case_number = 1
-            else:
-                case_number = notes[-1]['case_number'] + 1
-
-            push = {
-                'case_number': case_number,
-                'date': current_date,
-                'member_id': str(member.id),
-                'moderator_id': str(ctx.author.id),
-                'note': note
-            }
-            await self.bot.db.update_guild_config(ctx.guild.id, {'$push': {'notes': push}})
-            await ctx.send(self.bot.accept)
-
-    @note.command(6, aliases=['delete', 'del'])
-    async def remove(self, ctx: commands.Context, case_number: int) -> None:
-        """Remove a note"""
-        guild_data = await self.bot.db.get_guild_config(ctx.guild.id)
-        notes = guild_data.notes
-        note = list(filter(lambda w: w['case_number'] == case_number, notes))
-        if len(note) == 0:
-            await ctx.send(f'Note #{case_number} does not exist.')
-        else:
-            await self.bot.db.update_guild_config(ctx.guild.id, {'$pull': {'notes': note[0]}})
-            await ctx.send(self.bot.accept)
-
-    @note.command(6, name='list', aliases=['view'])
-    async def _list(self, ctx: commands.Context, member: MemberOrID) -> None:
-        """View the notes of a user"""
-        guild_data = await self.bot.db.get_guild_config(ctx.guild.id)
-        notes = guild_data.notes
-        notes = list(filter(lambda w: w['member_id'] == str(member.id), notes))
-        name = getattr(member, 'name', str(member.id))
-        if name != str(member.id):
-            name += f'#{member.discriminator}'
-
-        if len(notes) == 0:
-            await ctx.send(f'{name} has no notes.')
-        else:
-            fmt = f'**{name} has {len(notes)} notes.**'
-            for note in notes:
-                moderator = ctx.guild.get_member(int(note['moderator_id']))
-                fmt += f"\n`{note['date']}` Note #{note['case_number']}: {moderator} noted {note['note']}"
-
-            await ctx.send(fmt)
-
-    @group(6, invoke_without_command=True, usage='\u200b')
-    async def warn(self, ctx: commands.Context, member: Union[MemberOrID, str]=None, *, reason: str=None) -> None:
-        """Manage warns"""
-        if isinstance(member, (discord.User, discord.Member)):
-            if reason:
-                ctx.command = self.add_
-                await ctx.invoke(self.add_, member=member, reason=reason)
-            else:
-                await ctx.invoke(self.bot.get_command('help'), command_or_cog='warn add')
-        else:
-            await ctx.invoke(self.bot.get_command('help'), command_or_cog='warn')
-
-    @warn.command(6, name='add')
-    async def add_(self, ctx: commands.Context, member: MemberOrID, *, reason: str) -> None:
-        """Warn a user
-        Can also be used as `warn <member> [reason]`"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
-        else:
-            guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-            guild_warns = guild_config.warns
-            warn_punishments = guild_config.warn_punishments
-            warn_punishment_limits = [i.warn_number for i in warn_punishments]
-            warns = list(filter(lambda w: w['member_id'] == str(member.id), guild_warns))
-
-            cmd = None
-            punish = False
-
-            num_warns = len(warns) + 1
-            fmt = f'You have been warned in **{ctx.guild.name}**, reason: {reason}. This is warning #{num_warns}.'
-
-            if warn_punishments:
-                punishments = list(filter(lambda x: int(x) == num_warns, warn_punishment_limits))
-                if not punishments:
-                    punish = False
-                    above = list(filter(lambda x: int(x) > num_warns, warn_punishment_limits))
-                    if above:
-                        closest = min(map(int, above))
-                        cmd = warn_punishments.get_kv('warn_number', closest).punishment
-                        if cmd == 'ban':
-                            cmd = 'bann'
-                        fmt += f' You will be {cmd}ed on warning {closest}.'
-                else:
-                    punish = True
-                    cmd = warn_punishments.get_kv('warn_number', max(map(int, punishments))).punishment
-                    if cmd == 'ban':
-                        cmd = 'bann'
-                    fmt += f' You have been {cmd}ed from the server.'
-
-            try:
-                await member.send(fmt)
-            except discord.Forbidden:
-                if ctx.author != ctx.guild.me:
-                    await ctx.send('The user has PMs disabled or blocked the bot.')
-            finally:
-                guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-                current_date = (ctx.message.created_at + timedelta(hours=guild_config.time_offset)).strftime('%Y-%m-%d')
-                if len(guild_warns) == 0:
-                    case_number = 1
-                else:
-                    case_number = guild_warns[-1]['case_number'] + 1
-                push = {
-                    'case_number': case_number,
-                    'date': current_date,
-                    'member_id': str(member.id),
-                    'moderator_id': str(ctx.author.id),
-                    'reason': reason
-                }
-                await self.bot.db.update_guild_config(ctx.guild.id, {'$push': {'warns': push}})
-                if ctx.author != ctx.guild.me:
-                    await ctx.send(self.bot.accept)
-                await self.send_log(ctx, member, reason, case_number)
-
-                # apply punishment
-                if punish:
-                    if cmd == 'bann':
-                        cmd = 'ban'
-                    ctx.command = self.bot.get_command(cmd)
-                    ctx.author = ctx.guild.me
-                    await ctx.invoke(ctx.command, member, reason=f'Hit warn limit {num_warns}')
-
-    @warn.command(6, name='remove', aliases=['delete', 'del'])
-    async def remove_(self, ctx: commands.Context, case_number: int) -> None:
-        """Remove a warn"""
-        guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-        warns = guild_config.warns
-        warn = list(filter(lambda w: w['case_number'] == case_number, warns))[0]
-        warn_reason = warn['reason']
-
-        if len(warn) == 0:
-            await ctx.send(f'Warn #{case_number} does not exist.')
-        else:
-            await self.bot.db.update_guild_config(ctx.guild.id, {'$pull': {'warns': warn}})
-            await ctx.send(self.bot.accept)
-            await self.send_log(ctx, case_number, warn_reason)
-
-    @warn.command(6, name='list', aliases=['view'])
-    async def list_(self, ctx: commands.Context, member: MemberOrID) -> None:
-        """View the warns of a user"""
-        guild_config = await self.bot.db.get_guild_config(ctx.guild.id)
-        warns = guild_config.warns
-        warns = list(filter(lambda w: w['member_id'] == str(member.id), warns))
-        name = getattr(member, 'name', str(member.id))
-        if name != str(member.id):
-            name += f'#{member.discriminator}'
-
-        if len(warns) == 0:
-            await ctx.send(f'{name} has no warns.')
-        else:
-            fmt = f'**{name} has {len(warns)} warns.**'
-            for warn in warns:
-                moderator = ctx.guild.get_member(int(warn['moderator_id']))
-                fmt += f"\n`{warn['date']}` Warn #{warn['case_number']}: {moderator} warned {name} for {warn['reason']}"
-
-            await ctx.send(fmt)
-
-    @command(6, usage='<member> <duration> <reason>')
-    async def mute(self, ctx: commands.Context, member: discord.Member, *, time: UserFriendlyTime(default='No reason', assume_reason=True)=None) -> None:
-        """Mutes a user"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
-        else:
-            duration = None
-            reason = None
-            if not time:
-                duration = None
-            else:
-                if time.dt:
-                    duration = time.dt - ctx.message.created_at
-                if time.arg:
-                    reason = time.arg
-            await self.alert_user(ctx, member, reason, duration=format_timedelta(duration))
-            await self.bot.mute(member, duration, reason=reason)
-            await ctx.send(self.bot.accept)
-
-    @command(6)
-    async def unmute(self, ctx: commands.Context, member: discord.Member, *, reason: str='No reason') -> None:
-        """Unmutes a user"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
-        else:
-            await self.alert_user(ctx, member, reason)
-            await self.bot.unmute(ctx.guild.id, member.id, None, reason=reason)
-            await ctx.send(self.bot.accept)
-
-    @command(6, aliases=['clean', 'prune'], usage='<limit> [member]')
-    async def purge(self, ctx: commands.Context, limit: int, *, member: MemberOrID=None) -> None:
-        """Deletes messages in bulk"""
-        count = min(2000, limit)
-        try:
-            await ctx.message.delete()
-        except discord.NotFound:
-            pass
-
-        retries = 0
-        if member:
-            while count > 0:
-                retries += 1
-                last_message = -1
-                previous = None
-                async for m in ctx.channel.history(limit=50):
-                    if m.author.id == member.id:
-                        last_message = previous
-                        break
-                    previous = m.id
-
-                if last_message != -1:
-                    if last_message:
-                        before = discord.Object(last_message)
-                    else:
-                        before = None
-
-                    try:
-                        deleted = await ctx.channel.purge(limit=count, check=lambda m: m.author.id == member.id, before=before)
-                    except discord.NotFound:
-                        pass
-                    else:
-                        count -= len(deleted)
-                else:
-                    break
-
-                if retries > 20:
-                    break
-        else:
-            deleted = await ctx.channel.purge(limit=count)
-            count -= len(deleted)
-
-        await ctx.send(f'Deleted {limit - count} messages', delete_after=3)
-        await self.send_log(ctx, limit - count, member)
-
-    @command(6)
-    async def lockdown(self, ctx: commands.Context, channel: discord.TextChannel=None) -> None:
-        channel = channel or ctx.channel
-        overwrite = channel.overwrites_for(ctx.guild.default_role)
-
-        if overwrite.send_messages is None or overwrite.send_messages:
-            overwrite.send_messages = False
-            await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-            await ctx.send(f'Lockdown {self.bot.accept}')
-            enable = True
-        else:
-            # dont change to "not overwrite.send_messages"
-            overwrite.send_messages = None
-            await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
-            await ctx.send(f'Un-lockdown {self.bot.accept}')
-            enable = False
-
-        await self.send_log(ctx, enable, channel)
-
-    @command(6, usage='[duration] [channel]')
-    async def slowmode(self, ctx: commands.Context, *, time: UserFriendlyTime(converter=commands.TextChannelConverter, default=False, assume_reason=True)) -> None:
-        """Enables slowmode, max 6h
-        Examples:
-        !!slowmode 2h
-        !!slowmode 2h #general
-        !!slowmode off
-        !!slowmode 0s #general
+    #On channel create set up mute stuff
+    @commands.Cog.listener()
+    async def on_guild_channel_create(self, channel):
+        guild = channel.guild
+        role = discord.utils.get(guild.roles, name = "Muted")
+        if role == None:
+            role = await guild.create_role(name = "Muted")
+        await channel.set_permissions(role, send_messages = False)
+    
+    #log channel
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMIN)
+    async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
         """
-        duration = timedelta()
-        channel = ctx.channel
-        if time.dt:
-            duration = time.dt - ctx.message.created_at
-        if time.arg:
-            if isinstance(time.arg, str):
-                try:
-                    channel = await commands.TextChannelConverter().convert(ctx, time.arg)
-                except commands.BadArgument:
-                    if time.arg != 'off':
-                        raise
+        Set the log channel for moderation actions.
+        """
+
+        await self.db.find_one_and_update(
+            {"_id": "config"}, {"$set": {"channel": channel.id}}, upsert=True
+        )
+
+        await ctx.send("Done!")
+        return
+
+    #Purge command
+    @commands.command(aliases = ["clear"])
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def purge(self, ctx, amount = 10):
+        """
+        Purge the specified amount of messages.
+        """
+        max_purge = 2000
+        if amount >= 1 and amount <= max_purge:
+            await ctx.channel.purge(limit = amount + 1)
+            embed = discord.Embed(
+                title = "Purge",
+                description = f"Purged {amount} message(s)!",
+                color = self.blurple
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+            modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+            if modlog == None:
+                return
+            if modlog != None:
+                embed = discord.Embed(
+                    title = "Purge",
+                    description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
+                    color = self.blurple
+                )
+                await modlog.send(embed = embed)
+        if amount < 1:
+            embed = discord.Embed(
+                title = "Purge Error",
+                description = f"You must purge more then {amount} message(s)!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+            await ctx.message.delete()
+        if amount > max_purge:
+            embed = discord.Embed(
+                title = "Purge Error",
+                description = f"You must purge less then {amount} messages!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+            await ctx.message.delete()
+
+    @purge.error
+    async def purge_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions",
+                description = "You are missing the **Supporter** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+            await ctx.message.delete()
+
+    #Kick command
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def kick(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Kicks the specified member.
+        """
+        if member == None:
+            embed = discord.Embed(
+                title = "Kick Error",
+                description = "Please specify a member!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+        else:
+            if member.id == ctx.message.author.id:
+                embed = discord.Embed(
+                    title = "Kick Error",
+                    description = "You can't kick yourself!",
+                    color = self.blurple
+                )
+                await ctx.send(embed = embed)
             else:
-                channel = time.arg
+                if reason == None:
+                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
+                    embed = discord.Embed(
+                        title = "Kick",
+                        description = f"{member.mention} has been kicked by {ctx.message.author.mention}.",
+                        color = self.blurple
+                    )
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Kick",
+                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
+                else:
+                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                    embed = discord.Embed(
+                        title = "Kick",
+                        description = f"{member.mention} has been kicked by {ctx.message.author.mention} for {reason}",
+                        color = self.blurple
+                    )
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Kick",
+                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
 
-        seconds = int(duration.total_seconds())
+    @kick.error
+    async def kick_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions",
+                description = "You are missing the **Moderator** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed)
 
-        if seconds > 21600:
-            await ctx.send('Slowmode only supports up to 6h max at the moment')
+    #Ban command
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def ban(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Bans the specified member.
+        """
+        if member == None:
+            embed = discord.Embed(
+                title = "Ban Error",
+                description = "Please specify a user!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed)
         else:
-            fmt = format_timedelta(duration, assume_forever=False)
-            await channel.edit(slowmode_delay=int(duration.total_seconds()))
-            await self.send_log(ctx, channel, fmt)
-            if duration.total_seconds():
-                await ctx.send(f'Enabled `{fmt}` slowmode on {channel.mention}')
+            if member.id == ctx.message.author.id:
+                embed = discord.Embed(
+                    title = "Ban Error",
+                    description = "You can't ban yourself!",
+                    color = self.blurple
+                )
+                await ctx.send(embed = embed)
             else:
-                await ctx.send(f'Disabled slowmode on {channel.mention}')
+                if reason == None:
+                    await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No Reason Provided.")
+                    embed = discord.Embed(
+                        title = "Ban",
+                        description = f"{member.mention} has been banned by {ctx.message.author.mention}.",
+                        color = self.blurple
+                    )
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Ban",
+                            description = f"{member.mention} has been banned by {ctx.message.author.mention}.",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
+                else:
+                    await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                    embed = discord.Embed(
+                        title = "Ban",
+                        description = f"{member.mention} has been banned by {ctx.message.author.mention} for {reason}",
+                        color = self.blurple
+                    )
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Ban",
+                            description = f"{member.mention} has been banned by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
 
-    @command(7)
-    async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str=None) -> None:
-        """Kicks a user"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
+    @ban.error
+    async def ban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions",
+                description = "You are missing the **Administrator** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+
+    #Unban command
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def unban(self, ctx, *, member : discord.User = None):
+        """
+        Unbans the specified member.
+        """
+        if member == None:
+            embed = discord.Embed(
+                title = "Unban Error",
+                description = "Please specify a user!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
         else:
-            await self.alert_user(ctx, member, reason)
-            await member.kick(reason=reason)
-            if ctx.author != ctx.guild.me:
-                await ctx.send(self.bot.accept)
-            await self.send_log(ctx, member, reason)
+            banned_users = await ctx.guild.bans()
+            for ban_entry in banned_users:
+                user = ban_entry.user
 
-    @command(7)
-    async def softban(self, ctx: commands.Context, member: discord.Member, *, reason: str=None) -> None:
-        """Bans then immediately unbans user (to purge messages)"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
+                if (user.name, user.discriminator) == (member.name, member.discriminator):
+                    embed = discord.Embed(
+                        title = "Unban",
+                        description = f"Unbanned {user.mention}",
+                        color = self.blurple
+                    )
+                    await ctx.guild.unban(user)
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Ban",
+                            description = f"{user.mention} has been unbanned by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
+
+
+    @unban.error
+    async def unban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions",
+                description = "You are missing the **Administrator** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
+
+    #Mute command
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def mute(self, ctx, member : discord.Member = None, *, reason = None):
+        """
+        Mutes the specified member.
+        """
+        if member == None:
+            embed = discord.Embed(
+                title = "Mute Error",
+                description = "Please specify a user!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
         else:
-            await self.alert_user(ctx, member, reason)
-            await member.ban(reason=reason)
-            await asyncio.sleep(2)
-            await member.unban(reason=reason)
-            await ctx.send(self.bot.accept)
-            await self.send_log(ctx, member, reason)
+            if member.id == ctx.message.author.id:
+                embed = discord.Embed(
+                    title = "Mute Error",
+                    description = "You can't mute yourself!",
+                    color = self.errorcolor
+                )
+                await ctx.send(embed = embed, delete_after = 5.0)
+            else:
+                if reason == None:
+                    role = discord.utils.get(ctx.guild.roles, name = "Muted")
+                    if role == None:
+                        role = await ctx.guild.create_role(name = "Muted")
+                        for channel in ctx.guild.text_channels:
+                            await channel.set_permissions(role, send_messages = False)
+                    await member.add_roles(role)
+                    embed = discord.Embed(
+                        title = "Mute",
+                        description = f"{member.mention} has been muted by {ctx.message.author.mention}.",
+                        color = self.blurple
+                    )
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Mute",
+                            description = f"{member.mention} has been muted by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
+                else:
+                    role = discord.utils.get(ctx.guild.roles, name = "Muted")
+                    if role == None:
+                        role = await ctx.guild.create_role(name = "Muted")
+                        for channel in ctx.guild.text_channels:
+                            await channel.set_permissions(role, send_messages = False)
+                    await member.add_roles(role)
+                    embed = discord.Embed(
+                        title = "Mute",
+                        description = f"{member.mention} has been muted by {ctx.message.author.mention} for {reason}",
+                        color = self.blurple
+                    )
+                    await ctx.send(embed = embed)
+                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                    if modlog == None:
+                        return
+                    if modlog != None:
+                        embed = discord.Embed(
+                            title = "Mute",
+                            description = f"{member.mention} has been muted by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            color = self.blurple
+                        )
+                        await modlog.send(embed = embed)
 
-    @command(7)
-    async def ban(self, ctx: commands.Context, member: MemberOrID, *, reason: str=None) -> None:
-        """Swings the banhammer"""
-        if get_perm_level(member, await self.bot.db.get_guild_config(ctx.guild.id))[0] >= get_perm_level(ctx.author, await self.bot.db.get_guild_config(ctx.guild.id))[0]:
-            await ctx.send('User has insufficient permissions')
+    @mute.error
+    async def mute_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions!",
+                description = "You are missing the **Moderator** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed)
+
+    #Unmute command
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def unmute(self, ctx, member : discord.Member = None):
+        """
+        Unmutes the specified member.
+        """
+        if member == None:
+            embed = discord.Embed(
+                title = "Unmute Error",
+                description = "Please specify a user!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed, delete_after = 5.0)
         else:
-            await self.alert_user(ctx, member, reason)
-            await ctx.guild.ban(member, reason=reason)
-            await ctx.send(self.bot.accept)
-            await self.send_log(ctx, member, reason)
+            role = discord.utils.get(ctx.guild.roles, name = "Muted")
+            if role in member.roles:
+                await member.remove_roles(role)
+                embed = discord.Embed(
+                    title = "Unmute",
+                    description = f"{member.mention} has been unmuted by {ctx.message.author.mention}.",
+                    color = self.blurple
+                )
+                await ctx.send(embed = embed)
+                modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                if modlog == None:
+                    return
+                if modlog != None:
+                    embed = discord.Embed(
+                        title = "Unmute",
+                        description = f"{member.mention} has been unmuted by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                        color = self.blurple
+                    )
+                    await modlog.send(embed = embed)
+            else:
+                embed = discord.Embed(
+                    title = "Unmute Error",
+                    description = f"{member.mention} is not muted!",
+                    color = self.errorcolor
+                )
+                await ctx.send(embed = embed)
 
-    @command(7)
-    async def unban(self, ctx: commands.Context, member: MemberOrID, *, reason: str=None) -> None:
-        """Unswing the banhammer"""
-        await ctx.guild.unban(member, reason=reason)
-        await ctx.send(self.bot.accept)
-        await self.send_log(ctx, member, reason)
+    @unmute.error
+    async def unmute_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                title = "Missing Permissions!",
+                description = "You are missing the **Moderator** permission level!",
+                color = self.errorcolor
+            )
+            await ctx.send(embed = embed)
+            
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def warn(self, ctx, member: discord.Member, *, reason: str):
+        """Warn a member.
+        Usage:
+        {prefix}warn @member Spoilers
+        """
+
+        if member.bot:
+            return await ctx.send("Bots can't be warned.")
+
+        channel_config = await self.db.find_one({"_id": "config"})
+
+        if channel_config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            channel = ctx.guild.get_channel(int(channel_config["channel"]))
+
+        if channel is None:
+            return
+
+        config = await self.db.find_one({"_id": "warns"})
+
+        if config is None:
+            config = await self.db.insert_one({"_id": "warns"})
+
+        try:
+            userwarns = config[str(member.id)]
+        except KeyError:
+            userwarns = config[str(member.id)] = []
+
+        if userwarns is None:
+            userw = []
+        else:
+            userw = userwarns.copy()
+
+        userw.append({"reason": reason, "mod": ctx.author.id})
+
+        await self.db.find_one_and_update(
+            {"_id": "warns"}, {"$set": {str(member.id): userw}}, upsert=True
+        )
+
+        await ctx.send(f"Successfully warned **{member}**\n`{reason}`")
+
+        await channel.send(
+            embed=await self.generateWarnEmbed(
+                str(member.id), str(ctx.author.id), len(userw), reason
+            )
+        )
+        del userw
+        return
+
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def pardon(self, ctx, member: discord.Member, *, reason: str):
+        """Remove all warnings of a  member.
+        Usage:
+        {prefix}pardon @member Nice guy
+        """
+
+        if member.bot:
+            return await ctx.send("Bots can't be warned, so they can't be pardoned.")
+
+        channel_config = await self.db.find_one({"_id": "config"})
+
+        if channel_config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            channel = ctx.guild.get_channel(int(channel_config["channel"]))
+
+        if channel is None:
+            return
+
+        config = await self.db.find_one({"_id": "warns"})
+
+        if config is None:
+            return
+
+        try:
+            userwarns = config[str(member.id)]
+        except KeyError:
+            return await ctx.send(f"{member} doesn't have any warnings.")
+
+        if userwarns is None:
+            await ctx.send(f"{member} doesn't have any warnings.")
+
+        await self.db.find_one_and_update(
+            {"_id": "warns"}, {"$set": {str(member.id): []}}
+        )
+
+        await ctx.send(f"Successfully pardoned **{member}**\n`{reason}`")
+
+        embed = discord.Embed(color=discord.Color.blue())
+
+        embed.set_author(
+            name=f"Pardon | {member}",
+            icon_url=member.avatar_url,
+        )
+        embed.add_field(name="User", value=f"{member}")
+        embed.add_field(
+            name="Moderator",
+            value=f"<@{ctx.author.id}> - `{ctx.author}`",
+        )
+        embed.add_field(name="Reason", value=reason)
+        embed.add_field(name="Total Warnings", value="0")
+
+        return await channel.send(embed=embed)
+
+    async def generateWarnEmbed(self, memberid, modid, warning, reason):
+        member: discord.User = await self.bot.fetch_user(int(memberid))
+        mod: discord.User = await self.bot.fetch_user(int(modid))
+
+        embed = discord.Embed(color=discord.Color.red())
+
+        embed.set_author(
+            name=f"Warn | {member}",
+            icon_url=member.avatar_url,
+        )
+        embed.add_field(name="User", value=f"{member}")
+        embed.add_field(name="Moderator", value=f"<@{modid}>` - ({mod})`")
+        embed.add_field(name="Reason", value=reason)
+        embed.add_field(name="Total Warnings", value=warning)
+        return embed
 
 
 def setup(bot):
-    bot.add_cog(Mod(bot))
+    bot.add_cog(moderation(bot))
