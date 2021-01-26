@@ -17,7 +17,7 @@
 
 # Avaialable Plugins
 
-|  **Plugin**  	|       **Description**       	|                    **How To Install?**                    	|                                   **Link To Code**                                   	|                                 **Status**                                 	|                                    **Downloads**                                   	|
+|  **Plugin**  	|       **Description**       	|                    **How To Install?**                    	|                                   **Link To Code**                                   	|                                 **Status**                                 	|             	|
 |:------------:	|:---------------------------:	|:---------------------------------------------------------:	|:------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------:	|:----------------------------------------------------------------------------------:	|
 |  Announcemnt  	| Easily make announcements 	|     `plugins add aniket091/modmail-plugins/announcement`     	|     [Source](https://github.com/aniket091/modmail-plugins/tree/master/announcement)     	|     [![Status](https://img.shields.io/badge/Status-Stable-brightgreen.svg)](#)     	|      [![Downloads](https://counter.modmail-plugins.piyush.codes/badge/tags/)](#)     	|
 | Audit 	|  Easily make announcements  	| `plugins add aniket091/modmail-plugins/audit` 	| [Source](https://github.com/aniket091/modmail-plugins/tree/master/audit) 	| [![Status](https://img.shields.io/badge/Status-Stable-brightgreen.svg)](#) 	| [![Downloads]( https://counter.modmail-plugins.piyush.codes/badge/announcement/)](#) 	|
