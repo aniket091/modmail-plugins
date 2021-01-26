@@ -10,6 +10,8 @@ class emoji(commands.Cog):
     async def on_message(self, message):
         if '<@474255126228500480>' in message.content.upper():
             await message.add_reaction('\N{BANANA}')
+        elif 'BANANA' in message.content.upper():
+            await message.add_reaction('\N{BANANA}')
 
 
 def setup(bot):
