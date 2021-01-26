@@ -18,7 +18,7 @@
 # Avaialable Plugins
 
 |  **Plugin**  	|       **Description**       	|                    **How To Install?**                    	|                                   **Link To Code**                                   	|                                 **Status**                                 	|             	|
-|:------------:	|:---------------------------:	|:---------------------------------------------------------:	|:------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------:	|:----------------------------------------------------------------------------------:	|
+|:------------:	|:---------------------------:	|:---------------------------------------------------------:	|:------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------:	|
 |  Announcemnt  	| Easily make announcements 	|     `plugins add aniket091/modmail-plugins/announcement`     	|     [Source](https://github.com/aniket091/modmail-plugins/tree/master/announcement)     	|     [![Status](https://img.shields.io/badge/Status-Stable-brightgreen.svg)](#)     	|   
 | Audit 	|  Easily make announcements  	| `plugins add aniket091/modmail-plugins/audit` 	| [Source](https://github.com/aniket091/modmail-plugins/tree/master/audit) 	| [![Status](https://img.shields.io/badge/Status-Stable-brightgreen.svg)](#) 	|
 |  Dm On Join  	|    DM's new users when they join   	|  `plugins add officialpiyush/modmail-plugins/dm-on-join`  	|  [Source](https://github.com/officialpiyush/modmail-plugins/tree/master/dm-on-join)  	| [![Status](https://img.shields.io/badge/Status-Stable-brightgreen.svg)](#) 	| 
