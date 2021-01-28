@@ -16,7 +16,7 @@ from .resources.role import RoleResource
 
 
 class Stats(commands.Cog):
-    """Get useful stats about a member, the Modmail bot or your server"""
+    """Get useful stats of your server"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -71,7 +71,7 @@ class Stats(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.REGULAR)
     async def botinfo(self, ctx):
-        """Get the stats of your Modmail bot."""
+        """Get the stats of the bot."""
 
         embed = BotResource(ctx, self.bot).bot_embed()
         await ctx.send(embed=embed)
@@ -79,7 +79,7 @@ class Stats(commands.Cog):
     @stats.command(name="bot")
     @checks.has_permissions(PermissionLevel.REGULAR)
     async def stats_bot(self, ctx):
-        """Get the stats of your Modmail bot."""
+        """Get the stats of the bot."""
 
         await ctx.invoke(self.bot.get_command("botinfo"))
 
