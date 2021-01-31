@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+from discord.enums import ActivityType
 import asyncio
 
 class Status(commands.Cog):
@@ -13,7 +14,7 @@ class Status(commands.Cog):
     async def start_the_status(self):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"PARTH YT'S SERVER"))
         await asyncio.sleep(10)
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"UNDER MAINTANCE | ANIKET NOOBDA"))
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"!help"))
         await asyncio.sleep(10)
         server = self.bot.get_guild(665842728545943552)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{server.member_count} Members!"))
