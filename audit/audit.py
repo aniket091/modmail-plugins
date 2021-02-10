@@ -1,4 +1,3 @@
-
 import datetime
 from io import BytesIO
 from json import JSONDecodeError
@@ -32,7 +31,7 @@ def human_timedelta(dt, *, source=None):
             delta = relativedelta(now, dt)
             suffix = " ago"
 
-    if delta.microseconds and delta.seconds:
+    if delta.microsecond and delta.seconds:
         delta = delta + relativedelta(seconds=+1)
 
     attrs = ["years", "months", "days", "hours", "minutes", "seconds"]
@@ -173,12 +172,10 @@ class Audit(commands.Cog):
         self._save_pickle()
 
     @commands.group()
-    @commands.has_permissions(administrator=True)
     async def audit(self, ctx):
         """Audit logs, copied from mee6."""
 
     @audit.command()
-    @commands.has_permissions(administrator=True)
     async def ignore(self, ctx, *, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]):
         """Ignore a channel or category from audit logs."""
         if isinstance(channel, discord.CategoryChannel):
@@ -189,7 +186,6 @@ class Audit(commands.Cog):
         await ctx.send(embed=embed)
 
     @audit.command()
-    @commands.has_permissions(administrator=True)
     async def unignore(self, ctx, *,
                        channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]):
         """Unignore a channel or category from audit logs."""
@@ -205,7 +201,6 @@ class Audit(commands.Cog):
         await ctx.send(embed=embed)
 
     @audit.command()
-    @commands.has_permissions(administrator=True)
     async def enable(self, ctx, *, audit_type: str.lower = None):
         """Enable a specific audit type, use "all" to enable all."""
         if audit_type is None:
@@ -228,7 +223,6 @@ class Audit(commands.Cog):
         await ctx.send(embed=embed)
 
     @audit.command()
-    @commands.has_permissions(administrator=True)
     async def disable(self, ctx, *, audit_type: str.lower):
         """Disable a specific audit type, use "all" to disable all."""
         audit_type = audit_type.replace('_', ' ')
@@ -555,9 +549,9 @@ class Audit(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
 
         try:
-            async with self.session.post('https://hasteb.in/documents', data=upload_text) as resp:
+            async with self.session.post('https://hastebin.cc/documents', data=upload_text) as resp:
                 key = (await resp.json())["key"]
-                embed.add_field(name="Recovered URL", value=f"https://hasteb.in/{key}.txt")
+                embed.add_field(name="Recovered URL", value=f"https://hastebin.cc/{key}.txt")
         except (JSONDecodeError, ClientResponseError, IndexError):
             pass
 
