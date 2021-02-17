@@ -51,10 +51,10 @@ class moderation(commands.Cog):
             embed = discord.Embed(
                 title = "Purge",
                 description = f"Purged {amount} message(s)!",
-                color = self.blurple
+                color = 0x4fc3f7
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-            modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+            modlog = ctx.guild.get_channel(int(config["channel"]))
             if modlog == None:
                 return
             if modlog != None:
@@ -540,7 +540,7 @@ class moderation(commands.Cog):
         member: discord.User = await self.bot.fetch_user(int(memberid))
         mod: discord.User = await self.bot.fetch_user(int(modid))
 
-        embed = discord.Embed(color = 0xf5dd29)
+        embed = discord.Embed(color = 0xf3e260)
 
         embed.set_author(
             name=f"Warn | {member}",
