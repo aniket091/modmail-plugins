@@ -454,7 +454,8 @@ class moderation(commands.Cog):
             {"_id": "warns"}, {"$set": {str(member.id): userw}}, upsert=True
         )
 
-        await ctx.send(f"Successfully warned **{member}**\n`{reason}`")
+        embed=discord.Embed(description=f"<:tick:811631886262730823> ***{member} has been warned.***\n**|| {reason}**", color=0xF0EAD6)
+        await ctx.send(embed)
 
         await channel.send(
             embed=await self.generateWarnEmbed(
