@@ -54,7 +54,10 @@ class moderation(commands.Cog):
                 color = 0x4fc3f7
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-                modlog = discord.utils.get(ctx.guild.text_channels, id = "800596313841598504")
+                modlog = bot.get_channel("800596313841598504")
+                if modlog == None:
+                        return
+                if modlog != None:
                 embed = discord.Embed(
                     title = "Purge",
                     description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
