@@ -54,7 +54,7 @@ class moderation(commands.Cog):
                 color = 0x4fc3f7
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-                modlog = bot.get_channel("800596313841598504")
+                modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
                 if modlog == None:
                         return
                 if modlog != None:
