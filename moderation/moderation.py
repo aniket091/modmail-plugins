@@ -454,8 +454,11 @@ class moderation(commands.Cog):
             {"_id": "warns"}, {"$set": {str(member.id): userw}}, upsert=True
         )
 
-        embed=discord.Embed(description=f"<:tick:811631886262730823> ***{member} has been warned.***\n**|| {reason}**", color=0xF0EAD6)
-        await ctx.send(embed)
+        embed = discord.Embed(
+            description = f"<:tick:811631886262730823> ***{member} has been warned.***\n**|| {reason}**",
+            color = 0x4fc3f7
+        )
+        await ctx.send(embed = embed)
 
         await channel.send(
             embed=await self.generateWarnEmbed(
@@ -474,7 +477,7 @@ class moderation(commands.Cog):
         """
 
         if member.bot:
-            return await ctx.send("Bots can't be warned, so they can't be pardoned.")
+            return await ctx.send("<:redcross:811631886564589647> Bots can't be warned, so they can't be pardoned.")
 
         channel_config = await self.db.find_one({"_id": "config"})
 
@@ -494,18 +497,30 @@ class moderation(commands.Cog):
         try:
             userwarns = config[str(member.id)]
         except KeyError:
-            return await ctx.send(f"{member} doesn't have any warnings.")
+            embed = discord.Embed(
+                description = f"<:redcross:811631886564589647> {member} doesn't have any warnings.**",
+                color = 0xE74C3C
+            )
+            return await ctx.send(embed = embed)
 
         if userwarns is None:
-            await ctx.send(f"{member} doesn't have any warnings.")
+            embedtwo = discord.Embed(
+                description = f"<:redcross:811631886564589647> {member} doesn't have any warnings.**",
+                color = 0xE74C3C
+            )
+            await ctx.send(embed = embedtwo)
 
         await self.db.find_one_and_update(
             {"_id": "warns"}, {"$set": {str(member.id): []}}
         )
 
-        await ctx.send(f"Successfully pardoned **{member}**\n`{reason}`")
+        embedfinal = discord.Embed(
+                description = f"<:tick:811631886262730823> ***{member} has been pardoned.***\n**|| {reason}**",
+                color = 0x4fc3f7
+            )
+        await ctx.send(embed = embedfinal)
 
-        embed = discord.Embed(color=discord.Color.blue())
+        embed = discord.Embed(color = 0x4fc3f7)
 
         embed.set_author(
             name=f"Pardon | {member}",
@@ -514,7 +529,7 @@ class moderation(commands.Cog):
         embed.add_field(name="User", value=f"{member}")
         embed.add_field(
             name="Moderator",
-            value=f"<@{ctx.author.id}> - `{ctx.author}`",
+            value=f"<@{ctx.author.id}>",
         )
         embed.add_field(name="Reason", value=reason)
         embed.add_field(name="Total Warnings", value="0")
@@ -525,14 +540,14 @@ class moderation(commands.Cog):
         member: discord.User = await self.bot.fetch_user(int(memberid))
         mod: discord.User = await self.bot.fetch_user(int(modid))
 
-        embed = discord.Embed(color=discord.Color.red())
+        embed = discord.Embed(color = 0xf5dd29)
 
         embed.set_author(
             name=f"Warn | {member}",
             icon_url=member.avatar_url,
         )
         embed.add_field(name="User", value=f"{member}")
-        embed.add_field(name="Moderator", value=f"<@{modid}>` - ({mod})`")
+        embed.add_field(name="Moderator", value=f"<@{modid}>")
         embed.add_field(name="Reason", value=reason)
         embed.add_field(name="Total Warnings", value=warning)
         return embed
