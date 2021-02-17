@@ -45,6 +45,17 @@ class moderation(commands.Cog):
         """
         Purge the specified amount of messages.
         """
+        config = await self.db.find_one({"_id": "config"})
+
+        if config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            modlog = ctx.guild.get_channel(int(config["channel"]))
+
+        if modlog is None:
+            await ctx.send("There is no configured log channel.")
+            return
+
         max_purge = 2000
         if amount >= 1 and amount <= max_purge:
             await ctx.channel.purge(limit = amount + 1)
@@ -54,10 +65,6 @@ class moderation(commands.Cog):
                 color = 0x4fc3f7
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-            modlog = ctx.guild.get_channel(int(config["channel"]))
-            if modlog == None:
-                return
-            if modlog != None:
                 embed = discord.Embed(
                     title = "Purge",
                     description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
