@@ -98,22 +98,22 @@ class moderation(commands.Cog):
         """
         if member == None:
             embed = discord.Embed(
-                description = "<:redcross:811927152470917140> Please specify a member!",
+                description = "<:redcross:811927152470917140> **Please specify a member!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
-                    description = "<:redcross:811927152470917140> You can't kick yourself!",
-                    color = self.bluee
+                    description = "<:redcross:811927152470917140> **You can't kick yourself!**",
+                    color = self.errorcolor
                 )
                 await ctx.send(embed = embed)
             else:
-                if ctx.message.author.guild_permissions.administrator:
+                if member.permissions == ctx.message.author.guild_permissions.administrator:
                     embed = discord.Embed(
-                        description = "<:redcross:811927152470917140> That user is a Admin, I can't do that",
-                        color = self.bluee
+                        description = "<:redcross:811927152470917140> **That user is a Admin, I can't do that**",
+                        color = self.errorcolor
                     )
                     await ctx.send(embed = embed)
                 else:    
@@ -169,55 +169,60 @@ class moderation(commands.Cog):
         """
         if member == None:
             embed = discord.Embed(
-                title = "Ban Error",
-                description = "Please specify a user!",
+                description = "<:redcross:811927152470917140> **Please specify a member!**",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed)
+            await ctx.send(embed = embed, delete_after = 5.0)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
-                    title = "Ban Error",
-                    description = "You can't ban yourself!",
+                    description = "<:redcross:811927152470917140> **You can't kick yourself!**",
                     color = self.blurple
                 )
                 await ctx.send(embed = embed)
             else:
-                if reason == None:
-                    await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No Reason Provided.")
+                if ctx.message.author.guild_permissions.administrator:
                     embed = discord.Embed(
-                        title = "Ban",
-                        description = f"{member.mention} has been banned by {ctx.message.author.mention}.",
-                        color = self.blurple
-                    )
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
-                        embed = discord.Embed(
-                            title = "Ban",
-                            description = f"{member.mention} has been banned by {ctx.message.author.mention}.",
-                            color = self.blurple
-                        )
-                        await modlog.send(embed = embed)
-                else:
-                    await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
-                    embed = discord.Embed(
-                        title = "Ban",
-                        description = f"{member.mention} has been banned by {ctx.message.author.mention} for {reason}",
-                        color = self.blurple
+                        description = "<:redcross:811927152470917140> **That user is a Admin, I can't ban them!**",
+                        color = self.errorcolor
                     )
                     await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
+                else:    
+                    if reason == None:
+                        await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No Reason Provided.")
                         embed = discord.Embed(
                             title = "Ban",
-                            description = f"{member.mention} has been banned by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            description = f"***<:tick:811926934220046346> {member} has been banned !***",
                             color = self.blurple
                         )
-                        await modlog.send(embed = embed)
+                        modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                        if modlog == None:
+                            return
+                        if modlog != None:
+                            embed = discord.Embed(
+                                title = "Ban",
+                                description = f"{member.mention} has been banned by {ctx.message.author.mention}.",
+                                color = self.blurple
+                            )
+                            await modlog.send(embed = embed)
+                    else:
+                        await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                        embed = discord.Embed(
+                            title = "Ban",
+                            description = f"{member.mention} has been banned by {ctx.message.author.mention} for {reason}",
+                            color = self.blurple
+                        )
+                        await ctx.send(embed = embed)
+                        modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
+                        if modlog == None:
+                            return
+                        if modlog != None:
+                            embed = discord.Embed(
+                                title = "Ban",
+                                description = f"{member.mention} has been banned by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                                color = self.blurple
+                            )
+                            await modlog.send(embed = embed)
 
     @ban.error
     async def ban_error(self, ctx, error):
