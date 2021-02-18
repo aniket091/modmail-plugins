@@ -59,7 +59,7 @@ class moderation(commands.Cog):
                 color = self.greenn
             )
             embed.add_field(name="Amount :", value=f"**{amount}**", inline=True)
-            embed.add_field(name="Moderator :", value=f"{ctx.member.mention}", inline=True)
+            embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
             embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
             await self.modlog.send(embed = embed)
         if amount < 1:
