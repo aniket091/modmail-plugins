@@ -39,7 +39,6 @@ class moderation(commands.Cog):
         return
 
     #Purge command
-    @client.event
     @commands.command(aliases = ["clear"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def purge(self, ctx, amount = 10):
@@ -52,7 +51,7 @@ class moderation(commands.Cog):
                 color = self.blurple
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-            modlog = client.get_channel("800596313841598504")
+            modlog = self.bot.get_channel("800596313841598504")
             if modlog == None:
                 return
             if modlog != None:
