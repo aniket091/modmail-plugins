@@ -23,6 +23,18 @@ class moderation(commands.Cog):
             role = await guild.create_role(name = "Muted")
         await channel.set_permissions(role, send_messages = False)
     
+    @commands.has_permissions(manage_guild=True)
+    async def logs(self, ctx : commands.Context):
+      overwrites = {
+          ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False),
+          ctx.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+      }
+      logs = await ctx.guild.create_text_channel('coffee-logs', overwrites=overwrites)
+      log_channel_id = logs.id
+      self.db.execute("INSERT INTO Logging VALUES (?, ?)", (ctx.guild.id, logs.id))
+      await ctx.send(f"Successfully setup the server, <#{logs.id}>")
+    
+    
     #log channel
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
@@ -40,24 +52,21 @@ class moderation(commands.Cog):
 
     #Purge command
     @commands.command(aliases = ["clear"])
-    @checks.has_permissions(PermissionLevel.MODERATOR)
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def purge(self, ctx, amount = 10):
-        """
-        Purge the specified amount of messages.
-        """
         max_purge = 2000
         if amount >= 1 and amount <= max_purge:
             await ctx.channel.purge(limit = amount + 1)
             embed = discord.Embed(
                 title = "Purge",
                 description = f"Purged {amount} message(s)!",
-                color = 0x4fc3f7
+                color = self.blurple
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-                modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                if modlog == None:
-                        return
-                if modlog != None:
+            modlog = self.bot.get_channel(self.logs(ctx.guild.id))
+            if modlog == None:
+                return
+            if modlog != None:
                 embed = discord.Embed(
                     title = "Purge",
                     description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
