@@ -11,9 +11,10 @@ class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
-        self.errorcolor = 0xFF2B2B
-        self.blurple = 0x7289DA
-        self.log_channel = bot.get_channel(800596313841598504)
+        self.errorcolor = 0xe60026
+        self.bluee = 0x4fc3f7
+        self.greenn = 0x4fe8a2
+        self.log_channel = bot.get_channel(791932450657533973)
 
     #On channel create set up mute stuff
     @commands.Cog.listener()
@@ -48,20 +49,20 @@ class moderation(commands.Cog):
             await ctx.channel.purge(limit = amount + 1)
             embed = discord.Embed(
                 title = "Purge",
-                description = f"Purged {amount} message(s)!",
+                description = f"<:tick:811631886262730823> Purged **{amount}** message(s)!",
                 color = self.blurple
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            await ctx.send(embed = embed, delete_after = 10.0)
             embed = discord.Embed(
-                title = "Purge",
-                description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
+                title = "Purge 📑",
+                description = f"**{amount}** message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
                 color = self.blurple
             )
             await self.log_channel.send(embed = embed)
         if amount < 1:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"You must purge more then {amount} message(s)!",
+                description = f"<:redcross:811631886564589647> You must purge more then {amount} message(s)!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -69,7 +70,7 @@ class moderation(commands.Cog):
         if amount > max_purge:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"You must purge less then {amount} messages!",
+                description = f"<:redcross:811631886564589647> You must purge less then {amount} messages!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -79,8 +80,8 @@ class moderation(commands.Cog):
     async def purge_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
-                title = "Missing Permissions",
-                description = "You are missing the **Supporter** permission level!",
+                title = "Missing Permissions!",
+                description = "<:redcross:811631886564589647> You are missing permissions to purge messages!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -96,7 +97,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title = "Kick Error",
-                description = "Please specify a member!",
+                description = "<:redcross:811631886564589647> Please specify a member!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -104,54 +105,58 @@ class moderation(commands.Cog):
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
                     title = "Kick Error",
-                    description = "You can't kick yourself!",
+                    description = "<:redcross:811631886564589647> You can't kick yourself!",
                     color = self.blurple
                 )
                 await ctx.send(embed = embed)
             else:
-                if reason == None:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
+                if ctx.message.author.server_permissions.administrator:
                     embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention}.",
+                        title = "Kick Error",
+                        description = "<:redcross:811631886564589647> admin",
                         color = self.blurple
                     )
                     await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
+                else:    
+                    if reason == None:
+                        await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
                         embed = discord.Embed(
-                            title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention}.",
+                            description = f"**<:tick:811631886262730823> {member} was kicked!***",
                             color = self.blurple
                         )
-                        await modlog.send(embed = embed)
-                else:
-                    await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
-                    embed = discord.Embed(
-                        title = "Kick",
-                        description = f"{member.mention} has been kicked by {ctx.message.author.mention} for {reason}",
-                        color = self.blurple
-                    )
-                    await ctx.send(embed = embed)
-                    modlog = discord.utils.get(ctx.guild.text_channels, name = "📌・modmail_logs")
-                    if modlog == None:
-                        return
-                    if modlog != None:
+                        await ctx.send(embed = embed)
                         embed = discord.Embed(
-                            title = "Kick",
-                            description = f"{member.mention} has been kicked by {ctx.message.author.mention} in {ctx.message.channel.mention} for {reason}",
+                            title = "Kick 📝",
                             color = self.blurple
                         )
-                        await modlog.send(embed = embed)
+                        embed.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                        embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                        embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                        embed.add_field(name="Reason :", value="No reason provided!", inline=False)
+                        await self.log_channel.send(embed = embed)
+                    else:
+                        await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                        embed = discord.Embed(
+                            description = f"**<:tick:811631886262730823> {member} was kicked!*** \n**|| {reason}**",
+                            color = self.blurple
+                        )
+                        await ctx.send(embed = embed)
+                        embed = discord.Embed(
+                            title = "Kick 📝",
+                            color = self.blurple
+                        )
+                        embed.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                        embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                        embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                        embed.add_field(name="Reason :", value=f"{reason}", inline=False)
+                        await self.log_channel.send(embed = embed)
 
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
-                title = "Missing Permissions",
-                description = "You are missing the **Moderator** permission level!",
+                title = "Missing Permissions !",
+                description = "<:redcross:811631886564589647> You are missing permissions to kick members!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed)
