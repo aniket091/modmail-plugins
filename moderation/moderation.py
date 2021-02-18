@@ -110,7 +110,7 @@ class moderation(commands.Cog):
                 )
                 await ctx.send(embed = embed)
             else:
-                if member.permissions == ctx.message.author.server_permissions.administrator:
+                if ctx.message.author.guild_permissions.administrator:
                     embed = discord.Embed(
                         title = "Kick Error",
                         description = "<:redcross:811631886564589647> admin",
