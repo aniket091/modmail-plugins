@@ -110,7 +110,7 @@ class moderation(commands.Cog):
                 )
                 await ctx.send(embed = embed)
             else:
-                if member.permissions == ctx.message.author.guild_permissions.administrator:
+                if member.guild_permissions == ctx.message.author.guild_permissions.administrator:
                     embed = discord.Embed(
                         description = "<:redcross:811927152470917140> **That user is a Admin, I can't do that**",
                         color = self.errorcolor
