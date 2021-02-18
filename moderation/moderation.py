@@ -467,7 +467,7 @@ class moderation(commands.Cog):
         )
 
         embed = discord.Embed(
-            description = f"<:tick:811631886262730823> ***{member} has been warned.***\n**|| {reason}**",
+            description = f"<:tick:811926934220046346>  ***{member} has been warned.***\n**|| {reason}**",
             color = self.bluee
         )
         await ctx.send(embed = embed)
@@ -527,7 +527,7 @@ class moderation(commands.Cog):
         )
 
         embedfinal = discord.Embed(
-                description = f"<:tick:811631886262730823> ***{member} has been pardoned.***\n**|| {reason}**",
+                description = f"<:tick:811926934220046346>  ***{member} has been pardoned.***\n**|| {reason}**",
                 color = self.bluee
             )
         await ctx.send(embed = embedfinal)
