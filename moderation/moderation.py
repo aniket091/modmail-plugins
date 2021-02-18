@@ -13,6 +13,7 @@ class moderation(commands.Cog):
         self.db = bot.plugin_db.get_partition(self)
         self.errorcolor = 0xFF2B2B
         self.blurple = 0x7289DA
+        self.log_channel = bot.get_channel(800596313841598504)
 
     #On channel create set up mute stuff
     @commands.Cog.listener()
@@ -51,16 +52,12 @@ class moderation(commands.Cog):
                 color = self.blurple
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-            modlog = self.bot.get_channel("800596313841598504")
-            if modlog == None:
-                return
-            if modlog != None:
-                embed = discord.Embed(
-                    title = "Purge",
-                    description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
-                    color = self.blurple
-                )
-                await modlog.send(embed = embed)
+            embed = discord.Embed(
+                title = "Purge",
+                description = f"{amount} message(s) have been purged by {ctx.author.mention} in {ctx.message.channel.mention}",
+                color = self.blurple
+            )
+            await self.log_channel.send(embed = embed)
         if amount < 1:
             embed = discord.Embed(
                 title = "Purge Error",
