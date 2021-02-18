@@ -24,7 +24,7 @@ class moderation(commands.Cog):
         await channel.set_permissions(role, send_messages = False)
     
     @commands.has_permissions(manage_guild=True)
-    async def logs(self, ctx : commands.Context):
+    async def logmoder(self, ctx : commands.Context):
       overwrites = {
           ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False),
           ctx.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True)
