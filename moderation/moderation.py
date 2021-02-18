@@ -12,7 +12,7 @@ class moderation(commands.Cog):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
         self.errorcolor = 0xe60026
-        self.bluee = 0x4fc3f7
+        self.blurple = 0x4fc3f7
         self.greenn = 0x4fe8a2
         self.log_channel = bot.get_channel(791932450657533973)
 
