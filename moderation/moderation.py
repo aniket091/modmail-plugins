@@ -22,19 +22,7 @@ class moderation(commands.Cog):
         if role == None:
             role = await guild.create_role(name = "Muted")
         await channel.set_permissions(role, send_messages = False)
-    
-    @commands.has_permissions(manage_guild=True)
-    async def logmoder(self, ctx : commands.Context):
-      overwrites = {
-          ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False),
-          ctx.guild.me: discord.PermissionOverwrite(read_messages=True, send_messages=True)
-      }
-      logs = await ctx.guild.create_text_channel('coffee-logs', overwrites=overwrites)
-      log_channel_id = logs.id
-      self.db.execute("INSERT INTO Logging VALUES (?, ?)", (ctx.guild.id, logs.id))
-      await ctx.send(f"Successfully setup the server, <#{logs.id}>")
-    
-    
+   
     #log channel
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
@@ -51,6 +39,7 @@ class moderation(commands.Cog):
         return
 
     #Purge command
+    @client.event
     @commands.command(aliases = ["clear"])
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def purge(self, ctx, amount = 10):
@@ -63,7 +52,7 @@ class moderation(commands.Cog):
                 color = self.blurple
             )
             await ctx.send(embed = embed, delete_after = 5.0)
-            modlog = self.bot.get_channel(self.logs(ctx.guild.id))
+            modlog = client.get_channel("800596313841598504")
             if modlog == None:
                 return
             if modlog != None:
