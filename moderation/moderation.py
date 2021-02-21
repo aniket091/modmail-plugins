@@ -120,11 +120,13 @@ class moderation(commands.Cog):
                 else:    
                     if reason == None:
                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
+                        msg = f"You have been kicked from {ctx.guild.name}"
                         embed = discord.Embed(
                             description = f"***<:tick:811926934220046346> {member} has been kicked!***",
                             color = self.bluee
                         )
                         await ctx.send(embed = embed)
+                        await member.send(msg)
                         embedlog = discord.Embed(
                             color = self.greenn
                         )
@@ -139,11 +141,13 @@ class moderation(commands.Cog):
                         await self.modlog.send(embed = embedlog)
                     else:
                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+                        msg = f"You have been kicked from {ctx.guild.name} for {reason}"
                         embed = discord.Embed(
                             description = f"**<:tick:811926934220046346> {member} has been kicked!*** \n**|| {reason}**",
                             color = self.bluee
                         )
                         await ctx.send(embed = embed)
+                        await member.send(msg)
                         embedlog = discord.Embed(
                             color = self.greenn
                         )
