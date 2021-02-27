@@ -481,6 +481,7 @@ class moderation(commands.Cog):
             color = self.bluee
         )
         await ctx.send(embed = embed)
+        await member.send('You have been warned in {ctx.guild.name} for {reason}')
 
         await channel.send(
             embed=await self.generateWarnEmbed(
