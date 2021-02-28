@@ -9,7 +9,7 @@ client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 guild_ids = [664505860327997461]
 
-class slashcom(commands.Cog):
+class slash(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
@@ -85,4 +85,4 @@ class slashcom(commands.Cog):
         await ctx.send(embed = embed)
 
 def setup(bot):
-    bot.add_cog(slashcom(bot))
+    bot.add_cog(slash(bot))
