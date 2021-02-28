@@ -1,8 +1,10 @@
-import discord 
-import asyncio
+  
+import discord
+import inspect
+import typing
 from discord.ext import commands
-from discord_slash import SlashCommand
-from discord_slash.utils import manage_commands
+from .utils import manage_commands
+from .model import CogCommandObject, CogSubcommandObject
 
 from random import randint
 client = discord.Client(intents=discord.Intents.all())
@@ -13,10 +15,7 @@ class slash(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.Cog.listener()
-    async def on_ready():
-        print("Ready!")
-    @slash.slash(
+    @cog_ext.cog_slash(
       name="rps",
       description="TEST",
       options=[manage_commands.create_option(
@@ -63,7 +62,7 @@ class slash(commands.Cog):
 
 
 
-    @slash.slash(
+    @cog_ext.cog_slash(
       name="test",
       description="this returns the bot latency",
       options=[manage_commands.create_option(
