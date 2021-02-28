@@ -1,6 +1,12 @@
 import discord 
 import asyncio
 from discord.ext import commands
+from discord_slash import SlashCommand
+from discord_slash.utils import manage_commands
+
+from random import randint
+slash = SlashCommand(client, sync_commands=True)
+guild_ids = [664505860327997461]
 
 class slash(commands.Cog):
     def __init__(self, bot):
