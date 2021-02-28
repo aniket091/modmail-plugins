@@ -8,8 +8,6 @@ from .model import CogCommandObject, CogSubcommandObject
 
 from random import randint
 client = discord.Client(intents=discord.Intents.all())
-slash = SlashCommand(client, sync_commands=True)
-guild_ids = [664505860327997461]
 
 class slash(commands.Cog):
     def __init__(self, bot):
