@@ -54,10 +54,11 @@ class Suggest(commands.Cog):
                         int(config["suggestion-channel"]["channel"])
                     )
 
-                    embed = discord.Embed(title=suggestion, color=0x59E9FF)
+                    embed = discord.Embed(color=0x59E9FF)
                     embed.set_author(
                         name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
                     )
+                    embed.add_field(name="Suggestion :", value=f"{suggestion}", inline=False)
                     message_ = await suggestion_channel.send(embed=embed)
                     await message_.add_reaction("<:YES:793374924474810380>")
                     await message_.add_reaction("<:NO:793374924815335437>")
@@ -157,6 +158,30 @@ class Suggest(commands.Cog):
 
         await self._update_mod_db()
         await ctx.send(embed=embed)
+
+     @commands.command(aliases=["sa"])  
+     async def sugaccept(self, ctx *, msgID: str, *, reason = None)
+         if msgID == None:
+             return await ctx.send_help(ctx.command)
+             await asyncio.sleep(10)
+             await message.delete() 
+
+         config = await self.coll.find_one({"_id": "config"})
+         suggestion_channel = self.bot.get_channel(
+             int(config["suggestion-channel"]["channel"])
+         ) 
+         try:
+             msgID: int(msgID)
+             message = await suggestion_channel.fetch_message(msgID)
+             embed  = message.embeds[0]
+         except:
+             embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
+             await ctx.send(embed=embed, delete_after = 5.0)
+         
+         
+         embed.add_field(name="Accepted :", value=f"{reason}", inline=False)
+         await message.edit(embed=embed)
+         
 
 
 def setup(bot):
