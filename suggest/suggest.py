@@ -104,7 +104,6 @@ class Suggest(commands.Cog):
         await ctx.send(embed=embed)
 
     @checks.has_permissions(PermissionLevel.MOD)
-    @commands.group(invoke_without_command=True)
     async def suggestmod(self, ctx: commands.Context):
         """Let's you block and unblock people from using the suggest command."""
         await ctx.send_help(ctx.command)
@@ -159,7 +158,8 @@ class Suggest(commands.Cog):
         await self._update_mod_db()
         await ctx.send(embed=embed)
 
-     @commands.command(aliases=["sa"])  
+     @commands.command(aliases=["sa"])
+     @checks.has_permissions(PermissionLevel.MOD)  
      async def sugaccept(self, ctx *, msgID: str, *, reason = None)
          if msgID == None:
              return await ctx.send_help(ctx.command)
