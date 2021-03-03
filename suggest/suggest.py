@@ -172,13 +172,13 @@ class Suggest(commands.Cog):
         """Let's you block and unblock people from using the suggest command."""
         await ctx.send_help(ctx.command)
 
-    @suggestmod.command(aliases=["ban"])
+    @suggestmod.command()
     @checks.has_permissions(PermissionLevel.MOD)
     async def block(self, ctx, user: discord.User, *, reason="Reason not specified."):
         """
         Block a user from using the suggest command.
         **Examples:**
-        [p]suggestmod block @RealCyGuy for abuse!
+        [p]suggestmod block @aniket for abuse!
         [p]suggestmod ban 543225108135673877 `cause he's the same person!!!
         """
         if str(user.id) in self.banlist:
@@ -198,13 +198,13 @@ class Suggest(commands.Cog):
         await self._update_mod_db()
         await ctx.send(embed=embed)
 
-    @suggestmod.command(aliases=["unban"])
+    @suggestmod.command()
     @checks.has_permissions(PermissionLevel.MOD)
     async def unblock(self, ctx, user: discord.User):
         """
         Unblock a user from using the suggest command.
         **Examples:**
-        [p]suggestmod unblock @RealCyGuy
+        [p]suggestmod unblock @aniket
         [p]suggestmod unban 543225108135673877
         """
         if str(user.id) not in self.banlist:
