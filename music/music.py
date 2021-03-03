@@ -425,8 +425,6 @@ class music(commands.Cog):
         """Plays a song.
         If there are songs in the queue, this will be queued until the
         other songs finished playing.
-        This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here: https://rg3.github.io/youtube-dl/supportedsites.html
         """
 
         if not ctx.voice_state.voice:
