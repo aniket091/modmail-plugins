@@ -27,4 +27,4 @@ The commands usage list assumes you retain the default prefix, `?`.
 | REGULAR [1] | `?shuffle` | Shuffles the queue. |
 | REGULAR [1] | `?skip` |  Skips a song. |
 
-##AND MANY MORE COMMANDS TO YOU!!!!
+## AND MANY MORE COMMANDS TO YOU!!!!
