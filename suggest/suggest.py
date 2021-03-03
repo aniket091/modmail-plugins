@@ -90,7 +90,7 @@ class Suggest(commands.Cog):
 
     @commands.command(aliases=["sa"])
     @checks.has_permissions(PermissionLevel.MOD)  
-    async def sugaccept(self, ctx, *, msgID: str, reason = None):
+    async def sugaccept(self, ctx, msgID : int, * , reason: str):
         if msgID == None:
             return await ctx.send_help(ctx.command)
             await asyncio.sleep(10)
@@ -101,13 +101,13 @@ class Suggest(commands.Cog):
             int(config["suggestion-channel"]["channel"])
         ) 
         try:
-            msgID: int(msgID)
             message = await suggestion_channel.fetch_message(msgID)
+            embed  = message.embeds[0] 
         except:
             embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
             await ctx.send(embed=embed, delete_after = 5.0)
 
-        embed  = message.embeds[0] 
+        
         embed.add_field(name="Accepted :", value=f"{reason}", inline=False)
         await message.edit(embed=embed)
          
