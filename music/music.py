@@ -354,7 +354,7 @@ class music(commands.Cog):
 
     @commands.command(name='skip')
     async def _skip(self, ctx: commands.Context):
-
+        """Skips a song."""
 
         if not ctx.voice_state.is_playing:
             return await ctx.send('Not playing any music right now...')
