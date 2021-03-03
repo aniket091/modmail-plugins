@@ -90,7 +90,7 @@ class Suggest(commands.Cog):
 
     @commands.command(aliases=["sa"])
     @checks.has_permissions(PermissionLevel.MOD)  
-    async def sugaccept(self, ctx, *, msgID: str, *, reason = None):
+    async def sugaccept(self, ctx, *, msgID: str, reason = None):
         if msgID == None:
             return await ctx.send_help(ctx.command)
             await asyncio.sleep(10)
