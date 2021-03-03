@@ -93,6 +93,7 @@ class Suggest(commands.Cog):
     @commands.command(aliases=["sa"])
     @checks.has_permissions(PermissionLevel.MOD)  
     async def sugaccept(self, ctx, msgID : int, * , reason: str):
+        """Accepts a suggestion!"""
         if msgID == None:
             return await ctx.send_help(ctx.command)
   
@@ -122,6 +123,7 @@ class Suggest(commands.Cog):
     @commands.command(aliases=["sr"])
     @checks.has_permissions(PermissionLevel.MOD)  
     async def sugreject(self, ctx, msgID : int, * , reason: str):
+        """Rejects a suggestion!"""
         if msgID == None:
             return await ctx.send_help(ctx.command)
   
