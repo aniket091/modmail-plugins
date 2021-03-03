@@ -158,7 +158,7 @@ class Suggest(commands.Cog):
         await self._update_mod_db()
         await ctx.send(embed=embed)
 
-     @commands.command(aliases=["sa"])
+     @commands.command(aliases=["sa"]):
      @checks.has_permissions(PermissionLevel.MOD)  
      async def sugaccept(self, ctx *, msgID: str, *, reason = None)
          if msgID == None:
