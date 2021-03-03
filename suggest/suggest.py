@@ -66,31 +66,6 @@ class Suggest(commands.Cog):
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
-    
-    @commands.command(aliases=["sa"]):
-     @checks.has_permissions(PermissionLevel.MOD)  
-     async def sugaccept(self, ctx *, msgID: str, *, reason = None)
-         if msgID == None:
-             return await ctx.send_help(ctx.command)
-             await asyncio.sleep(10)
-             await message.delete() 
-
-         config = await self.coll.find_one({"_id": "config"})
-         suggestion_channel = self.bot.get_channel(
-             int(config["suggestion-channel"]["channel"])
-         ) 
-         try:
-             msgID: int(msgID)
-             message = await suggestion_channel.fetch_message(msgID)
-             embed  = message.embeds[0]
-         except:
-             embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
-             await ctx.send(embed=embed, delete_after = 5.0)
-         
-         
-         embed.add_field(name="Accepted :", value=f"{reason}", inline=False)
-         await message.edit(embed=embed)
-    
     @commands.command(aliases=["ssc"])
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def setsuggestchannel(self, ctx, channel: discord.TextChannel):
@@ -113,6 +88,30 @@ class Suggest(commands.Cog):
         embed.set_footer(text="Task succeeded successfully.")
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["sa"]):
+    @checks.has_permissions(PermissionLevel.MOD)  
+    async def sugaccept(self, ctx *, msgID: str, *, reason = None)
+        if msgID == None:
+            return await ctx.send_help(ctx.command)
+            await asyncio.sleep(10)
+            await message.delete() 
+
+        config = await self.coll.find_one({"_id": "config"})
+        suggestion_channel = self.bot.get_channel(
+            int(config["suggestion-channel"]["channel"])
+        ) 
+        try:
+            msgID: int(msgID)
+            message = await suggestion_channel.fetch_message(msgID)
+        except:
+            embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
+            await ctx.send(embed=embed, delete_after = 5.0)
+
+        embed  = message.embeds[0] 
+        embed.add_field(name="Accepted :", value=f"{reason}", inline=False)
+        await message.edit(embed=embed)
+         
+    
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def suggestchannel(self, ctx):
@@ -129,7 +128,6 @@ class Suggest(commands.Cog):
         await ctx.send(embed=embed)
 
     @checks.has_permissions(PermissionLevel.MOD)
-    @commands.group(invoke_without_command=True)
     async def suggestmod(self, ctx: commands.Context):
         """Let's you block and unblock people from using the suggest command."""
         await ctx.send_help(ctx.command)
@@ -183,9 +181,6 @@ class Suggest(commands.Cog):
 
         await self._update_mod_db()
         await ctx.send(embed=embed)
-
-     
-         
 
 
 def setup(bot):
