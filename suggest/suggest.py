@@ -54,11 +54,13 @@ class Suggest(commands.Cog):
                         int(config["suggestion-channel"]["channel"])
                     )
 
-                    embed = discord.Embed(color=0x59E9FF)
+                    embed = discord.Embed(
+                        description = f"**Suggestion :**\n\n {suggestion}",
+                        color=0xffff00
+                    )
                     embed.set_author(
                         name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
                     )
-                    embed.add_field(name="Suggestion :", value=f"{suggestion}", inline=False)
                     message_ = await suggestion_channel.send(embed=embed)
                     await message_.add_reaction("<:YES:793374924474810380>")
                     await message_.add_reaction("<:NO:793374924815335437>")
@@ -114,8 +116,37 @@ class Suggest(commands.Cog):
         embed2.set_author( 
           name=embed.author.name, icon_url=embed.author.icon_url
         )
-        embed2.add_field(name="Accepted :", value=f"{reason}", inline=False)
+        embed2.add_field(name="<:greentickk:816665520295510036> Accepted :", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
+
+    @commands.command(aliases=["sr"])
+    @checks.has_permissions(PermissionLevel.MOD)  
+    async def sugreject(self, ctx, msgID : int, * , reason: str):
+        if msgID == None:
+            return await ctx.send_help(ctx.command)
+  
+
+        config = await self.coll.find_one({"_id": "config"})
+        suggestion_channel = self.bot.get_channel(
+            int(config["suggestion-channel"]["channel"])
+        ) 
+        try:
+            message = await suggestion_channel.fetch_message(msgID)
+            embed  = message.embeds[0] 
+        except:
+            embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
+            await ctx.send(embed=embed, delete_after = 5.0)
+
+        
+        embed2=discord.Embed(
+          description=embed.description,
+          color=0xff1818
+        )
+        embed2.set_author( 
+          name=embed.author.name, icon_url=embed.author.icon_url
+        )
+        embed2.add_field(name="<:redcross:811927152470917140> Rejected :", value=f"{reason}", inline=False)
+        await message.edit(embed=embed2)    
          
     
     @commands.command()
