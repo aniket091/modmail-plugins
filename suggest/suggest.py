@@ -93,8 +93,7 @@ class Suggest(commands.Cog):
     async def sugaccept(self, ctx, msgID : int, * , reason: str):
         if msgID == None:
             return await ctx.send_help(ctx.command)
-            await asyncio.sleep(10)
-            await message.delete() 
+  
 
         config = await self.coll.find_one({"_id": "config"})
         suggestion_channel = self.bot.get_channel(
@@ -108,8 +107,15 @@ class Suggest(commands.Cog):
             await ctx.send(embed=embed, delete_after = 5.0)
 
         
-        embed.add_field(name="Accepted :", value=f"{reason}", inline=False)
-        await message.edit(embed=embed)
+        embed2=discord.Embed(
+          description=embed.description,
+          color=0x39FF14
+        )
+        embed2.set_author( 
+          name=embed.author.name, icon_url=embed.author.icon_url
+        )
+        embed2.add_field(name="Accepted :", value=f"{reason}", inline=False)
+        await message.edit(embed=embed2)
          
     
     @commands.command()
@@ -125,61 +131,6 @@ class Suggest(commands.Cog):
             description="To change it, use [p]setsuggestchannel.",
             color=0x4DFF73,
         )
-        await ctx.send(embed=embed)
-
-    @checks.has_permissions(PermissionLevel.MOD)
-    async def suggestmod(self, ctx: commands.Context):
-        """Let's you block and unblock people from using the suggest command."""
-        await ctx.send_help(ctx.command)
-
-    @suggestmod.command(aliases=["ban"])
-    @checks.has_permissions(PermissionLevel.MOD)
-    async def block(self, ctx, user: discord.User, *, reason="Reason not specified."):
-        """
-        Block a user from using the suggest command.
-        **Examples:**
-        {prefix}suggestmod block @aniket for abuse!
-        {prefix}suggestmod ban 474255126228500480 `cause he's the same person!!!
-        """
-        if str(user.id) in self.banlist:
-            embed = discord.Embed(
-                colour=self.bot.error_color,
-                title=f"{user.name}#{user.discriminator} is already blocked.",
-                description=f"Reason: {self.banlist[str(user.id)]}",
-            )
-        else:
-            self.banlist[str(user.id)] = reason
-            embed = discord.Embed(
-                colour=self.bot.main_color,
-                title=f"{user.name}#{user.discriminator} is now blocked.",
-                description=f"Reason: {reason}",
-            )
-
-        await self._update_mod_db()
-        await ctx.send(embed=embed)
-
-    @suggestmod.command(aliases=["unban"])
-    @checks.has_permissions(PermissionLevel.MOD)
-    async def unblock(self, ctx, user: discord.User):
-        """
-        Unblock a user from using the suggest command.
-        **Examples:**
-        {prefix}suggestmod unblock @aniket
-        {prefix}suggestmod unban 474255126228500480
-        """
-        if str(user.id) not in self.banlist:
-            embed = discord.Embed(
-                colour=self.bot.error_color,
-                title=f"{user.name}#{user.discriminator} is not blocked.",
-                description=f"Reason: {self.banlist[str(user.id)]}",
-            )
-        else:
-            self.banlist.pop(str(user.id))
-            embed = discord.Embed(
-                colour=self.bot.main_color, title=f"{user.name}#{user.discriminator} is now unblocked."
-            )
-
-        await self._update_mod_db()
         await ctx.send(embed=embed)
 
 
