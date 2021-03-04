@@ -157,7 +157,7 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
                         embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
                         embedlog.add_field(name="Reason :", value="No reason provided!", inline=False)
-                        await self.modlog.send(embed = embedlog)
+                        await channel.send(embed = embedlog)
                     else:
                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
                         msg = f"You have been kicked from {ctx.guild.name} for {reason}"
@@ -178,7 +178,7 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
                         embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
                         embedlog.add_field(name="Reason :", value=f"{reason}", inline=False)
-                        await self.modlog.send(embed = embedlog)
+                        await channel.send(embed = embedlog)
 
     @kick.error
     async def kick_error(self, ctx, error):
