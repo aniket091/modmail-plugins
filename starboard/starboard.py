@@ -1,3 +1,4 @@
+  
 from datetime import datetime
 
 import discord
@@ -217,12 +218,12 @@ class Starboard(commands.Cog):
                         color=discord.Colour.gold(),
                         description=message.content,
                         timestamp=datetime.utcnow(),
-                        title="Jump to message ►",
-                        url=message.jump_url
                     )
+                    mess = message.jump_url
+                    embed.add_field(name='Source', value=f'[Jump !]({mess})')
                     embed.set_author(
-                        name=f"{user.name}#{user.discriminator}",
-                        icon_url=user.avatar_url,
+                        name=f"{message.author.name}",
+                        icon_url=message.author.avatar_url,
                     )
                     embed.set_footer(text=f"⭐ {count} | {payload.message_id}")
                     if len(message.attachments) > 1:
