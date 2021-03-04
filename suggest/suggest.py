@@ -55,12 +55,12 @@ class Suggest(commands.Cog):
                     )
 
                     embed = discord.Embed(
-                        description = f"**Suggestion :**\n\n {suggestion}",
                         color=0xffff00
                     )
                     embed.set_author(
-                        name=f"Suggestion by {ctx.author}:", icon_url=ctx.author.avatar_url
+                        name=f"{ctx.author.name}:", icon_url=ctx.author.avatar_url
                     )
+                    embed.add_field(name='Suggestion :', value=f'{suggestion}', inline=False)
                     message_ = await suggestion_channel.send(embed=embed)
                     await message_.add_reaction("<:YES:793374924474810380>")
                     await message_.add_reaction("<:NO:793374924815335437>")
@@ -108,15 +108,16 @@ class Suggest(commands.Cog):
             embed=discord.Embed(title="Please include a valid message ID!", color=0xFF0000)    
             await ctx.send(embed=embed, delete_after = 5.0)
 
-        
+        embed3=embed.copy()
         embed2=discord.Embed(
-          description=embed.description,
           color=0x39FF14
         )
         embed2.set_author( 
-          name=embed.author.name, icon_url=embed.author.icon_url
+          name=embed3.author.name, icon_url=embed3.author.icon_url
         )
-        embed2.add_field(name="<:greentickk:816665520295510036> Accepted :", value=f"{reason}", inline=False)
+        autho = embed3.fields[0].name
+        embed2.add_field(name=f"✅ {autho} Accepted", value=embed3.fields[0].name, inline=False)
+        embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
 
     @commands.command(aliases=["sr"])
