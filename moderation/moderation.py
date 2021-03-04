@@ -45,6 +45,17 @@ class moderation(commands.Cog):
     @commands.command(aliases = ["clear"])
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def purge(self, ctx, amount = 10, member : discord.Member = None):
+        """
+        Purge certain amount of messages!
+        """
+        channel_config = await self.db.find_one({"_id": "config"})
+
+        if channel_config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            channel = ctx.guild.get_channel(int(channel_config["channel"]))
+
+
         max_purge = 2000
         if amount >= 1 and amount <= max_purge:
             await ctx.channel.purge(limit = amount + 1)
@@ -61,7 +72,7 @@ class moderation(commands.Cog):
             embed.add_field(name="Amount :", value=f"**{amount}**", inline=True)
             embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
             embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
-            await self.modlog.send(embed = embed)
+            await channel.send(embed = embed)
         if amount < 1:
             embed = discord.Embed(
                 title = "Purge Error",
@@ -97,6 +108,14 @@ class moderation(commands.Cog):
         """
         Kicks the specified member.
         """
+        channel_config = await self.db.find_one({"_id": "config"})
+
+        if channel_config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            channel = ctx.guild.get_channel(int(channel_config["channel"]))
+
+    
         if member == None:
             embed = discord.Embed(
                 description = "<:redcross:811927152470917140> **Please specify a member!**",
