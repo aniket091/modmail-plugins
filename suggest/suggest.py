@@ -120,7 +120,7 @@ class Suggest(commands.Cog):
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
 
-    @commands.command(aliases=["sr"])
+    @commands.command(aliases=["sn"])
     @checks.has_permissions(PermissionLevel.MOD)  
     async def sugreject(self, ctx, msgID : int, * , reason: str):
         if msgID == None:
