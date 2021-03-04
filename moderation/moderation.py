@@ -166,7 +166,8 @@ class moderation(commands.Cog):
                             color = self.bluee
                         )
                         await ctx.send(embed = embed)
-                        await member.send(msg)
+                        try:
+                            await member.send(msg)
                         except discord.errors.Forbidden:
                             return
                         embedlog = discord.Embed(
