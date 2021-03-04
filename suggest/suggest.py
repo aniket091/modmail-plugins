@@ -116,7 +116,7 @@ class Suggest(commands.Cog):
           name=embed3.author.name, icon_url=embed3.author.icon_url
         )
         autho = embed3.fields[0].name
-        embed2.add_field(name=f"✅ {autho} Accepted", value=embed3.fields[0].name, inline=False)
+        embed2.add_field(name=f"✅ {autho} Accepted", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
 
@@ -139,14 +139,16 @@ class Suggest(commands.Cog):
             await ctx.send(embed=embed, delete_after = 5.0)
 
         
+        embed3=embed.copy()
         embed2=discord.Embed(
-          description=embed.description,
           color=0xff1818
         )
         embed2.set_author( 
-          name=embed.author.name, icon_url=embed.author.icon_url
+          name=embed3.author.name, icon_url=embed3.author.icon_url
         )
-        embed2.add_field(name="<:redcross:811927152470917140> Rejected :", value=f"{reason}", inline=False)
+        autho = embed3.fields[0].name
+        embed2.add_field(name=f"❌ {autho} Rejected", value=embed3.fields[0].value, inline=False)
+        embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)    
          
     
