@@ -169,7 +169,10 @@ class moderation(commands.Cog):
                         try:
                             await member.send(msg)
                         except discord.errors.Forbidden:
-                            return
+                            return await ctx.send(
+                                embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
+                            )
+                        
                         embedlog = discord.Embed(
                             color = self.greenn
                         )
