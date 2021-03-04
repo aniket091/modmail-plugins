@@ -394,13 +394,11 @@ class moderation(commands.Cog):
             else:
                 if reason == None:
                     role = discord.utils.get(ctx.guild.roles, name = "Muted")
-                    roletwo = discord.utils.get(ctx.guild.roles, name = "「 FAMILY 」")
                     if role == None:
                         role = await ctx.guild.create_role(name = "Muted")
                         for channel in ctx.guild.text_channels:
                             await channel.set_permissions(role, send_messages = False)
                     await member.add_roles(role)
-                    await member.remove_roles(roletwo)
                     embed = discord.Embed(
                         description = f"***{member} has been muted !***",
                         color = self.bluee
@@ -432,7 +430,6 @@ class moderation(commands.Cog):
                         for channel in ctx.guild.text_channels:
                             await channel.set_permissions(role, send_messages = False)
                     await member.add_roles(role)
-                    await member.remove_roles(roletwo)
                     embed = discord.Embed(
                         description = f"***✅ {member} has been muted !*** \n**|| {reason}**",
                         color = self.bluee
@@ -495,7 +492,6 @@ class moderation(commands.Cog):
             role = discord.utils.get(ctx.guild.roles, name = "Muted")
             if role in member.roles:
                 await member.remove_roles(role)
-                await member.add_roles(roletwo)
                 embed = discord.Embed(
                     description = f"***✅ {member} has been unmuted!***",
                     color = self.bluee
