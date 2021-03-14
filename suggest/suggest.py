@@ -65,6 +65,7 @@ class Suggest(commands.Cog):
                     await message_.add_reaction("<:YES:793374924474810380>")
                     await message_.add_reaction("<:NO:793374924815335437>")
                     await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
+                    await ctx.send(embed=discord.Embed(color=0x03a9f4, title=f"✅ Suggestion has been sent to the suggestion channel!"))
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
@@ -119,6 +120,7 @@ class Suggest(commands.Cog):
         embed2.add_field(name=f"✅ {autho} Accepted", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
+        await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"✅ Suggestion got accepted!"))
 
     @commands.command(aliases=["sn"])
     @checks.has_permissions(PermissionLevel.MOD)  
@@ -149,7 +151,8 @@ class Suggest(commands.Cog):
         autho = embed3.fields[0].name
         embed2.add_field(name=f"❌ {autho} Rejected", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
-        await message.edit(embed=embed2)    
+        await message.edit(embed=embed2) 
+        await ctx.send(embed=discord.Embed(color=0xff1818, title=f"❌ Suggestion got rejected!"))               
          
     
     @commands.command()
