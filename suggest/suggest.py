@@ -62,10 +62,10 @@ class Suggest(commands.Cog):
                     )
                     embed.add_field(name='Suggestion :', value=f'{suggestion}', inline=False)
                     message_ = await suggestion_channel.send(embed=embed)
-                    await message_.add_reaction("<:tickk:819286345653420052>")
+                    await message_.add_reaction("<:tickk:819613405597532160>")
                     await message_.add_reaction("<:x2:819613332892942347>")
                     await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
-                    await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"✅ Suggestion has been sent to the suggestion channel!"))
+                    await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
@@ -117,10 +117,10 @@ class Suggest(commands.Cog):
           name=embed3.author.name, icon_url=embed3.author.icon_url
         )
         autho = embed3.fields[0].name
-        embed2.add_field(name=f"✅ {autho} Accepted", value=embed3.fields[0].value, inline=False)
+        embed2.add_field(name=f"<:tickk:819613405597532160> {autho} Accepted", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
-        await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"✅ Suggestion got accepted!"))
+        await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"<:tickk:819613405597532160> Suggestion got accepted!"))
 
     @commands.command(aliases=["sn"])
     @checks.has_permissions(PermissionLevel.MOD)  
@@ -149,10 +149,10 @@ class Suggest(commands.Cog):
           name=embed3.author.name, icon_url=embed3.author.icon_url
         )
         autho = embed3.fields[0].name
-        embed2.add_field(name=f"❌ {autho} Rejected", value=embed3.fields[0].value, inline=False)
+        embed2.add_field(name=f"<:x2:819613332892942347> {autho} Rejected", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2) 
-        await ctx.send(embed=discord.Embed(color=0xff1818, title=f"❌ Suggestion got rejected!"))               
+        await ctx.send(embed=discord.Embed(color=0xff1818, title=f"<:x2:819613332892942347> Suggestion got rejected!"))               
          
     
     @commands.command()
