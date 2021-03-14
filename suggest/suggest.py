@@ -62,10 +62,10 @@ class Suggest(commands.Cog):
                     )
                     embed.add_field(name='Suggestion :', value=f'{suggestion}', inline=False)
                     message_ = await suggestion_channel.send(embed=embed)
-                    await message_.add_reaction("<:YES:793374924474810380>")
-                    await message_.add_reaction("<:NO:793374924815335437>")
+                    await message_.add_reaction("<:tickk:819286345653420052>")
+                    await message_.add_reaction("<:x2:819613332892942347>")
                     await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
-                    await ctx.send(embed=discord.Embed(color=0x03a9f4, title=f"✅ Suggestion has been sent to the suggestion channel!"))
+                    await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"✅ Suggestion has been sent to the suggestion channel!"))
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
