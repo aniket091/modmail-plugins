@@ -15,8 +15,6 @@ class Suggest(commands.Cog):
         self.coll = bot.plugin_db.get_partition(self)
         self.banlist = dict()
         asyncio.create_task(self._set_mod_val())
-        self.tick = <:upvote:793374924474810380>
-        self.cross = <:downvote:827967950404190248>
 
     async def _update_mod_db(self):
         await self.coll.find_one_and_update(
@@ -62,8 +60,8 @@ class Suggest(commands.Cog):
                     name=f"{ctx.author.name}{ctx.author.discriminator}", icon_url=ctx.author.avatar_url
                 )
                 message_ = await suggestion_channel.send(embed=embed)
-                await message_.add_reaction(self.tick)
-                await message_.add_reaction(self.cross)
+                await message_.add_reaction("<:upvote:793374924474810380>")
+                await message_.add_reaction("<:downvote:827967950404190248>")
                 await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
                 await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
                 asyncio.sleep(5)
