@@ -13,10 +13,10 @@ class Suggest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.coll = bot.plugin_db.get_partition(self)
-
         self.banlist = dict()
-
         asyncio.create_task(self._set_mod_val())
+        self.tick = <:upvote:793374924474810380>
+        self.cross = <:downvote:827967950404190248>
 
     async def _update_mod_db(self):
         await self.coll.find_one_and_update(
@@ -40,32 +40,35 @@ class Suggest(commands.Cog):
         {prefix}suggest add coffee to bar!
         """
         if str(ctx.author.id) not in self.banlist:
-            async with ctx.channel.typing():
-                config = await self.coll.find_one({"_id": "config"})
-                if config is None:
-                    embed = discord.Embed(
-                        title="Suggestion channel not set.", color=self.bot.error_colour
-                    )
-                    embed.set_author(name="Error.")
-                    embed.set_footer(text="Task failed successfully.")
-                    await ctx.send(embed=embed)
-                else:
-                    suggestion_channel = self.bot.get_channel(
-                        int(config["suggestion-channel"]["channel"])
-                    )
+            config = await self.coll.find_one({"_id": "config"})
+            if config is None:
+                embed = discord.Embed(
+                    title="Suggestion channel not set.", color=self.bot.error_colour
+                )
+                embed.set_author(name="Error.")
+                embed.set_footer(text="Task failed successfully.")
+                await ctx.send(embed=embed)
+            else:
+                suggestion_channel = self.bot.get_channel(
+                    int(config["suggestion-channel"]["channel"])
+                )
 
-                    embed = discord.Embed(
-                        color=0xffff00
-                    )
-                    embed.set_author(
-                        name=f"{ctx.author.name}:", icon_url=ctx.author.avatar_url
-                    )
-                    embed.add_field(name='Suggestion :', value=f'{suggestion}', inline=False)
-                    message_ = await suggestion_channel.send(embed=embed)
-                    await message_.add_reaction("<:tickk:819613405597532160>")
-                    await message_.add_reaction("<:x2:819613332892942347>")
-                    await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
-                    await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
+                embed = discord.Embed(
+                    color=0xffff00,
+                    title="Suggestion :",
+                    description=f"\n{suggestion}"
+                )
+                embed.set_author(
+                    name=f"{ctx.author.name}{ctx.author.discriminator}", icon_url=ctx.author.avatar_url
+                )
+                message_ = await suggestion_channel.send(embed=embed)
+                await message_.add_reaction(self.tick)
+                await message_.add_reaction(self.cross)
+                await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
+                await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
+                asyncio.sleep(5)
+                embed.set_footer(text=f"MSG ID :- {message_.id}")
+                message_.edit(embed=embed)
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
@@ -91,12 +94,11 @@ class Suggest(commands.Cog):
         embed.set_footer(text="Task succeeded successfully.")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["sa"])
+    @commands.command()
     @checks.has_permissions(PermissionLevel.MOD)  
-    async def sugaccept(self, ctx, msgID : int, * , reason: str):
+    async def approve(self, ctx, msgID : int, * , reason: str):
         if msgID == None:
             return await ctx.send_help(ctx.command)
-  
 
         config = await self.coll.find_one({"_id": "config"})
         suggestion_channel = self.bot.get_channel(
@@ -111,20 +113,20 @@ class Suggest(commands.Cog):
 
         embed3=embed.copy()
         embed2=discord.Embed(
-          color=0x39FF14
+          color=0x39FF14,
+          title="Suggestion : Approved",
+          description=f"{embed3.description}"
         )
         embed2.set_author( 
           name=embed3.author.name, icon_url=embed3.author.icon_url
         )
-        autho = embed3.fields[0].name
-        embed2.add_field(name=f"<:tickk:819613405597532160> {autho} Accepted", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
-        await ctx.send(embed=discord.Embed(color=0x39FF14, title=f"<:tickk:819613405597532160> Suggestion got accepted!"))
+        await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tickk:819613405597532160> Suggestion got Approved!"))
 
-    @commands.command(aliases=["sn"])
+    @commands.command(aliases=["deny"])
     @checks.has_permissions(PermissionLevel.MOD)  
-    async def sugreject(self, ctx, msgID : int, * , reason: str):
+    async def reject(self, ctx, msgID : int, * , reason: str):
         if msgID == None:
             return await ctx.send_help(ctx.command)
   
@@ -143,13 +145,13 @@ class Suggest(commands.Cog):
         
         embed3=embed.copy()
         embed2=discord.Embed(
-          color=0xff1818
+          color=0xff1818,
+          title="Suggestion : Denied",
+          description=f"{embed3.description}"
         )
         embed2.set_author( 
           name=embed3.author.name, icon_url=embed3.author.icon_url
         )
-        autho = embed3.fields[0].name
-        embed2.add_field(name=f"<:x2:819613332892942347> {autho} Rejected", value=embed3.fields[0].value, inline=False)
         embed2.add_field(name=f"Reason by : {ctx.author.name}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2) 
         await ctx.send(embed=discord.Embed(color=0xff1818, title=f"<:x2:819613332892942347> Suggestion got rejected!"))               
