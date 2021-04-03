@@ -64,9 +64,9 @@ class Suggest(commands.Cog):
                 await message_.add_reaction("<:downvote:827967950404190248>")
                 await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
                 await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
-                asyncio.sleep(5)
+                await asyncio.sleep(5)
                 embed.set_footer(text=f"MSG ID :- {message_.id}")
-                message_.edit(embed=embed)
+                await message_.edit(embed=embed)
         else:
             await ctx.send(embed=discord.Embed(color=self.bot.error_color, title=f"You have been blocked, {ctx.author.name}#{ctx.author.discriminator}.", description=f"Reason: {self.banlist[str(ctx.author.id)]}"))
 
