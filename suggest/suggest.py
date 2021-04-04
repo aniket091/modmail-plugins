@@ -158,7 +158,7 @@ class Suggest(commands.Cog):
         )
         embed2.add_field(name=f"Reason by {ctx.author.name}#{ctx.author.discriminator}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2) 
-        await ctx.send(embed=discord.Embed(color=self.green, description=f"**<:tick:819613405597532160> Suggestion got rejected!**"))               
+        await ctx.send(embed=discord.Embed(color=0xfa6969, description=f"**<:tick:819613405597532160> Suggestion got rejected!**"))               
          
     
     @commands.command()
