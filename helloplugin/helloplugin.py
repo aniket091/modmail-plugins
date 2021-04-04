@@ -65,7 +65,7 @@ class HelloPlugin(commands.Cog):
         if message.author.bot:
             return
         
-        if self.channel_blacklist.__contains__(str(message.channel_id)):
+        if self.channel_blacklist.__contains__(str(message.channel.id)):
             return
 
         #hello
