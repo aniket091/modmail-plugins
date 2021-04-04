@@ -1,6 +1,6 @@
 import discord
 import asyncio
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 class utility(commands.Cog):  
     def __init__(self, bot):
@@ -17,7 +17,7 @@ class utility(commands.Cog):
       server = self.bot.get_guild(665842728545943552)
       await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{server.member_count} Members!"))
       await asyncio.sleep(10)
-      
+
     @statuss.before_loop
     async def before_statuss(self):
       await self.bot.wait_until_ready()  
