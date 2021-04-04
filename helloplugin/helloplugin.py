@@ -1,6 +1,8 @@
 from discord.ext import commands
 from pymongo.collection import Collection
 from core import checks
+from core.models import PermissionLevel, getLogger
+import discord
 
 class HelloPlugin(commands.Cog):
     def __init__ (self, bot):
