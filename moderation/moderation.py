@@ -53,9 +53,9 @@ class moderation(commands.Cog):
         """
         Purge certain amount of messages!
         **Usage**:
-        {prefix}purge 10
-        {prefix}purge 10 @Aniket
-        {prefix}purge <amount> [member]
+        {ctx.prefix}purge 10
+        {ctx.prefix}purge 10 @Aniket
+        {ctx.prefix}purge <amount> [member]
         """
         #get-channel
         channel_config = await self.db.find_one({"_id": "config"})
@@ -116,8 +116,8 @@ class moderation(commands.Cog):
         """
         Kicks the specified member.
         **Usage**:
-        {prefix}kick @member 
-        {prefix}kick @member bad!
+        {ctx.prefix}kick @member 
+        {ctx.prefix}kick @member bad!
         """
         channel_config = await self.db.find_one({"_id": "config"})
 
@@ -129,7 +129,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}kick <member> [reason]\n{prefix}kick @member\n{prefix}kick @member doing spam!",
+                description = f"{ctx.prefix}kick <member> [reason]\n{ctx.prefix}kick @member\n{ctx.prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -250,7 +250,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}kick <member> [reason]\n{prefix}kick @member\n{prefix}kick @member doing spam!",
+                description = f"{ctx.prefix}kick <member> [reason]\n{ctx.refix}kick @member\n{ctx.prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -367,7 +367,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}unban <member>\n{prefix}unban @member",
+                description = f"{ctx.prefix}unban <member>\n{ctx.prefix}unban @member",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
@@ -421,7 +421,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}mute <member> [reason]\n{prefix}mute @member\n{prefix}mute @member doing spam!",
+                description = f"{ctx.prefix}mute <member> [reason]\n{ctx.prefix}mute @member\n{ctx.prefix}mute @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -545,7 +545,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}unmute <member> [reason]\n{prefix}unmute @member\n{prefix}unmute @member doing spam!",
+                description = f"{ctx.prefix}unmute <member> [reason]\n{ctx.prefix}unmute @member\n{ctx.prefix}unmute @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -612,12 +612,12 @@ class moderation(commands.Cog):
     async def warn(self, ctx, member: discord.Member, *, reason: str):
         """Warn a member.
         Usage:
-        {prefix}warn @member Spoilers
+        {ctx.prefix}warn @member Spoilers
         """
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}warn <member> <reason>\n{prefix}warn @member doing spam!",
+                description = f"{ctx.prefix}warn <member> <reason>\n{ctx.prefix}warn @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
@@ -698,12 +698,12 @@ class moderation(commands.Cog):
     async def pardon(self, ctx, member: discord.Member, *, reason: str):
         """Remove all warnings of a  member.
         Usage:
-        {prefix}pardon @member Nice guy
+        {ctx.prefix}pardon @member Nice guy
         """
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{prefix}pardon <member> <reason>\n{prefix}pardon @member doing spam!",
+                description = f"{ctx.prefix}pardon <member> <reason>\n{ctx.prefix}pardon @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
