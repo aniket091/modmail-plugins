@@ -78,7 +78,7 @@ class Polls(commands.Cog):
         embed = discord.Embed(
             color=0x4fc3f7,
             title=f"📊 {question}",
-            description=f"**\u200b\n{answer}\n\u200b**",
+            description=f"**\u200b\n{answer}**",
         )
         embed.set_footer(text=f"You may select single/multiple options in this poll\n| Created by {nickn}", icon_url=ctx.author.avatar_url)
         poll = await ctx.send(embed=embed)
