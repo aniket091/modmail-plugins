@@ -12,4 +12,4 @@ To add it - `[p]plugin add aniket091/plugins/suggest` !
 | `[p]suggest`           | Suggest something!                                                  |
 | `[p]approve/reject`    | Approves/Denies a suggestion in suggestion channel!                 |
 | `[p]suggestmod`        | Let's you block and unblock people from using the suggest command!  |
-| `[p]suggestchannel`    | Displays the suggestion channe!                                     |
+| `[p]suggestchannel`    | Displays the suggestion channel!                                     |
