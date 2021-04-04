@@ -793,12 +793,11 @@ class moderation(commands.Cog):
         """Set a slowmode to a channel
         It is not possible to set a slowmode longer than 6 hours
         """
+        print(time)
         if channel == None:
             channel = ctx.channel
-
-        if not channel:
-            channel = discord.TextChannel = None
-        
+            
+        print(f"channel - {channel}")
         channel_config = await self.db.find_one({"_id": "config"})
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
@@ -831,7 +830,7 @@ class moderation(commands.Cog):
         embed = discord.Embed(color = self.green)
         embed.set_author(
             name=f"Slowmode",
-            icon_url=self.bot.avatar_url,
+            icon_url=ctx.guild.icon_url,
         )
         embed.add_field(name=f"Moderator :", valur=f"{ctx.message.author.mention}", inline=False)
         embed.add_field(name=f"Channel :", valur=f"{channel.mention}", inline=False)
