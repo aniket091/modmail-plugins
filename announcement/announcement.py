@@ -301,7 +301,7 @@ class AnnoucementPlugin(commands.Cog):
         msg: str,
     ):
         """
-        An old way of making announcements
+        An simple way of making announcements
         **Usage:**
         {prefix}announcement quick #channel <OPTIONAL role> message
         """
