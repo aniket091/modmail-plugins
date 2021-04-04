@@ -73,7 +73,8 @@ class AnnoucementPlugin(commands.Cog):
         #     return (
         #             ctx.author == msg.author and ctx.channel == msg.channel and (len(msg.content) < 256)
         #     )
-
+        #
+        
         def cancel_check(msg: discord.Message):
             if msg.content == "cancel" or msg.content == f"{ctx.prefix}cancel":
                 return True
