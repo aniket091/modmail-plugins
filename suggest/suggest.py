@@ -65,7 +65,7 @@ class Suggest(commands.Cog):
                 await message_.add_reaction("<:upvote:793374924474810380>")
                 await message_.add_reaction("<:downvote:827967950404190248>")
                 await ctx.message.add_reaction("\N{THUMBS UP SIGN}")
-                await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tickk:819613405597532160> Suggestion has been sent to the suggestion channel!"))
+                await ctx.send(embed=discord.Embed(color=0x00ff5a, title=f"<:tick:819613405597532160> Suggestion has been sent to the suggestion channel!"))
                 await asyncio.sleep(5)
                 embed.set_footer(text=f"Msg ID :- {message_.id}")
                 await message_.edit(embed=embed)
@@ -110,7 +110,7 @@ class Suggest(commands.Cog):
             message = await suggestion_channel.fetch_message(msgID)
             embed  = message.embeds[0] 
         except:
-            embed=discord.Embed(description="Please include a valid message ID!", color=self.ercolor)    
+            embed=discord.Embed(description="**Please include a valid message ID!**", color=self.ercolor)    
             await ctx.send(embed=embed, delete_after = 10.0)
 
         embed3=embed.copy()
@@ -124,7 +124,7 @@ class Suggest(commands.Cog):
         )
         embed2.add_field(name=f"Reason by {ctx.author.name}#{ctx.author.discriminator}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2)
-        await ctx.send(embed=discord.Embed(color=0x00ff5a, description=f"<:tickk:819613405597532160> Suggestion got Approved!"))
+        await ctx.send(embed=discord.Embed(color=0x00ff5a, description=f"**<:tick:819613405597532160> Suggestion got Approved!**"))
 
     @commands.command(aliases=["deny"])
     @checks.has_permissions(PermissionLevel.MOD)  
@@ -143,7 +143,7 @@ class Suggest(commands.Cog):
             message = await suggestion_channel.fetch_message(msgID)
             embed  = message.embeds[0] 
         except:
-            embed=discord.Embed(description="Please include a valid message ID!", color=self.ercolor)    
+            embed=discord.Embed(description="**Please include a valid message ID!**", color=self.ercolor)    
             await ctx.send(embed=embed, delete_after = 10.0)
 
         
@@ -158,7 +158,7 @@ class Suggest(commands.Cog):
         )
         embed2.add_field(name=f"Reason by {ctx.author.name}#{ctx.author.discriminator}", value=f"{reason}", inline=False)
         await message.edit(embed=embed2) 
-        await ctx.send(embed=discord.Embed(color=self.red, description=f"<:tickk:819613405597532160> Suggestion got rejected!"))               
+        await ctx.send(embed=discord.Embed(color=self.green, description=f"**<:tick:819613405597532160> Suggestion got rejected!**"))               
          
     
     @commands.command()
