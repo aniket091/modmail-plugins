@@ -13,7 +13,7 @@ class HelloPlugin(commands.Cog):
             await message.channel.send("oh wow")
         elif message.content.startswith("hello"):
             await message.channel.send("Hello !")
-            await ctx.add_reaction("\N{THUMBS UP SIGN}")
+            await message.add_reaction("\N{THUMBS UP SIGN}")
         elif message.content.startswith("Hello"):
             await message.channel.send("Hello !")
             await message.add_reaction("\N{THUMBS UP SIGN}")
