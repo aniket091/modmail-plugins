@@ -133,7 +133,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
-            await ctx.send(embed = embed, delete_after = 10.0)
+            await ctx.send(embed = embed)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
@@ -254,7 +254,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
-            await ctx.send(embed = embed, delete_after = 10.0)
+            await ctx.send(embed = embed)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
@@ -371,7 +371,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
-            await ctx.send(embed = embed, delete_after = 10.0)
+            await ctx.send(embed = embed)
         else:
             banned_users = await ctx.guild.bans()
             for ban_entry in banned_users:
@@ -425,7 +425,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
-            await ctx.send(embed = embed, delete_after = 10.0)
+            await ctx.send(embed = embed)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
@@ -549,7 +549,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
-            await ctx.send(embed = embed, delete_after = 10.0)
+            await ctx.send(embed = embed)
         else:
             role = discord.utils.get(ctx.guild.roles, name = "Muted")
             if role in member.roles:
@@ -621,7 +621,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
-            return await ctx.send(embed = embed, delete_after = 10.0)
+            return await ctx.send(embed = embed)
 
         if member.bot:
             embed = discord.Embed(
@@ -707,7 +707,7 @@ class moderation(commands.Cog):
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
-            return await ctx.send(embed = embed, delete_after = 10.0)
+            return await ctx.send(embed = embed)
 
         if member.bot:
             embed = discord.Embed(
