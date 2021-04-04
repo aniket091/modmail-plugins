@@ -83,7 +83,7 @@ class moderation(commands.Cog):
         if amount < 1:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"**{self.cross} You must purge more then \`{amount}\` message(s)!**",
+                description = f"**{self.cross} You must purge more then `{amount}` message(s)!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -91,7 +91,7 @@ class moderation(commands.Cog):
         if amount > max_purge:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"**{self.cross} You must purge less then \`{amount}\` messages!**",
+                description = f"**{self.cross} You must purge less then `{amount}` messages!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -157,7 +157,7 @@ class moderation(commands.Cog):
                         )
                         await ctx.send(embed = embed)
                         msgembed = discord.Embed(
-                            description = f"**You have been kicked from \`{ctx.guild.name}\`**",
+                            description = f"**You have been kicked from `{ctx.guild.name}`**",
                             color = self.blue
                         )
                         try:
@@ -194,7 +194,7 @@ class moderation(commands.Cog):
                         )
                         await ctx.send(embed = embed)
                         msgembed = discord.Embed(
-                            description = f"**You have been kicked from \`{ctx.guild.name}\` \n|| {reason}**",
+                            description = f"**You have been kicked from `{ctx.guild.name}` \n|| {reason}**",
                             color = self.blue
                         )
                         try:
@@ -278,7 +278,7 @@ class moderation(commands.Cog):
                         )
                         await ctx.send(embed = embed)
                         msgembed = discord.Embed(
-                            description = f"**You have been banned from \`{ctx.guild.name}\`**",
+                            description = f"**You have been banned from `{ctx.guild.name}`**",
                             color = self.blue
                         )
                         
@@ -313,7 +313,7 @@ class moderation(commands.Cog):
                         await ctx.send(embed = embed)
 
                         msgembed = discord.Embed(
-                            description = f"**You have been banned from \`{ctx.guild.name}\`\n|| {reason}**",
+                            description = f"**You have been banned from `{ctx.guild.name}`\n|| {reason}**",
                             color = self.blue
                         )
                         
@@ -379,8 +379,8 @@ class moderation(commands.Cog):
 
                 if (user.name, user.discriminator) == (member.name, member.discriminator):
                     embed = discord.Embed(
-                        description = f"{self.tick} **Unbanned \`{user.name}\`**",
-                        color = self.blue
+                        description = f"{self.tick} **Unbanned `{user.name}`**",
+                        color = self.green
                     )
                     await ctx.guild.unban(user)
                     await ctx.send(embed = embed)
@@ -421,7 +421,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"**Usage: **{ctx.prefix}mute <member> [reason]\n**Example: **{ctx.prefix}mute @member\**Example: **{ctx.prefix}mute @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}mute <member> [reason]\n**Example: **{ctx.prefix}mute @member\n**Example: **{ctx.prefix}mute @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -448,7 +448,7 @@ class moderation(commands.Cog):
                     )
                     await ctx.send(embed = embed)
                     msgembed = discord.Embed(
-                        description = f"**You have been muted in \`{ctx.guild.name}\`**",
+                        description = f"**You have been muted in `{ctx.guild.name}`**",
                         color = self.blue
                     )
                         
@@ -490,7 +490,7 @@ class moderation(commands.Cog):
                     )
                     await ctx.send(embed = embed)
                     msgembed = discord.Embed(
-                        description = f"**You have been muted in \`{ctx.guild.name}\`\n|| {reason}**",
+                        description = f"**You have been muted in `{ctx.guild.name}`\n|| {reason}**",
                         color = self.blue
                     )
                         
@@ -560,7 +560,7 @@ class moderation(commands.Cog):
                 )
                 await ctx.send(embed = embed)
                 msgembed = discord.Embed(
-                    description = f"**You have been muted in \`{ctx.guild.name}\`\n|| {reason}**",
+                    description = f"**You have been muted in `{ctx.guild.name}`\n|| {reason}**",
                     color = self.blue
                 )
                         
@@ -609,7 +609,7 @@ class moderation(commands.Cog):
     #warn command        
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def warn(self, ctx, member: discord.Member, *, reason: str):
+    async def warn(self, ctx, member: discord.Member = None, *, reason: str):
         """Warn a member.
         Usage:
         {ctx.prefix}warn @member Spoilers
@@ -668,7 +668,7 @@ class moderation(commands.Cog):
         member: discord.User = await self.bot.fetch_user(int(memberid))
         mod: discord.User = await self.bot.fetch_user(int(modid))
         msgembed = discord.Embed(
-            description = f"**You have been warned in \`{ctx.guild.name}\`\n|| {reason}**",
+            description = f"**You have been warned in `{ctx.guild.name}`\n|| {reason}**",
             color = self.blue
         )
                         
@@ -695,7 +695,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def pardon(self, ctx, member: discord.Member, *, reason: str):
+    async def pardon(self, ctx, member: discord.Member = None, *, reason: str):
         """Remove all warnings of a  member.
         Usage:
         {ctx.prefix}pardon @member Nice guy
