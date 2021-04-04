@@ -16,7 +16,6 @@ class Polls(commands.Cog):
     """Poll voting system."""
 
     def __init__(self, bot):
-        self.ctx = ctx
         self.bot = bot
 
     @commands.group(name="poll", invoke_without_command=True)
@@ -82,7 +81,7 @@ class Polls(commands.Cog):
             description=f"{answer}",
         )
         b: discord.Member = discord.utils.find(
-            lambda m: m.id == self.bot.user.id, self.ctx.guild.members
+            lambda m: m.id == self.bot.user.id, ctx.guild.members
         ) 
         embed.set_author(name="Poll !", icon_url=b.avatar_url)
         embed.set_footer(text=f"Created by {nickn}", icon_url=ctx.author.avatar_url)
@@ -150,7 +149,7 @@ class Polls(commands.Cog):
                 description=f"{body}",
             )
             b: discord.Member = discord.utils.find(
-                lambda m: m.id == self.bot.user.id, self.ctx.guild.members
+                lambda m: m.id == self.bot.user.id, ctx.guild.members
             ) 
             embed.set_author(name="Poll !", icon_url=b.avatar_url)
             embed.set_footer(text=f"Created by {nickn}", icon_url=ctx.author.avatar_url)
