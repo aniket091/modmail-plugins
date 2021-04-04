@@ -1,12 +1,10 @@
 import discord
 from discord.ext import commands
 from core import checks
-from core.models import PermissionLevel, getLogger
+from core.models import PermissionLevel
 import re
 import asyncio
 
-logger = getLogger(__name__)
-    
     
 class moderation(commands.Cog):
     """
@@ -789,16 +787,18 @@ class moderation(commands.Cog):
         return embed
 
     #SLOW MODE COMMAND
-    @commands.command()
+    @commands.command(aliases=["sm"])
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def slowmode(self, ctx, time,  channel: discord.TextChannel):
+    async def slowmode(self, ctx, time, * ,channel: discord.TextChannel = None):
         """Set a slowmode to a channel
         It is not possible to set a slowmode longer than 6 hours
+        **Usage**:
+        {ctx.prefix}slowmode 5s
+        {ctx.prefix}slowmode 1h
         """
         if channel == None:
             channel = ctx.channel
 
-        logger.info(f"channel - {channel},  time - {time}")
         channel_config = await self.db.find_one({"_id": "config"})
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
@@ -814,28 +814,54 @@ class moderation(commands.Cog):
         seconds = 0
         match = re.findall("([0-9]+[smhd])", time)
         if not match:
-            embed = discord.Embed(description=f"{self.cross} I cannot understand your time format!",color = self.errorcolor)
+            embed = discord.Embed(description=f"{self.cross} I cannot understand your time format!**",color = self.errorcolor)
             return await ctx.send(embed=embed)
         for item in match:
             seconds += int(item[:-1]) * units[item[-1]]
         if seconds > 21600:
-            embed = discord.Embed(description=f"{self.cross} You can't slowmode a channel for longer than 6 hours!", color=self.errorcolor)
+            embed = discord.Embed(description=f"**{self.cross} You can't slowmode a channel for longer than 6 hours!**", color=self.errorcolor)
             return await ctx.send(embed=embed)
         try:
             await channel.edit(slowmode_delay=seconds)
         except discord.errors.Forbidden:
-            embed = discord.Embed(description=f"{self.cross} I don't have permission to do this!", color=self.errorcolor)
+            embed = discord.Embed(description=f"**{self.cross} I don't have permission to do this!**", color=self.errorcolor)
             return await ctx.send(embed=embed)
-        embed=discord.Embed(description=f"{self.tick} Set a slowmode delay of `{time}` in {channel.mention}", color=self.green)
+        embed=discord.Embed(description=f"**{self.tick} Set a slowmode delay of `{time}` in {channel.mention}**", color=self.green)
         await ctx.send(embed=embed)
         embed = discord.Embed(color = self.green)
         embed.set_author(
-            name=f"Slowmode",
+            name=f"Slowmode Enabled",
             icon_url=ctx.guild.icon_url,
         )
         embed.add_field(name=f"Moderator :", value=f"{ctx.message.author.mention}", inline=False)
         embed.add_field(name=f"Channel :", value=f"{channel.mention}", inline=False)
         embed.add_field(name=f"Time", value=f"{time}", inline=False)   
+        await logchannel.send(embed=embed)
+
+    @commands.command(aliases=["sm-off"])
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    async def slowmode_off(self, ctx, channel: discord.TextChannel = None):
+        """Turn off the slowmode in a channel"""
+        if not channel:
+            channel = ctx.channel
+
+        channel_config = await self.db.find_one({"_id": "config"})
+        if channel_config is None:
+            return await ctx.send("There's no configured log channel.")
+        else:
+            logchannel = ctx.guild.get_channel(int(channel_config["channel"]))
+
+        seconds_off = 0
+        await channel.edit(slowmode_delay=seconds_off)
+        embed=discord.Embed(description=f"**{self.tick} Turned off the slowmode for {channel.mention}**", color=self.green)
+        await ctx.send(embed=embed)    
+        embed = discord.Embed(color = self.blue)
+        embed.set_author(
+            name=f"Slowmode Disbled",
+            icon_url=ctx.guild.icon_url,
+        )
+        embed.add_field(name=f"Moderator :", value=f"{ctx.message.author.mention}", inline=False)
+        embed.add_field(name=f"Channel :", value=f"{channel.mention}", inline=False)  
         await logchannel.send(embed=embed)
   
 
