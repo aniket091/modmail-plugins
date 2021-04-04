@@ -9,12 +9,7 @@ class HelloPlugin(commands.Cog):
         if message.author.bot:
             return
 
-        if "wow" in message.content:
-            await message.channel.send("oh wow")
-        elif message.content.startswith("hello"):
-            await message.channel.send("Hello !")
-            await message.add_reaction("\N{THUMBS UP SIGN}")
-        elif message.content.startswith("Hello"):
+        if message.content.startswith("hello", "Hello"):
             await message.channel.send("Hello !")
             await message.add_reaction("\N{THUMBS UP SIGN}")
         elif message.content.startswith("HELLO"):
