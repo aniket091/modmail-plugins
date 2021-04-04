@@ -16,6 +16,7 @@ class Polls(commands.Cog):
     """Poll voting system."""
 
     def __init__(self, bot):
+        self.ctx = ctx
         self.bot = bot
 
     @commands.group(name="poll", invoke_without_command=True)
@@ -98,11 +99,14 @@ class Polls(commands.Cog):
     @commands.guild_only()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def quick(self, ctx, *questions_and_choices: str):
-        """Makes a poll quickly.
-        The first argument is the question and the rest are the choices.
-        for example: `?poll quick "Green or Light Green?" Green "Light Green"`
-        or it can be a simple yes or no poll, like:
-        `?poll quick "Do you watch Anime?"`
+        """
+        Makes a poll quickly!
+        **The first argument is the `question` and the rest are the `choices` !**
+        
+        **Example: ** `?poll quick "Green or Light Green!" Green "Light Green"`
+
+        **It can be a simple yes or no poll !**
+        **Example: ** `?poll quick "Do you watch Anime?"`
         """
 
         if len(questions_and_choices) == 0:
