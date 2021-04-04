@@ -796,7 +796,7 @@ class moderation(commands.Cog):
         print(time)
         if channel == None:
             channel = ctx.channel
-            
+
         print(f"channel - {channel}")
         channel_config = await self.db.find_one({"_id": "config"})
         if channel_config is None:
@@ -832,9 +832,9 @@ class moderation(commands.Cog):
             name=f"Slowmode",
             icon_url=ctx.guild.icon_url,
         )
-        embed.add_field(name=f"Moderator :", valur=f"{ctx.message.author.mention}", inline=False)
-        embed.add_field(name=f"Channel :", valur=f"{channel.mention}", inline=False)
-        embed.add_field(name=f"Time", valur=f"{time}", inline=False)   
+        embed.add_field(name=f"Moderator :", value=f"{ctx.message.author.mention}", inline=False)
+        embed.add_field(name=f"Channel :", value=f"{channel.mention}", inline=False)
+        embed.add_field(name=f"Time", value=f"{time}", inline=False)   
         await logchannel.send(embed=embed)
   
 
