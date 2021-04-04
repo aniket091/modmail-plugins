@@ -327,14 +327,6 @@ class AnnoucementPlugin(commands.Cog):
             if grole.mentionable is True:
                 await grole.edit(mentionable=False)
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        async with self.bot.session.post(
-            "https://counter.modmail-plugins.piyush.codes/api/instances/announcement",
-            json={"id": self.bot.user.id},
-        ):
-            print("Posted to Plugin API")
-
     @staticmethod
     async def generate_embed(description: str):
         embed = discord.Embed()
