@@ -1,4 +1,4 @@
-# Dm on join plugin
+# Dm on join plugin!
 
 [p] is your prefix.
 
