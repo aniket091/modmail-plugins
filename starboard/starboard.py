@@ -54,7 +54,7 @@ class Starboard(commands.Cog):
 
     @starboard.command(aliases=["sc"])
     @checks.has_permissions(PermissionLevel.ADMIN)
-    async def starbaordchannel(self, ctx: commands.Context, channel: discord.TextChannel):
+    async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
         """
         Set the starboard channel where the messages will go!
         **Usage:**
@@ -223,8 +223,9 @@ class Starboard(commands.Cog):
                         icon_url=message.author.avatar_url,
                     )
                     if message.attachments:
-                        urll = message.attachments.url
+                        urll = message.attachments[0].url
                         embed.set_image(url=urll)
+                        
                     embed.set_footer(text=f"⭐ {count} | {payload.message_id}")
                     if len(message.attachments) > 1:
                         try:
