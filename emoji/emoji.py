@@ -8,11 +8,10 @@ class emoji(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if 'ANIKET' in message.content.upper():
-            await message.add_reaction('<:ANI:803680804508401744>')
-            await message.add_reaction('<:op:779317462402859018>')
-        elif 'BANANA' in message.content.upper():
-            await message.add_reaction('\N{BANANA}')
+        if '<@!474255126228500480>' in message.content.lower():
+            await message.add_reaction('<a:ohh:828312958769692692>')
+        elif '<@!488738167969546272>' in message.content.lower() && message.guild.id == 665842728545943552:
+            await message.add_reaction('<a:ohh:828312958769692692>')
 
 
 def setup(bot):
