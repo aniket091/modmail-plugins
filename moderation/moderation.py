@@ -129,7 +129,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}kick <member> [reason]\n{ctx.prefix}kick @member\n{ctx.prefix}kick @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}kick <member> [reason]\n**Example: **{ctx.prefix}kick @member\n**Example: **{ctx.prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -250,7 +250,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}kick <member> [reason]\n{ctx.refix}kick @member\n{ctx.prefix}kick @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}kick <member> [reason]\n**Example: **{ctx.refix}kick @member\n**Example: **{ctx.prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -367,7 +367,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}unban <member>\n{ctx.prefix}unban @member",
+                description = f"**Usage: **{ctx.prefix}unban <member>\n**Example: **{ctx.prefix}unban @member",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
@@ -421,7 +421,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}mute <member> [reason]\n{ctx.prefix}mute @member\n{ctx.prefix}mute @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}mute <member> [reason]\n**Example: **{ctx.prefix}mute @member\**Example: **{ctx.prefix}mute @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -545,7 +545,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}unmute <member> [reason]\n{ctx.prefix}unmute @member\n{ctx.prefix}unmute @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}unmute <member> [reason]\n**Example: **{ctx.prefix}unmute @member\n**Example: **{ctx.prefix}unmute @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
@@ -617,7 +617,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}warn <member> <reason>\n{ctx.prefix}warn @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}warn <member> <reason>\n**Example: **{ctx.prefix}warn @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
@@ -703,7 +703,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"{ctx.prefix}pardon <member> <reason>\n{ctx.prefix}pardon @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}pardon <member> <reason>\n**Example: **{ctx.prefix}pardon @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required")
