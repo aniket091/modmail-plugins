@@ -8,12 +8,16 @@ class HelloPlugin(commands.Cog):
 
         if message.author.bot:
             return
-
-        if message.content.startswith("hello", "Hello"):
+        
+        low = age.content.lower()
+        if low.content.startswith("hello"):
+            await message.channel.send("Hello")
+            await message.add_reaction("👋")
+        elif message.content.startswith("Hello"):
             await message.channel.send("Hello !")
-            await message.add_reaction("\N{THUMBS UP SIGN}")
+            await message.add_reaction("👋")
         elif message.content.startswith("HELLO"):
-            await message.channel.send("Hello !")
+            await message.channel.send("")
         elif message.content.startswith("hi"):
             await message.channel.send("hello")
         elif message.content.startswith("Hi"):
