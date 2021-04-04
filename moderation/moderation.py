@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
 from core import checks
-from core.models import PermissionLevel
+from core.models import PermissionLevel, getLogger
 import re
 import asyncio
+
+logger = getLogger(__name__)
     
     
 class moderation(commands.Cog):
@@ -793,11 +795,10 @@ class moderation(commands.Cog):
         """Set a slowmode to a channel
         It is not possible to set a slowmode longer than 6 hours
         """
-        print(time)
         if channel == None:
             channel = ctx.channel
 
-        print(f"channel - {channel}")
+        logger.info(f"channel - {channel},  time - {time}")
         channel_config = await self.db.find_one({"_id": "config"})
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
