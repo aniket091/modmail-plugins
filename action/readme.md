@@ -2,7 +2,7 @@
 
 [p] is your prefix.
 
-add it by doing [p]plugins add aniket091/modmail-plugins/action
+add it by doing `[p]plugins add aniket091/modmail-plugins/action`
 
 # commands
 
