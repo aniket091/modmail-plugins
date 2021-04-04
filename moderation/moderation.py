@@ -250,7 +250,7 @@ class moderation(commands.Cog):
         if member == None:
             embed = discord.Embed(
                 title=f"{self.cross} Invalid Usage!",
-                description = f"**Usage: **{ctx.prefix}kick <member> [reason]\n**Example: **{ctx.refix}kick @member\n**Example: **{ctx.prefix}kick @member doing spam!",
+                description = f"**Usage: **{ctx.prefix}kick <member> [reason]\n**Example: **{ctx.prefix}kick @member\n**Example: **{ctx.prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
             embed.set_footer(text="<> - Required | [] - optional")
