@@ -560,7 +560,7 @@ class moderation(commands.Cog):
                 )
                 await ctx.send(embed = embed)
                 msgembed = discord.Embed(
-                    description = f"**You have been muted in `{ctx.guild.name}`\n|| {reason}**",
+                    description = f"**You have been muted in `{ctx.guild.name}`**",
                     color = self.blue
                 )
                         
