@@ -8,7 +8,7 @@ from core.models import PermissionLevel
 
 
 def to_emoji(c):
-    base = 0x1F1E6
+    base = 0x0031
     return chr(base + c)
 
 
@@ -21,7 +21,7 @@ class Polls(commands.Cog):
     @commands.group(name="poll", invoke_without_command=True)
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def poll(self, ctx: commands.Context):
-        """Easily create Polls."""
+        """📊 Easily create Polls."""
         await ctx.send_help(ctx.command)
 
     @poll.command()
@@ -70,13 +70,12 @@ class Polls(commands.Cog):
         except:
             pass  # oh well
 
-        answer = "\n".join(f"{keycap}: {content}" for keycap, content in answers)
+        answer = "\n\n".join(f"{keycap} **{content}**" for keycap, content in answers)
         embed = discord.Embed(
-            color=self.bot.main_color,
-            timestamp=datetime.datetime.utcnow(),
-            description=f"**{question}**\n{answer}",
+            color=0x00dce6,
+            title=f"📊 {question}",
+            description=f"{answer}",
         )
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         poll = await ctx.send(embed=embed)
         for emoji, _ in answers:
             await poll.add_reaction(emoji)
@@ -101,8 +100,8 @@ class Polls(commands.Cog):
             return await ctx.send("You need to specify a question.")
         elif len(questions_and_choices) == 2:
             return await ctx.send("You need at least 2 choices.")
-        elif len(questions_and_choices) > 21:
-            return await ctx.send("You can only have up to 20 choices.")
+        elif len(questions_and_choices) > 11:
+            return await ctx.send("You can only have up to 10 choices.")
 
         perms = ctx.channel.permissions_for(ctx.me)
         if not perms.add_reactions:
@@ -115,7 +114,7 @@ class Polls(commands.Cog):
 
         if len(questions_and_choices) == 1:
             embed = discord.Embed(
-                color=self.bot.main_color, description=f"**{question}**"
+                color=0x00dce6, description=f"**{question}**"
             )
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
             poll = await ctx.send(embed=embed)
@@ -128,13 +127,12 @@ class Polls(commands.Cog):
                 (to_emoji(e), v) for e, v in enumerate(questions_and_choices[1:])
             ]
 
-            body = "\n".join(f"{key}: {c}" for key, c in choices)
+            body = "\n\n".join(f"{key} **{c}**" for key, c in choices)
             embed = discord.Embed(
-                color=self.bot.main_color,
-                timestamp=datetime.datetime.utcnow(),
-                description=f"**{question}**\n{body}",
+                color=0x00dce6,
+                title=f"📊 {question}",
+                description=f"{body}",
             )
-            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
             poll = await ctx.send(embed=embed)
             for emoji, _ in choices:
                 await poll.add_reaction(emoji)
