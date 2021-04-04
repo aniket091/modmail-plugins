@@ -429,7 +429,6 @@ class moderation(commands.Cog):
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
-                    title = "Mute Error!",
                     description = f"{self.cross} **You can't mute yourself!**",
                     color = self.errorcolor
                 )
@@ -560,7 +559,7 @@ class moderation(commands.Cog):
                 )
                 await ctx.send(embed = embed)
                 msgembed = discord.Embed(
-                    description = f"**You have been muted in `{ctx.guild.name}`**",
+                    description = f"**You have been unmuted in `{ctx.guild.name}`**",
                     color = self.blue
                 )
                         
@@ -577,7 +576,7 @@ class moderation(commands.Cog):
                     return await channel.send(embed = embedlog2)
 
                 embed = discord.Embed(
-                    color = self.green
+                    color = self.blue
                 )
                 embed.set_author(
                     name=f"Unmute 🔉 | {member}",
@@ -609,7 +608,7 @@ class moderation(commands.Cog):
     #warn command        
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def warn(self, ctx, member: discord.Member = None, *, reason: str):
+    async def warn(self, ctx, member : discord.Member = None, *, reason: str):
         """Warn a member.
         Usage:
         {ctx.prefix}warn @member Spoilers
@@ -665,8 +664,6 @@ class moderation(commands.Cog):
             color = self.green
         )
         await ctx.send(embed = embed)
-        member: discord.User = await self.bot.fetch_user(int(memberid))
-        mod: discord.User = await self.bot.fetch_user(int(modid))
         msgembed = discord.Embed(
             description = f"**You have been warned in `{ctx.guild.name}`\n|| {reason}**",
             color = self.blue
@@ -677,8 +674,8 @@ class moderation(commands.Cog):
         except discord.errors.Forbidden:
             embedlog2 = discord.Embed(color = self.blue)
             embedlog2.set_author(name=f"Warn | {member}", icon_url=member.avatar_url)
-            embedlog2.add_field(name="User Warn :", value=f"{member}", inline = True)
-            embedlog2.add_field(name="Moderator :", value=f"<@{modid}>", inline = True)
+            embedlog2.add_field(name="User Warn :", value=f"{member.mention}", inline=True)
+            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
             embedlog2.add_field(name="Total Warnings :", value=warning, inline = False)
             embedlog2.add_field(name="Reason :", value=reason, inline=False)
             embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
