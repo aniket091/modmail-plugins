@@ -64,7 +64,7 @@ class Audit(commands.Cog):
             r"(?:https?://)?(?:www\.)?(?:discord\.(?:gg|io|me|li)|(?:discordapp|discord)\.com/invite)/[\w]+"
         )
         self.whname = "test logger"
-        self.acname = "modmail-audit"
+        self.acname = "server logs"
         self._webhooks = {}
         self._webhook_locks = {}
 
@@ -120,7 +120,7 @@ class Audit(commands.Cog):
                     return await wh.send(*args, **kwargs)
                 except (discord.NotFound, discord.Forbidden, discord.HTTPException):
                     print(f'Invalid webhook for {guild.name}')
-            wh = get(await guild.webhooks(), name=self.whname)
+            wh = get(await guild.webhooks(), name=self.bot.user.name)
             if wh is not None:
                 try:
                     return await wh.send(*args, **kwargs)
@@ -141,7 +141,7 @@ class Audit(commands.Cog):
                 channel = await guild.create_text_channel(
                     self.acname, overwrites=o, reason="Audit Channel"
                 )
-            wh = await channel.create_webhook(name=self.whname,
+            wh = await channel.create_webhook(name=self.bot.user.name,
                                               avatar=await self.bot.user.avatar_url.read(),
                                               reason="Audit Webhook")
             try:
@@ -155,25 +155,9 @@ class Audit(commands.Cog):
             self._webhook_locks[guild_id] = lock = asyncio.Lock()
         return lock
 
-    def _save_pickle(self):
-        print('saving pickle')
-        with open(self.store_path, 'wb') as f:
-            try:
-                pickle.dump((self.enabled, self.ignored_channel_ids, self.ignored_category_ids), f)
-            except pickle.PickleError:
-                print('Failed to save pickle')
-
-    def cog_unload(self):
-        self._save_pickle()
-        self.save_pickle.cancel()
-
-    @tasks.loop(minutes=15)
-    async def save_pickle(self):
-        self._save_pickle()
-
     @commands.group()
     async def audit(self, ctx):
-        """Audit logs, copied from mee6."""
+        """Audit logs for the server"""
 
     @audit.command()
     async def ignore(self, ctx, *, channel: typing.Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]):
