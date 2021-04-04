@@ -8,7 +8,7 @@ add it by doing `[p]plugins add aniket091/modmail-plugins/countdown`
 
 | Name           | Description                                              |
 | ------------   | ----------------                                         |
-| `[p]countdown create`     | Starts a countdown!                                  |
-| `[p]countdown delete`    |  Delets a countdown!                     |
-| `[p]countdown update`    |  Updates a countdown!                                    |
+| `[p]countdown create`     | Starts a countdown!                            |
+| `[p]countdown delete`    |  Delets a countdown!                            |
+| `[p]countdown update`    |  Updates a countdown!                           |
 
