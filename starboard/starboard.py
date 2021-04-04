@@ -1,11 +1,8 @@
-  
 from datetime import datetime
-
 import discord
 from discord import Client
 from discord.ext import commands
 from pymongo.collection import Collection
-
 from core import checks
 from core.models import PermissionLevel, getLogger
 
@@ -55,11 +52,11 @@ class Starboard(commands.Cog):
     async def starboard(self, ctx: commands.Context):
         await ctx.send_help(ctx.command)
 
-    @starboard.command(aliases=["setchannel", "setch", "sc"])
+    @starboard.command(aliases=["sc"])
     @checks.has_permissions(PermissionLevel.ADMIN)
-    async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
+    async def starbaordchannel(self, ctx: commands.Context, channel: discord.TextChannel):
         """
-        Set the starboard channel where the messages will go
+        Set the starboard channel where the messages will go!
         **Usage:**
         starboard channel **#this-is-a-channel**
         """
@@ -68,7 +65,7 @@ class Starboard(commands.Cog):
 
         await ctx.send(f"Done! {channel.mention} is the Starboard Channel now!")
 
-    @starboard.command(aliases=["setstars", "ss"])
+    @starboard.command(aliases=["setstars"])
     @checks.has_permissions(PermissionLevel.ADMIN)
     async def stars(self, ctx: commands.Context, stars: int):
         """
@@ -181,7 +178,7 @@ class Starboard(commands.Cog):
                     should_delete = True
 
                 messages = await starboard_channel.history(
-                    limit=70,
+                    limit=90,
                     around=message.created_at
                 ).flatten()
                 found = False
@@ -225,6 +222,9 @@ class Starboard(commands.Cog):
                         name=f"{message.author.name}",
                         icon_url=message.author.avatar_url,
                     )
+                    if message.attachments:
+                        urll = message.attachments.url
+                        embed.set_image(url=urll)
                     embed.set_footer(text=f"⭐ {count} | {payload.message_id}")
                     if len(message.attachments) > 1:
                         try:
@@ -238,7 +238,7 @@ class Starboard(commands.Cog):
 
         if not found_emote:
             messages = await starboard_channel.history(
-                limit=70,
+                limit=90,
                 around=message.created_at
             ).flatten()
             found = False
