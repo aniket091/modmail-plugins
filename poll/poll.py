@@ -80,11 +80,7 @@ class Polls(commands.Cog):
             title=f"📊 {question}",
             description=f"{answer}",
         )
-        b: discord.Member = discord.utils.find(
-            lambda m: m.id == self.bot.user.id, ctx.guild.members
-        ) 
-        embed.set_author(name="Poll !", icon_url=b.avatar_url)
-        embed.set_footer(text=f"Created by {nickn}", icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f"You may select single/multiple options in this poll\n| Created by {nickn}", icon_url=ctx.author.avatar_url)
         poll = await ctx.send(embed=embed)
         for emoji, _ in answers:
             await poll.add_reaction(emoji)
@@ -148,11 +144,7 @@ class Polls(commands.Cog):
                 title=f"📊 {question}",
                 description=f"{body}",
             )
-            b: discord.Member = discord.utils.find(
-                lambda m: m.id == self.bot.user.id, ctx.guild.members
-            ) 
-            embed.set_author(name="Poll !", icon_url=b.avatar_url)
-            embed.set_footer(text=f"Created by {nickn}", icon_url=ctx.author.avatar_url)
+            embed.set_footer(text=f"You may select single/multiple options in this poll\n| Created by {nickn}", icon_url=ctx.author.avatar_url)
             poll = await ctx.send(embed=embed)
             for emoji, _ in choices:
                 await poll.add_reaction(emoji)
