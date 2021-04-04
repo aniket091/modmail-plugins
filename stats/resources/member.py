@@ -45,36 +45,39 @@ class MemberResource:
 
         # Find all of the roles a member has
         role_list = [
-            role.mention
+            role.name
             for role in reversed(m.roles)
             if role is not self.ctx.guild.default_role
         ]
-
-        
+        listt = "\n".join(role_list)
+        rl = len(role_list)
+        if m.bot:
+            bo = Yes
+        else:
+            bo = No    
         join_position = sorted(m.guild.members, key=lambda m: m.joined_at).index(m) + 1
 
-        embed = discord.Embed(color=m.color)
-
-        embed.set_author(name=f"{str(m)}'s Stats")
-
-        embed.add_field(name="Created", value=format_time(m.created_at))
-        embed.add_field(name="Joined", value=format_time(m.joined_at))
-        embed.add_field(name="Join Position", value=join_position)
-        embed.add_field(name="Avatar URL", value=f"[Link]({m.avatar_url})")
-        embed.add_field(name="Mention", value=m.mention)
+        embed = discord.Embed(color=m.color, title="👥 USER INFORMATION 👥")
+        embed.add_field(name="Username", value=f"```{str(m)}```", inline=True)
+        embed.add_field(name="User ID", value=f"```{m.id}```", inline=True)
+        #Roles [ 5 ] (shows up to 15 roles)
+        embed.add_field(name=f"Roles [{rl}]", value=f"```{listt}```", inline=False)
+        #
+        embed.add_field(name="Nickname", value=f"```{m.nick}```", inline=True)
+        embed.add_field(name="Is a bot", value=f"```{bo}```", inline=True)
+        # global perms
 
         if m.activity is not None:
             activitytype = m.activity.type.name.title()
             activitytype += " to" if activitytype == "Listening" else ""
 
-            embed.add_field(name="Activity", value=f"{activitytype} {m.activity.name}")
+            embed.add_field(name="Activity", value=f"```{activitytype} {m.activity.name}```")
 
-        embed.add_field(name="Status", value=m.status.name.title())
-        embed.add_field(name="Nickname", value=m.nick)
-        embed.add_field(name="Roles", value=" ".join(role_list))
+        # cont 
+        embed.add_field(name="Joined this server on (MM/DD/YYYY)", value=f"```{format_time(m.joined_at)}```", inline=False)
+        embed.add_field(name="Account created on (MM/DD/YYYY)", value=f"```{format_time(m.created_at)}```", inline=False)
 
         embed.set_thumbnail(url=m.avatar_url)
-        embed.set_footer(text=f"User ID: {m.id}")
 
         return embed
 
