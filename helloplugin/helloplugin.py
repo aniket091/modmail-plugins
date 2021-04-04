@@ -4,12 +4,14 @@ class HelloPlugin(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, ctx, message):
 
         if message.author.bot:
             return
 
-        if message.content.startswith("hello"):
+        if "wow" in message.content:
+            await message.channel.send("oh wow")
+        elif message.content.startswith("hello"):
             await message.channel.send("Hello !")
             await ctx.add_reaction("\N{THUMBS UP SIGN}")
         elif message.content.startswith("Hello"):
