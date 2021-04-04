@@ -4,25 +4,6 @@ from core import checks
 from core.models import PermissionLevel
 import re
 import asyncio
-import sys
-import traceback
-
-time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
-time_dict = {"h":3600, "s":1, "m":60, "d":86400}
-
-class TimeConverter(commands.Converter):
-    async def convert(self, ctx, argument):
-        args = argument.lower()
-        matches = re.findall(time_regex, args)
-        time = 0
-        for v, k in matches:
-            try:
-                time += time_dict[k] * float(v)
-            except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
-            except ValueError:
-                raise commands.BadArgument("{} is not a number!".format(v))
-        return time
     
     
 class moderation(commands.Cog):
@@ -33,10 +14,12 @@ class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
-        self.errorcolor = 0xe60026
-        self.bluee = 0x09eb10
-        self.greenn = 0x4fe8a2
-        self.yell = 0xffe945
+        self.errorcolor = 0xfc4343
+        self.blue = 0x3ef7e8
+        self.green = 0x00ff5a
+        self.yell = 0xfffc36
+        self.tick = "<:tick:819613405597532160>"
+        self.cross = "<:x2:819613332892942347>"
 
     #On channel create set up mute stuff
     @commands.Cog.listener()
@@ -50,45 +33,48 @@ class moderation(commands.Cog):
     #log channel
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMIN)
-    async def channel(self, ctx: commands.Context, channel: discord.TextChannel):
+    async def modlog(self, ctx: commands.Context, channel: discord.TextChannel):
         """
         Set the log channel for moderation actions.
         """
-
         await self.db.find_one_and_update(
             {"_id": "config"}, {"$set": {"channel": channel.id}}, upsert=True
         )
-
-        await ctx.send("Done!")
+        embed = discord.Embed(
+            description=f" **{self.tick} Set suggestion channel to {channel.mention}!**", color=self.green
+        )
+        await ctx.send(embed=embed)
         return
 
     #Purge command
     @commands.command(aliases = ["clear"])
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def purge(self, ctx, amount = 10, member : discord.Member = None):
+    async def purge(self, ctx, amount = 2, member : discord.Member = None):
         """
         Purge certain amount of messages!
+        **Usage**:
+        {prefix}purge 10
+        {prefix}purge 10 @Aniket
+        {prefix}purge <amount> [member]
         """
+        #get-channel
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
             channel = ctx.guild.get_channel(int(channel_config["channel"]))
 
-
-        max_purge = 2000
+        max_purge = 500
         if amount >= 1 and amount <= max_purge:
             await ctx.channel.purge(limit = amount + 1)
             embed = discord.Embed(
-                title = "Purge 📑",
-                description = f"✅ Purged **{amount}** message(s)!",
-                color = self.bluee
+                description = f"{self.tick} Purged **{amount}** message(s)!",
+                color = self.green
             )
             await ctx.send(embed = embed, delete_after = 10.0)
             embed = discord.Embed(
                 title = "Purge 📑",
-                color = self.greenn
+                color = self.green
             )
             embed.add_field(name="Amount :", value=f"**{amount}**", inline=True)
             embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
@@ -97,7 +83,7 @@ class moderation(commands.Cog):
         if amount < 1:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"❌ You must purge more then {amount} message(s)!",
+                description = f"**{self.cross} You must purge more then \`{amount}\` message(s)!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -105,7 +91,7 @@ class moderation(commands.Cog):
         if amount > max_purge:
             embed = discord.Embed(
                 title = "Purge Error",
-                description = f"❌ You must purge less then {amount} messages!",
+                description = f"**{self.cross} You must purge less then \`{amount}\` messages!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -116,11 +102,12 @@ class moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions!",
-                description = "❌ You are missing permissions to purge messages!",
+                description = "**{self.cross} You are missing permissions to purge messages!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
             await ctx.message.delete()
+
 
     #Kick command
     @commands.command()
@@ -128,6 +115,9 @@ class moderation(commands.Cog):
     async def kick(self, ctx, member : discord.Member = None, *, reason = None):
         """
         Kicks the specified member.
+        **Usage**:
+        {prefix}kick @member 
+        {prefix}kick @member bad!
         """
         channel_config = await self.db.find_one({"_id": "config"})
 
@@ -136,39 +126,54 @@ class moderation(commands.Cog):
         else:
             channel = ctx.guild.get_channel(int(channel_config["channel"]))
 
-    
         if member == None:
             embed = discord.Embed(
-                description = "❌ **Please specify a member!**",
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}kick <member> [reason]\n{prefix}kick @member\n{prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            embed.set_footer(text="<> - Required | [] - optional")
+            await ctx.send(embed = embed, delete_after = 10.0)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
-                    description = "❌ **You can't kick yourself!**",
+                    description = f"{self.cross} **You can't kick yourself!**",
                     color = self.errorcolor
                 )
                 await ctx.send(embed = embed)
             else:
                 if member.guild_permissions.administrator:
                     embed = discord.Embed(
-                        description = "❌ **That user is a Admin, I can't kick them!**",
+                        description = f"{self.cross} **That user is an Admin, I can't kick them!**",
                         color = self.errorcolor
                     )
                     await ctx.send(embed = embed)
                 else:    
                     if reason == None:
                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
-                        msg = f"You have been kicked from {ctx.guild.name}"
                         embed = discord.Embed(
-                            description = f"***✅ {member} has been kicked!***",
-                            color = self.bluee
+                            description = f"***{self.tick} {member} has been kicked!***",
+                            color = self.green
                         )
                         await ctx.send(embed = embed)
-                        await member.send(msg)
+                        msgembed = discord.Embed(
+                            description = f"**You have been kicked from \`{ctx.guild.name}\`**",
+                            color = self.blue
+                        )
+                        try:
+                            await member.send(embed=msgembed)
+                        except discord.errors.Forbidden:
+                            embedlog2 = discord.Embed(color = self.blue)
+                            embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
+                            embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                            embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                            embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                            return await channel.send(embed = embedlog2)    
+                        
                         embedlog = discord.Embed(
-                            color = self.greenn
+                            color = self.green
                         )
                         embedlog.set_author(
                             name=f"Kick 📑 | {member}",
@@ -180,23 +185,32 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Reason :", value="No reason provided!", inline=False)
                         await channel.send(embed = embedlog)
 
-                        msg = f"You have been kicked from **{ctx.guild.name}**"
-                        try:
-                            await member.send(msg)
-                        except discord.errors.Forbidden:
-                            return await channel.send(
-                                embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                            )
                     else:
                         await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
                         
                         embed = discord.Embed(
-                            description = f"**✅ {member} has been kicked!** \n**|| {reason}**",
-                            color = self.bluee
+                            description = f"**{self.tick} {member} has been kicked!** \n**|| {reason}**",
+                            color = self.green
                         )
                         await ctx.send(embed = embed)
+                        msgembed = discord.Embed(
+                            description = f"**You have been kicked from \`{ctx.guild.name}\` \n|| {reason}**",
+                            color = self.blue
+                        )
+                        try:
+                            await member.send(embed=msgembed)
+                        except discord.errors.Forbidden:
+                            embedlog2 = discord.Embed(color = self.blue)
+                            embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
+                            embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                            embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                            embedlog2.add_field(name="Status :", value=f"{reason}", inline=False)
+                            return await channel.send(embed = embedlog2)  
+
                         embedlog = discord.Embed(
-                            color = self.greenn
+                            color = self.green
                         )
                         embedlog.set_author(
                             name=f"Kick 📑 | {member}",
@@ -207,25 +221,18 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
                         embedlog.add_field(name="Reason :", value=f"{reason}", inline=False)
                         await channel.send(embed = embedlog)
-                        
-                        msg = f"You have been kicked from **{ctx.guild.name}** for `{reason}`"
-                        try:
-                            await member.send(msg)
-                        except discord.errors.Forbidden:
-                            return await channel.send(
-                                embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                            )
-                        
+                                               
                         
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions !",
-                description = "❌ You are missing permissions to kick members!",
+                description = f"{self.cross} You are missing permissions to kick members!",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed)
+
 
     #Ban command
     @commands.command()
@@ -235,30 +242,30 @@ class moderation(commands.Cog):
         Bans the specified member.
         """
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
             channel = ctx.guild.get_channel(int(channel_config["channel"]))
-
-
+  
         if member == None:
             embed = discord.Embed(
-                description = "❌ **Please specify a member!**",
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}kick <member> [reason]\n{prefix}kick @member\n{prefix}kick @member doing spam!",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            embed.set_footer(text="<> - Required | [] - optional")
+            await ctx.send(embed = embed, delete_after = 10.0)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
-                    description = "❌ **You can't kick yourself!**",
-                    color = self.blurple
+                    description = f"{self.cross} **You can't kick yourself!**",
+                    color = self.errorcolor
                 )
                 await ctx.send(embed = embed)
             else:
                 if member.guild_permissions.administrator:
                     embed = discord.Embed(
-                        description = "❌ **That user is a Admin, I can't ban them!**",
+                        description = f"{self.cross} **That user is a Admin, I can't ban them!**",
                         color = self.errorcolor
                     )
                     await ctx.send(embed = embed)
@@ -266,13 +273,28 @@ class moderation(commands.Cog):
                     if reason == None:
                         await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No Reason Provided.")
                         embed = discord.Embed(
-                            description = f"***✅ {member} has been banned !***",
-                            color = self.bluee
+                            description = f"***{self.tick} {member} has been banned !***",
+                            color = self.green
                         )
                         await ctx.send(embed = embed)
-                        embedlog = discord.Embed(
-                            color = self.greenn
+                        msgembed = discord.Embed(
+                            description = f"**You have been banned from \`{ctx.guild.name}\`**",
+                            color = self.blue
                         )
+                        
+                        try:
+                            await member.send(embed=msgembed)
+                        except discord.errors.Forbidden:
+                            embedlog2 = discord.Embed(color = self.blue)
+                            embedlog2.set_author(name=f"Ban 📑 | {member}", icon_url=member.avatar_url)
+                            embedlog2.add_field(name="User Banned :", value=f"{member.mention}", inline=True)
+                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                            embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                            embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                            return await channel.send(embed = embedlog2)
+
+                        embedlog = discord.Embed(color = self.green)
                         embedlog.set_author(
                             name=f"Ban 📑 | {member}",
                             icon_url=member.avatar_url,
@@ -282,24 +304,32 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
                         embedlog.add_field(name="Reason :", value="No reason provided!", inline=False)
                         await channel.send(embed = embedlog)
-                        
-                        msg = f"You have been banned from **{ctx.guild.name}**"
-                        try:
-                            await member.send(msg)
-                        except discord.errors.Forbidden:
-                            return await channel.send(
-                                embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                            )
                     else:
                         await member.ban(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
                         embed = discord.Embed(
-                            description = f"***✅ {member} has been banned !*** \n**|| {reason}**",
-                            color = self.bluee
+                            description = f"***{self.tick} {member} has been banned !*** \n**|| {reason}**",
+                            color = self.green
                         )
                         await ctx.send(embed = embed)
-                        embedlog = discord.Embed(
-                            color = self.greenn
+
+                        msgembed = discord.Embed(
+                            description = f"**You have been banned from \`{ctx.guild.name}\`\n|| {reason}**",
+                            color = self.blue
                         )
+                        
+                        try:
+                            await member.send(embed=msgembed)
+                        except discord.errors.Forbidden:
+                            embedlog2 = discord.Embed(color = self.blue)
+                            embedlog2.set_author(name=f"Ban 📑 | {member}", icon_url=member.avatar_url)
+                            embedlog2.add_field(name="User Banned :", value=f"{member.mention}", inline=True)
+                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                            embedlog2.add_field(name="Reason :", value=f"{reason}", inline=False)
+                            embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                            return await channel.send(embed = embedlog2)
+
+                        embedlog = discord.Embed(color = self.green)
                         embedlog.set_author(
                             name=f"Ban 📑 | {member}",
                             icon_url=member.avatar_url,
@@ -309,24 +339,17 @@ class moderation(commands.Cog):
                         embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
                         embedlog.add_field(name="Reason :", value=f"{reason}", inline=False)
                         await channel.send(embed = embedlog)
-                        
-                        msg = f"You have been banned from **{ctx.guild.name}** for `{reason}`"
-                        try:
-                            await member.send(msg)
-                        except discord.errors.Forbidden:
-                            return await channel.send(
-                                embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                            )
 
     @ban.error
     async def ban_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions",
-                description = "❌ **You are missing permissions to ban members!**",
+                description = f"{self.cross} **You are missing permissions to ban members!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
+
 
     #Unban command
     @commands.command()
@@ -336,20 +359,19 @@ class moderation(commands.Cog):
         Unbans the specified member.
         """
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
             channel = ctx.guild.get_channel(int(channel_config["channel"]))
 
-
         if member == None:
             embed = discord.Embed(
-                title = "Unban Error!",
-                description = "❌ **Please specify a user!**",
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}unban <member>\n{prefix}unban @member",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            embed.set_footer(text="<> - Required")
+            await ctx.send(embed = embed, delete_after = 10.0)
         else:
             banned_users = await ctx.guild.bans()
             for ban_entry in banned_users:
@@ -357,9 +379,8 @@ class moderation(commands.Cog):
 
                 if (user.name, user.discriminator) == (member.name, member.discriminator):
                     embed = discord.Embed(
-                        title = "Unban",
-                        description = f"✅ **Unbanned {user.mention}**",
-                        color = self.bluee
+                        description = f"{self.tick} **Unbanned \`{user.name}\`**",
+                        color = self.blue
                     )
                     await ctx.guild.unban(user)
                     await ctx.send(embed = embed)
@@ -378,7 +399,7 @@ class moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions!",
-                description = "❌ **You are missing permission to unban peole**",
+                description = "{self.cross} **You are missing permission to unban peole**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed, delete_after = 5.0)
@@ -391,7 +412,6 @@ class moderation(commands.Cog):
         Mutes the specified member.
         """
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
@@ -400,16 +420,17 @@ class moderation(commands.Cog):
 
         if member == None:
             embed = discord.Embed(
-                title = "Mute Error!",
-                description = "❌ **Please specify a user!**",
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}mute <member> [reason]\n{prefix}mute @member\n{prefix}mute @member doing spam!",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            embed.set_footer(text="<> - Required | [] - optional")
+            await ctx.send(embed = embed, delete_after = 10.0)
         else:
             if member.id == ctx.message.author.id:
                 embed = discord.Embed(
                     title = "Mute Error!",
-                    description = "❌ **You can't mute yourself!**",
+                    description = f"{self.cross} **You can't mute yourself!**",
                     color = self.errorcolor
                 )
                 await ctx.send(embed = embed, delete_after = 5.0)
@@ -422,12 +443,29 @@ class moderation(commands.Cog):
                             await channel.set_permissions(role, send_messages = False)
                     await member.add_roles(role)
                     embed = discord.Embed(
-                        description = f"***{member} has been muted !***",
-                        color = self.bluee
+                        description = f"{self.tick} ***{member} has been muted !***",
+                        color = self.green
                     )
                     await ctx.send(embed = embed)
+                    msgembed = discord.Embed(
+                        description = f"**You have been muted in \`{ctx.guild.name}\`**",
+                        color = self.blue
+                    )
+                        
+                    try:
+                        await member.send(embed=msgembed)
+                    except discord.errors.Forbidden:
+                        embedlog2 = discord.Embed(color = self.blue)
+                        embedlog2.set_author(name=f"Mute 🔇 | {member}", icon_url=member.avatar_url)
+                        embedlog2.add_field(name="User Muted :", value=f"{member.mention}", inline=True)
+                        embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                        embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                        embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                        embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                        return await channel.send(embed = embedlog2)
+
                     embed = discord.Embed(
-                        color = self.greenn
+                        color = self.green
                     )
                     embed.set_author(
                         name=f"Mute 🔇 | {member}",
@@ -436,15 +474,9 @@ class moderation(commands.Cog):
                     embed.add_field(name="User Muted :", value=f"{member.mention}", inline=True)
                     embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
                     embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                    embed.add_field(name="Reason :", value="No reason provided!", inline=False)
                     await channel.send(embed = embed)
 
-                    msg = f"You have been muted in **{ctx.guild.name}** "
-                    try:
-                        await member.send(msg)
-                    except discord.errors.Forbidden:
-                        return await channel.send(
-                            embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                        )
                 else:
                     role = discord.utils.get(ctx.guild.roles, name = "Muted")
                     if role == None:
@@ -453,12 +485,29 @@ class moderation(commands.Cog):
                             await channel.set_permissions(role, send_messages = False)
                     await member.add_roles(role)
                     embed = discord.Embed(
-                        description = f"***✅ {member} has been muted !*** \n**|| {reason}**",
-                        color = self.bluee
+                        description = f"***{self.tick} {member} has been muted !*** \n**|| {reason}**",
+                        color = self.green
                     )
                     await ctx.send(embed = embed)
+                    msgembed = discord.Embed(
+                        description = f"**You have been muted in \`{ctx.guild.name}\`\n|| {reason}**",
+                        color = self.blue
+                    )
+                        
+                    try:
+                        await member.send(embed=msgembed)
+                    except discord.errors.Forbidden:
+                        embedlog2 = discord.Embed(color = self.blue)
+                        embedlog2.set_author(name=f"Mute 🔇 | {member}", icon_url=member.avatar_url)
+                        embedlog2.add_field(name="User Muted :", value=f"{member.mention}", inline=True)
+                        embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                        embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                        embedlog2.add_field(name="Reason :", value=f"{reason}", inline=False)
+                        embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                        return await channel.send(embed = embedlog2)
+
                     embed = discord.Embed(
-                        color = self.greenn
+                        color = self.green
                     )
                     embed.set_author(
                         name=f"Mute 🔇 | {member}",
@@ -470,20 +519,12 @@ class moderation(commands.Cog):
                     embed.add_field(name="Reason :", value=f"{reason}", inline=False)
                     await channel.send(embed = embed)
 
-                    msg = f"You have been muted in **{ctx.guild.name}** for `{reason}`"
-                    try:
-                        await member.send(msg)
-                    except discord.errors.Forbidden:
-                        return await channel.send(
-                            embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                        )
-
     @mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions!",
-                description = "❌ **You are missing permission to mute people!**",
+                description = "{self.cross} **You are missing permission to mute people!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed)
@@ -496,31 +537,47 @@ class moderation(commands.Cog):
         Unmutes the specified member.
         """
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
             channel = ctx.guild.get_channel(int(channel_config["channel"]))
 
-
         if member == None:
             embed = discord.Embed(
-                title = "Unmute Error!",
-                description = "❌ **Please specify a user!**",
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}unmute <member> [reason]\n{prefix}unmute @member\n{prefix}unmute @member doing spam!",
                 color = self.errorcolor
             )
-            await ctx.send(embed = embed, delete_after = 5.0)
+            embed.set_footer(text="<> - Required | [] - optional")
+            await ctx.send(embed = embed, delete_after = 10.0)
         else:
             role = discord.utils.get(ctx.guild.roles, name = "Muted")
             if role in member.roles:
                 await member.remove_roles(role)
                 embed = discord.Embed(
-                    description = f"***✅ {member} has been unmuted!***",
-                    color = self.bluee
+                    description = f"***{self.tick} {member} has been unmuted!***",
+                    color = self.green
                 )
                 await ctx.send(embed = embed)
+                msgembed = discord.Embed(
+                    description = f"**You have been muted in \`{ctx.guild.name}\`\n|| {reason}**",
+                    color = self.blue
+                )
+                        
+                try:
+                    await member.send(embed=msgembed)
+                except discord.errors.Forbidden:
+                    embedlog2 = discord.Embed(color = self.blue)
+                    embedlog2.set_author(name=f"Unmute 🔉 | {member}", icon_url=member.avatar_url)
+                    embedlog2.add_field(name="User UnMuted :", value=f"{member.mention}", inline=True)
+                    embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                    embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                    embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                    embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                    return await channel.send(embed = embedlog2)
+
                 embed = discord.Embed(
-                    color = self.greenn
+                    color = self.green
                 )
                 embed.set_author(
                     name=f"Unmute 🔉 | {member}",
@@ -529,19 +586,12 @@ class moderation(commands.Cog):
                 embed.add_field(name="User UnMuted :", value=f"{member.mention}", inline=True)
                 embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
                 embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                embed.add_field(name="Reason :", value="No reason provided!", inline=False)
                 await channel.send(embed = embed)
-
-                msg = f"You have been unmuted in **{ctx.guild.name}** for `{reason}`"
-                try:
-                    await member.send(msg)
-                except discord.errors.Forbidden:
-                    return await channel.send(
-                        embed=discord.Embed(description='Member has been kicked , they i was unable to DM them!')
-                    )
             else:
                 embed = discord.Embed(
                     title = "Unmute Error!",
-                    description = f"**❌ {member.mention} is not muted!**",
+                    description = f"**{self.cross} {member.mention} is not muted!**",
                     color = self.errorcolor
                 )
                 await ctx.send(embed = embed)
@@ -551,11 +601,12 @@ class moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 title = "Missing Permissions!",
-                description = "❌ **You are missing permission to unmute people!**",
+                description = f"{self.cross} **You are missing permission to unmute people!**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embed)
-            
+
+    #warn command        
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def warn(self, ctx, member: discord.Member, *, reason: str):
@@ -563,12 +614,23 @@ class moderation(commands.Cog):
         Usage:
         {prefix}warn @member Spoilers
         """
+        if member == None:
+            embed = discord.Embed(
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}warn <member> <reason>\n{prefix}warn @member doing spam!",
+                color = self.errorcolor
+            )
+            embed.set_footer(text="<> - Required")
+            return await ctx.send(embed = embed, delete_after = 10.0)
 
         if member.bot:
-            return await ctx.send("Bots can't be warned.")
+            embed = discord.Embed(
+                description = f"**{self.cross} Bots can't be warned.**",
+                color = self.errorcolor
+            )
+            return await ctx.send(embed=embed)
 
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
@@ -599,11 +661,28 @@ class moderation(commands.Cog):
         )
 
         embed = discord.Embed(
-            description = f"✅  ***{member} has been warned.***\n**|| {reason}**",
-            color = self.bluee
+            description = f"{self.tick} ***{member} has been warned.***\n**|| {reason}**",
+            color = self.green
         )
         await ctx.send(embed = embed)
-        await member.send(f'You have been warned in {ctx.guild.name} for {reason}')
+        member: discord.User = await self.bot.fetch_user(int(memberid))
+        mod: discord.User = await self.bot.fetch_user(int(modid))
+        msgembed = discord.Embed(
+            description = f"**You have been warned in \`{ctx.guild.name}\`\n|| {reason}**",
+            color = self.blue
+        )
+                        
+        try:
+            await member.send(embed=msgembed)
+        except discord.errors.Forbidden:
+            embedlog2 = discord.Embed(color = self.blue)
+            embedlog2.set_author(name=f"Warn | {member}", icon_url=member.avatar_url)
+            embedlog2.add_field(name="User Warn :", value=f"{member}", inline = True)
+            embedlog2.add_field(name="Moderator :", value=f"<@{modid}>", inline = True)
+            embedlog2.add_field(name="Total Warnings :", value=warning, inline = False)
+            embedlog2.add_field(name="Reason :", value=reason, inline=False)
+            embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+            return await channel.send(embed = embedlog2)
 
         await channel.send(
             embed=await self.generateWarnEmbed(
@@ -613,64 +692,7 @@ class moderation(commands.Cog):
         del userw
         return
 
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def tempmute(self, ctx, member:discord.Member, *, time:TimeConverter = None):
-        """Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
-        &mute @Someone 1d"""
-        print(1)
-        if time == None:
-            embed = discord.Embed(
-                title= "Error",
-                description= "Please specify a time",
-                color= 0xFF0000
-            )
-            await ctx.send(embed=embed)
-            print(2)
-        if member == None:
-            embed = discord.Embed(
-                title= "Error",
-                description= "Please specify a member to mute",
-                color= 0xFF0000
-            )
-            await ctx.send(embed=embed)
-            print(3)
-        else:
-            role = discord.utils.get(ctx.guild.roles, name="Muted")
-            if role == None:
-                role = await ctx.guild.create_role(name="Muted")
-                for channel in ctx.guild.text_channels:
-                    await channel.set_permissions(role, send_messages=False)
-                await member.add_roles(role)
-                embed = discord.Embed(
-                    title= "Mute",
-                    description= f"{member.mention} has been muted by {ctx.message.author.mention} for {time}s",
-                    color=0x00FF00
-                )
-                await ctx.send(embed=embed)
-                print(4)
-                embed = discord.Embed(
-                    title= "Muted",
-                    description= f"You have been muted in {ctx.guiild.name} by {ctx.author.mention} for {time}",
-                    color=0x06c9ff
-                )
-                await member.send(embed=embed)
-                print(5)
-            if time:
-                await asyncio.sleep(time)
-                await member.remove_roles(role)
-                print(6)
-             
-    @tempmute.error
-    async def tempmute_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            embed = discord.Embed(
-                title="Error",
-                description="You do not have permissions to tempmute members!",
-                color=0xFF0000
-            )
-            await ctx.send(embed=embed)
-    
+
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def pardon(self, ctx, member: discord.Member, *, reason: str):
@@ -678,12 +700,23 @@ class moderation(commands.Cog):
         Usage:
         {prefix}pardon @member Nice guy
         """
+        if member == None:
+            embed = discord.Embed(
+                title=f"{self.cross} Invalid Usage!",
+                description = f"{prefix}pardon <member> <reason>\n{prefix}pardon @member doing spam!",
+                color = self.errorcolor
+            )
+            embed.set_footer(text="<> - Required")
+            return await ctx.send(embed = embed, delete_after = 10.0)
 
         if member.bot:
-            return await ctx.send("❌ Bots can't be warned, so they can't be pardoned.")
+            embed = discord.Embed(
+                description = f"**{self.cross} Bots can't be warned, so they can't be pardoned.**",
+                color = self.errorcolor
+            )
+            return await ctx.send(embed=embed)
 
         channel_config = await self.db.find_one({"_id": "config"})
-
         if channel_config is None:
             return await ctx.send("There's no configured log channel.")
         else:
@@ -701,14 +734,14 @@ class moderation(commands.Cog):
             userwarns = config[str(member.id)]
         except KeyError:
             embed = discord.Embed(
-                description = f"**❌ {member} doesn't have any warnings.**",
+                description = f"**{self.cross} {member} doesn't have any warnings.**",
                 color = self.errorcolor
             )
             return await ctx.send(embed = embed)
 
         if userwarns is None:
             embedtwo = discord.Embed(
-                description = f"**❌ {member} doesn't have any warnings.**",
+                description = f"**{self.cross} {member} doesn't have any warnings.**",
                 color = self.errorcolor
             )
             await ctx.send(embed = embedtwo)
@@ -718,13 +751,13 @@ class moderation(commands.Cog):
         )
 
         embedfinal = discord.Embed(
-                description = f"<:tick:811926934220046346>  ***{member} has been pardoned.***\n**|| {reason}**",
-                color = self.bluee
+                description = f"{self.tick} ***{member} has been pardoned.***\n**|| {reason}**",
+                color = self.green
             )
         await ctx.send(embed = embedfinal)
+        
 
-        embed = discord.Embed(color = self.greenn)
-
+        embed = discord.Embed(color = self.blue)
         embed.set_author(
             name=f"Pardon | {member}",
             icon_url=member.avatar_url,
