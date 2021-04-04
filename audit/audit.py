@@ -110,7 +110,6 @@ class Audit(commands.Cog):
             self.ignored_channel_ids = defaultdict(set)
             self.ignored_category_ids = defaultdict(set)
             self.enabled = defaultdict(set)
-        self.save_pickle.start()
 
     async def send_webhook(self, guild, *args, **kwargs):
         async with self.webhook_lock(guild.id):
