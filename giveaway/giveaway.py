@@ -13,7 +13,7 @@ from core.models import PermissionLevel
 
 class GiveawayPlugin(commands.Cog):
     """
-    Host giveaways on your server with this ~~amazing~~ plugin
+    Host giveaways on your server! 🎉
     """
 
     def __init__(self, bot):
@@ -174,7 +174,7 @@ class GiveawayPlugin(commands.Cog):
 
     @commands.group(
         name="giveaway",
-        aliases=["g", "giveaways", "gaway", "givea"],
+        aliases=["giveaways", "ga", "g"],
         invoke_without_command=True,
     )
     @commands.guild_only()
@@ -248,7 +248,7 @@ class GiveawayPlugin(commands.Cog):
                 await ctx.send("Cancelled.")
                 break
             resp = await self.bot.session.get(
-                "https://dateparser.piyush.codes",
+                "https://dateparser.hastebin.cc",
                 params={"date": f"in {giveaway_time.content}"},
             )
             if resp.status == 400:
