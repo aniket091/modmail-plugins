@@ -857,7 +857,7 @@ class moderation(commands.Cog):
         await ctx.send(embed=embed)    
         embed = discord.Embed(color = self.blue)
         embed.set_author(
-            name=f"Slowmode Disbled",
+            name=f"Slowmode Disabled",
             icon_url=ctx.guild.icon_url,
         )
         embed.add_field(name=f"Moderator :", value=f"{ctx.message.author.mention}", inline=False)
