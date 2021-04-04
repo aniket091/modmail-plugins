@@ -12,7 +12,9 @@ class utility(commands.Cog):
     async def statuss(self):
       await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"PARTH YT'S SERVER"))  
       await asyncio.sleep(10)
-      await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"!help"))
+      await self.bot.change_presence(activity=discord.Activity(type=discord.Game, name=f"Message me for help!"))
+      await asyncio.sleep(10)
+      await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f"!help"))
       await asyncio.sleep(10)
       server = self.bot.get_guild(665842728545943552)
       await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{server.member_count} Members!"))
