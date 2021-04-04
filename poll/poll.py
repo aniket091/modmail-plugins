@@ -105,38 +105,7 @@ class Polls(commands.Cog):
             return await ctx.send("You can only have up to 20 choices.")
 
         perms = ctx.channel.permissions_for(ctx.me)
-        if not perms.add_reactions:
-            return await ctx.send("Need Add Reactions permissions.")
-        try:
-            await ctx.message.delete()
-        except:
-            pass
-        question = questions_and_choices[0]
-
-        if len(questions_and_choices) == 1:
-            embed = discord.Embed(
-                color=self.bot.main_color, description=f"**{question}**"
-            )
-            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-            poll = await ctx.send(embed=embed)
-            reactions = ["👍", "👎"]
-            for emoji in reactions:
-                await poll.add_reaction(emoji)
-
-        else:
-            choices = [
-                (to_emoji(e), v) for e, v in enumerate(questions_and_choices[1:])
-            ]
-
-            body = "\n".join(f"{key}: {c}" for key, c in choices)
-            embed = discord.Embed(
-                color=self.bot.main_color,
-                timestamp=datetime.datetime.utcnow(),
-                description=f"**{question}**\n{body}",
-            )
-            embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-            poll = await ctx.send(embed=embed)
-            for emoji, _ in choices:
+   
                 await poll.add_reaction(emoji)
 
 
