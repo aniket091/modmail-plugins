@@ -63,7 +63,7 @@ class Audit(commands.Cog):
         self.invite_regex = re.compile(
             r"(?:https?://)?(?:www\.)?(?:discord\.(?:gg|io|me|li)|(?:discordapp|discord)\.com/invite)/[\w]+"
         )
-        self.whname = "test logger"
+        self.whname = "logger bhai"
         self.acname = "server logs"
         self._webhooks = {}
         self._webhook_locks = {}
@@ -119,7 +119,7 @@ class Audit(commands.Cog):
                     return await wh.send(*args, **kwargs)
                 except (discord.NotFound, discord.Forbidden, discord.HTTPException):
                     print(f'Invalid webhook for {guild.name}')
-            wh = get(await guild.webhooks(), name=self.bot.user.name)
+            wh = get(await guild.webhooks(), name=self.whname)
             if wh is not None:
                 try:
                     return await wh.send(*args, **kwargs)
@@ -140,7 +140,7 @@ class Audit(commands.Cog):
                 channel = await guild.create_text_channel(
                     self.acname, overwrites=o, reason="Audit Channel"
                 )
-            wh = await channel.create_webhook(name=self.bot.user.name,
+            wh = await channel.create_webhook(name=self.whname,
                                               avatar=await self.bot.user.avatar_url.read(),
                                               reason="Audit Webhook")
             try:
