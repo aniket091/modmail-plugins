@@ -41,7 +41,7 @@ class moderation(commands.Cog):
             {"_id": "config"}, {"$set": {"channel": channel.id}}, upsert=True
         )
         embed = discord.Embed(
-            description=f" **{self.tick} Set suggestion channel to {channel.mention}!**", color=self.green
+            description=f" **{self.tick} Set modlog channel to {channel.mention}!**", color=self.green
         )
         await ctx.send(embed=embed)
         return
@@ -814,7 +814,7 @@ class moderation(commands.Cog):
         seconds = 0
         match = re.findall("([0-9]+[smhd])", time)
         if not match:
-            embed = discord.Embed(description=f"{self.cross} I cannot understand your time format!**",color = self.errorcolor)
+            embed = discord.Embed(description=f"**{self.cross} I cannot understand your time format!**",color = self.errorcolor)
             return await ctx.send(embed=embed)
         for item in match:
             seconds += int(item[:-1]) * units[item[-1]]
@@ -838,7 +838,7 @@ class moderation(commands.Cog):
         embed.add_field(name=f"Time", value=f"{time}", inline=False)   
         await logchannel.send(embed=embed)
 
-    @commands.command(aliases=["sm-off"])
+    @commands.command(aliases=["sm-off", "smoff"])
     @checks.has_permissions(PermissionLevel.MODERATOR)
     async def slowmode_off(self, ctx, channel: discord.TextChannel = None):
         """Turn off the slowmode in a channel"""
