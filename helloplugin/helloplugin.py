@@ -17,6 +17,9 @@ class HelloPlugin(commands.Cog):
           return 
         elif message.channel.id == 716926336488177735:
           return     
+
+        if message.guild.id == 791254312339898368:
+          return   
         #hello
         if message.content.startswith("hello"): 
             await message.channel.send("Hello")
@@ -70,7 +73,15 @@ class HelloPlugin(commands.Cog):
         elif message.content.startswith("ji en"):
             await message.channel.send("Ji en vai!")
             await message.add_reaction("<:pranam:828272042402381844>") 
-
+        elif '<@!474255126228500480>' in message.content.lower():
+            print("aniket")
+            await message.add_reaction('<a:swag:791539777437433876>')     
+        elif '<@!488738167969546272>' in message.content.lower():
+            if message.guild.id == 665842728545943552:
+                await message.add_reaction('<a:ohh:828312958769692692>')    
+        elif '<@!686445028469768201>' in message.content.lower():
+            if message.guild.id == 686445229687177228:
+                await message.add_reaction('<a:ohh:828312958769692692>')  
 
 def setup(bot):
     bot.add_cog(HelloPlugin(bot))
