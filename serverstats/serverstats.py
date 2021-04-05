@@ -13,6 +13,8 @@ class ServerStats(commands.Cog):
         self.bot = bot
         self.c_name = "📊 | Server Info"
         self.db = bot.plugin_db.get_partition(self)
+        self.red = 0xfc4343
+        self.green = 0x00ff5a
         
     @commands.command() 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
@@ -31,7 +33,7 @@ class ServerStats(commands.Cog):
                 await self.create_channel(ctx, name, count)
                 self.db.find_one_and_update({"_id": "config"}, {"$set": {f"{check}Channel": name}}, upsert=True)
             
-            embed = discord.Embed(color = discord.Color.green())
+            embed = discord.Embed(color = self.green)
             embed.add_field(name="Success", value="Successfully Setup all the Server Info Voice Channels!")
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
@@ -41,17 +43,18 @@ class ServerStats(commands.Cog):
     async def membercount(self, ctx, *, name: str=None):
         """Sets up the Member Count Voice Channel."""
 
-        name = name or "Member Count"
+        name = name or "Member Count "
         await self.create_channel(ctx, name, ctx.guild.member_count)
 
         self.db.find_one_and_update({"_id": "config"}, {"$set": {"mChannel": name}}, upsert=True)
+
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def rolecount(self, ctx, *, name: str=None):
         """Sets up the Role Count Voice Channel.""" 
 
-        name = name or "Role Count"
+        name = name or "Role Count "
         await self.create_channel(ctx, name, len(ctx.guild.roles))
 
         self.db.find_one_and_update({"_id": "config"}, {"$set": {"rChannel": name}}, upsert=True)
@@ -61,7 +64,7 @@ class ServerStats(commands.Cog):
     async def channelcount(self, ctx, *, name: str=None):
         """Sets up the Channel Count Voice Channel"""
 
-        name = name or "Channel Count"
+        name = name or "Channel Count "
         await self.create_channel(ctx, name, len(ctx.guild.channels))
 
         self.db.find_one_and_update({"_id": "config"}, {"$set": {"cChannel": name}}, upsert=True)
@@ -71,7 +74,7 @@ class ServerStats(commands.Cog):
     async def totalhuman(self, ctx, *, name: str=None):
         """Sets up the Total Humans Voice Channel"""
 
-        name = name or "Discord.gg/emote :"
+        name = name or "Humans "
         humans = self.get_humans(ctx)
         await self.create_channel(ctx, name, int(humans))
 
@@ -82,7 +85,7 @@ class ServerStats(commands.Cog):
     async def totalbot(self, ctx, *, name: str=None):
         """Sets up the Total Bots Voice Channel"""
         
-        name = name or "Total Bots"
+        name = name or "Total Bots "
         bots = self.get_bots(ctx)
         await self.create_channel(ctx, name, int(bots))
 
@@ -196,12 +199,12 @@ class ServerStats(commands.Cog):
                 await category.edit(position=0)
             await ctx.guild.create_voice_channel(name=f"{name}: {count}", category=category)
             embed.add_field(name="Success", value= f"The {name} Channel has been set up.")
-            embed.color = discord.Color.green()
+            embed.color = self.green
             await ctx.send(embed=embed)
             return
         
         embed.add_field(name="Failure", value= f"The {name} channel has already been set up.")
-        embed.color = discord.Color.red()
+        embed.color = self.red
         await ctx.send(embed=embed)
         return 
     
