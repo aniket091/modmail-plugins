@@ -82,6 +82,9 @@ class HelloPlugin(commands.Cog):
         elif '<@!686445028469768201>' in message.content.lower():
             if message.guild.id == 686445229687177228:
                 await message.add_reaction('<a:ohh:828312958769692692>')  
+        elif '<@634028003114090526>' in message.content.lower():
+            if message.guild.id == 686445229687177228:
+                await message.add_reaction('<a:cookiee:829594080756498452>')          
 
 def setup(bot):
     bot.add_cog(HelloPlugin(bot))
