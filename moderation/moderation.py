@@ -141,6 +141,11 @@ class moderation(commands.Cog):
                     color = self.errorcolor
                 )
                 await ctx.send(embed = embed)
+                await channel.send(
+                    embed=await self.errorembed(
+                        str("You can't kick yourself!")
+                    )
+                )
             else:
                 if member.guild_permissions.administrator:
                     embed = discord.Embed(
@@ -863,6 +868,13 @@ class moderation(commands.Cog):
         embed.add_field(name=f"Moderator :", value=f"{ctx.message.author.mention}", inline=False)
         embed.add_field(name=f"Channel :", value=f"{channel.mention}", inline=False)  
         await logchannel.send(embed=embed)
+
+    async def errorembed(self, error):
+        embed = discord.Embed(
+            description = f"{self.cross} **${error}**",
+            color = self.errorcolor
+        )
+        return embed    
   
 
 def setup(bot):
