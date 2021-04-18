@@ -134,98 +134,100 @@ class moderation(commands.Cog):
             )
             embed.set_footer(text="<> - Required | [] - optional")
             await ctx.send(embed = embed)
-        else:
-            if member.id == ctx.message.author.id:
-                embed = discord.Embed(
-                    description = f"{self.cross} **You can't kick yourself!**",
-                    color = self.errorcolor
+            return
+
+        if member.id == ctx.message.author.id:
+            await channel.send(
+                embed=await self.logembed(
+                    ctx, str("Kick 📑 2"), str("No reason provided!"), str("I could not DM them.")
                 )
-                await ctx.send(embed = embed)
+            )
+            return
+
+        if member.guild_permissions.administrator:
+            await ctx.send(
+                embed=await self.errorembed(
+                    str("That user is an Admin, I can't kick them!")
+                )
+            )
+            return
+
+        if reason == None:
+            await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
+            embed = discord.Embed(
+                description = f"***{self.tick} {member} has been kicked!***",
+                color = self.green
+            )
+            await ctx.send(embed = embed)
+            msgembed = discord.Embed(
+                description = f"**You have been kicked from `{ctx.guild.name}`**",
+                color = self.blue
+            )
+            try:
+                await member.send(embed=msgembed)
+            except discord.errors.Forbidden:
+                embedlog2 = discord.Embed(color = self.blue)
+                embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
+                embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
+                return await channel.send(embed = embedlog2)    
                 await channel.send(
-                    embed=await self.errorembed(
-                        str("You can't kick yourself!")
+                    embed=await self.logembed(
+                        ctx, str("Kick 📑 2"), str("No reason provided!"), str("I could not DM them.")
                     )
                 )
-            else:
-                if member.guild_permissions.administrator:
-                    embed = discord.Embed(
-                        description = f"{self.cross} **That user is an Admin, I can't kick them!**",
-                        color = self.errorcolor
-                    )
-                    await ctx.send(embed = embed)
-                else:    
-                    if reason == None:
-                        await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - No reason proivded.")
-                        embed = discord.Embed(
-                            description = f"***{self.tick} {member} has been kicked!***",
-                            color = self.green
-                        )
-                        await ctx.send(embed = embed)
-                        msgembed = discord.Embed(
-                            description = f"**You have been kicked from `{ctx.guild.name}`**",
-                            color = self.blue
-                        )
-                        try:
-                            await member.send(embed=msgembed)
-                        except discord.errors.Forbidden:
-                            embedlog2 = discord.Embed(color = self.blue)
-                            embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
-                            embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
-                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
-                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
-                            embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
-                            embedlog2.add_field(name="Status :", value="I could not DM them.", inline=False)
-                            return await channel.send(embed = embedlog2)    
-                        
-                        embedlog = discord.Embed(
-                            color = self.green
-                        )
-                        embedlog.set_author(
-                            name=f"Kick 📑 | {member}",
-                            icon_url=member.avatar_url,
-                        )
-                        embedlog.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
-                        embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
-                        embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
-                        embedlog.add_field(name="Reason :", value="No reason provided!", inline=False)
-                        await channel.send(embed = embedlog)
+            embedlog = discord.Embed(
+                color = self.green
+            )
+            embedlog.set_author(
+                name=f"Kick 📑 | {member}",
+                icon_url=member.avatar_url,
+            )
+            embedlog.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+            embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+            embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+            embedlog.add_field(name="Reason :", value="No reason provided!", inline=False)
+            await channel.send(embed = embedlog)
 
-                    else:
-                        await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
-                        
-                        embed = discord.Embed(
-                            description = f"**{self.tick} {member} has been kicked!** \n**|| {reason}**",
-                            color = self.green
-                        )
-                        await ctx.send(embed = embed)
-                        msgembed = discord.Embed(
-                            description = f"**You have been kicked from `{ctx.guild.name}` \n|| {reason}**",
-                            color = self.blue
-                        )
-                        try:
-                            await member.send(embed=msgembed)
-                        except discord.errors.Forbidden:
-                            embedlog2 = discord.Embed(color = self.blue)
-                            embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
-                            embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
-                            embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
-                            embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
-                            embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
-                            embedlog2.add_field(name="Status :", value=f"{reason}", inline=False)
-                            return await channel.send(embed = embedlog2)  
+        else:
+            await member.kick(reason = f"Moderator - {ctx.message.author.name}#{ctx.message.author.discriminator}.\nReason - {reason}")
+            
+            embed = discord.Embed(
+                description = f"**{self.tick} {member} has been kicked!** \n**|| {reason}**",
+                color = self.green
+            )
+            await ctx.send(embed = embed)
+            msgembed = discord.Embed(
+                description = f"**You have been kicked from `{ctx.guild.name}` \n|| {reason}**",
+                color = self.blue
+            )
+            try:
+                await member.send(embed=msgembed)
+            except discord.errors.Forbidden:
+                embedlog2 = discord.Embed(color = self.blue)
+                embedlog2.set_author(name=f"Kick 📑 | {member}", icon_url=member.avatar_url)
+                embedlog2.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+                embedlog2.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+                embedlog2.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+                embedlog2.add_field(name="Reason :", value="No reason provided!", inline=False)
+                embedlog2.add_field(name="Status :", value=f"{reason}", inline=False)
+                return await channel.send(embed = embedlog2)  
 
-                        embedlog = discord.Embed(
-                            color = self.green
-                        )
-                        embedlog.set_author(
-                            name=f"Kick 📑 | {member}",
-                            icon_url=member.avatar_url,
-                        )
-                        embedlog.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
-                        embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
-                        embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
-                        embedlog.add_field(name="Reason :", value=f"{reason}", inline=False)
-                        await channel.send(embed = embedlog)
+            embedlog = discord.Embed(
+                color = self.green
+            )
+            embedlog.set_author(
+                name=f"Kick 📑 | {member}",
+                icon_url=member.avatar_url,
+            )
+            embedlog.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+            embedlog.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+            embedlog.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+            embedlog.add_field(name="Reason :", value=f"{reason}", inline=False)
+            await channel.send(embed = embedlog)
                                                
                         
     @kick.error
@@ -871,10 +873,20 @@ class moderation(commands.Cog):
 
     async def errorembed(self, error):
         embed = discord.Embed(
-            description = f"{self.cross} **${error}**",
+            description = f"{self.cross}  **{error}**",
             color = self.errorcolor
         )
-        return embed    
+        return embed   
+
+    async def logembed(self, ctx, mod, reason, status):
+        embed  = discord.Embed(color = self.blue)
+        embed.set_author(name=f"{mod} | {member}", icon_url=member.avatar_url)
+        embed.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
+        embed.add_field(name="Moderator :", value=f"{ctx.message.author.mention}", inline=True)
+        embed.add_field(name="Channel :", value=f"{ctx.message.channel.mention}", inline=True)
+        embed.add_field(name="Reason :", value=reason, inline=False)
+        embed.add_field(name="Status :", value=status, inline=False)
+        return embed      
   
 
 def setup(bot):
