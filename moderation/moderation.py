@@ -139,7 +139,7 @@ class moderation(commands.Cog):
         if member.id == ctx.message.author.id:
             await channel.send(
                 embed=await self.logembed(
-                    ctx, str("Kick 📑 2"), str("No reason provided!"), str("I could not DM them.")
+                    ctx, str(member.id), str("Kick 📑 2"), str("No reason provided!"), str("I could not DM them.")
                 )
             )
             return
@@ -878,7 +878,9 @@ class moderation(commands.Cog):
         )
         return embed   
 
-    async def logembed(self, ctx, mod, reason, status):
+    async def logembed(self, ctx, memberid, mod, reason, status):
+        member: discord.User = await self.bot.fetch_user(int(memberid))
+
         embed  = discord.Embed(color = self.blue)
         embed.set_author(name=f"{mod} | {member}", icon_url=member.avatar_url)
         embed.add_field(name="User Kicked :", value=f"{member.mention}", inline=True)
