@@ -546,7 +546,7 @@ class moderation(commands.Cog):
 
         await channel.send(
             embed=await self.generateWarnEmbed(
-                str(member.id), str(ctx.author.id), len(userw), reason
+                str(member.id), str(ctx.author.id), len(userw), reason, str("y")
             )
         )
         del userw
@@ -614,7 +614,7 @@ class moderation(commands.Cog):
         await ctx.send(embed = embedfinal)
         
         await channel.send(embed=await self.generateWarnEmbed(
-            str(member.id), str(ctx.author.id), str("0"), reason
+            str(member.id), str(ctx.author.id), str("0"), reason, str("y")
         ))
 
     
