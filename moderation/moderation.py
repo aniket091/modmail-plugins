@@ -530,7 +530,7 @@ class moderation(commands.Cog):
         )
 
         await ctx.send(embed = discord.Embed(
-            description = f"{self.tick} ***{member} has been warned!  || {reason}**",
+            description = f"{self.tick} **{member} has been warned!  || {reason}**",
             color = self.green
         ))
                         
@@ -705,9 +705,8 @@ class moderation(commands.Cog):
         embed.add_field(name="Moderator :", value=f"<@{modid}>", inline = True)
         embed.add_field(name="Total Warnings :", value=warning, inline = False)
         embed.add_field(name="Reason :", value=reason, inline = False)
-        if status:
+        if status != "y":
             embed.add_field(name="Status :", value=status, inline=False)
-
         return embed
 
     async def errorembed(self, error):
