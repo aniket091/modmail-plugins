@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 
 class Starboard(commands.Cog):
     """
-    Basically a starboard . Leave a ⭐ if you like this plugin https://github.com/officialpiyush/modmail-plugins
+    Basically a starboard1
     """
     def __init__(self, bot):
         self.bot: Client = bot
