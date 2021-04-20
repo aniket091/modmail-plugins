@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 
 class Starboard(commands.Cog):
     """
-    Basically a starboard1
+    Basically a starboard!
     """
     def __init__(self, bot):
         self.bot: Client = bot
