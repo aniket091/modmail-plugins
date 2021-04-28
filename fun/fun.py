@@ -3,12 +3,12 @@ from enum import Enum
 from random import randint,choice
 import discord
 from discord.ext import commands
-from dadjokes import Dadjoke
 from core import checks
 import box
 import json
 import string
 from core.models import PermissionLevel
+from datetime import datetime
 
 Cog = getattr(commands, "Cog", object)
 
@@ -104,15 +104,19 @@ class Fun(Cog):
         author = ctx.author
         if number > 1:
             n = randint(1, number)
-            await ctx.send("{author.mention} :game_die: {n} :game_die:".format(author=author, n=n))
+            await ctx.send("{author.mention} :game_die: **{n}** ".format(author=author, n=n))
         else:
             await ctx.send(_("{author.mention} Maybe higher than 1? ;P").format(author=author))
             
     @commands.command()
     async def flip(self,ctx):
         """Flip a coin"""
-        answer = choice(["HEADS!*","TAILS!*"])
-        await ctx.send(f"*Flips a coin and...{answer}")
+        answer = choice(["HEADS!","TAILS!"])
+        embed = discord.Embed(description=f"**Flips a coin and ...**", color = 0x00FF00)
+        msg = await ctx.send(embed = embed)
+        embed2 = discord.Embed(description=f"**{ctx.message.author.mention}  :coin:  \u200b\u200b{answer}**", color = 0x00FF00)
+        await msg.delete()
+        await ctx.send(embed = embed2)
         
     @commands.command()
     async def rps(self,ctx,your_choice:RPSParser):
@@ -129,50 +133,47 @@ class Fun(Cog):
             (RPS.paper, RPS.scissors): False,
             (RPS.scissors, RPS.rock): False,
             (RPS.scissors, RPS.paper): True,
-        }
+        }        
+        embed =  discord.Embed(color = 0x00FF00, timestamp=datetime.utcnow())
+        embed.add_field(name=f"{author.name}", value=f"\u200b{player_choice.value}", inline=True)
+        embed.add_field(name="VS", value=f"⚡", inline=True)
+        embed.add_field(name=f"{self.bot.user.name}", value=f"\u200b{bot_choice.value}", inline=True)  
+
         if bot_choice == player_choice:
             outcome = None  # Tie
         else:
             outcome = cond[(player_choice, bot_choice)]
         if outcome is True:
-            await ctx.send(f"{bot_choice.value} You win {author.mention}!")
+            embed.add_field(name=f"Result", value=f"You win!", inline=True)
         elif outcome is False:
-            await ctx.send(f"{bot_choice.value} You lose {author.mention}!")
+            embed.add_field(name=f"Result", value=f"You lose!", inline=True)
         else:
-            await ctx.send(f"{bot_choice.value} We're square {author.mention}!")
+            embed.add_field(name=f"Result", value=f"We tie!", inline=True)
+
+        await ctx.send(embed =  embed)
             
     @commands.command(name="8ball",aliases=["8"])
     async def _8ball(self, ctx, *, question: str):
         """Ask 8 ball a question.
         Question must end with a question mark.
-        """
-        embed = discord.Embed(title='Question: | :8ball:', description=question, color=0x2332e4)
+        """ 
+        #ctx.author.color
+        print(colorr)
+        embed = discord.Embed(title='Question: | :8ball:', description=question, color= ctx.author.color)
         embed.add_field(name='Answer:', value=choice(self.ball), inline=False)
         
-        if question.endswith("?") and question != "?":
+        if question != "?":
             await ctx.send(embed=embed)
         else:
             await ctx.send("That doesn't look like a question.")
 
-    @commands.command(aliases=["badjoke"])
-    async def dadjoke(self,ctx):
-        """Gives a random Dadjoke"""
-        x = Dadjoke()
-        await ctx.send(x.joke)
-        
-    @commands.command()
-    async def lmgtfy(self, ctx, *, search_terms: str):
-        """Create a lmgtfy link."""
-        search_terms = escape(
-            search_terms.replace("+", "%2B").replace(" ", "+"), mass_mentions=True
-        )
-        await ctx.send("<https://lmgtfy.com/?q={}>".format(search_terms))
         
     @commands.command()
     async def say(self,ctx,* ,message):
         """Make the bot say something"""
         msg = escape(message,mass_mentions=True)
         await ctx.send(msg)
+    
     @commands.command()
     async def reverse(self, ctx, *, text):
         """!txeT ruoY esreveR"""
@@ -228,16 +229,6 @@ class Fun(Cog):
             return await ctx.send("Emoji is too large to fit in a message!")
         await ctx.send(to_send)
         
-    @commands.command()
-    @commands.guild_only()
-    async def roast(self, ctx,*, user: discord.Member = None):
-        '''Roast someone! If you suck at roasting them yourself.'''
-   
-        msg = f"Hey, {user.mention}! " if user is not None else ""
-        roasts = ["I'd give you a nasty look but you've already got one.", "If you're going to be two-faced, at least make one of them pretty.", "The only way you'll ever get laid is if you crawl up a chicken's ass and wait.", "It looks like your face caught fire and someone tried to put it out with a hammer.", "I'd like to see things from your point of view, but I can't seem to get my head that far up your ass.", "Scientists say the universe is made up of neutrons, protons and electrons. They forgot to mention morons.", "Why is it acceptable for you to be an idiot but not for me to point it out?", "Just because you have one doesn't mean you need to act like one.", "Someday you'll go far... and I hope you stay there.", "Which sexual position produces the ugliest children? Ask your mother.", "No, those pants don't make you look fatter - how could they?", "Save your breath - you'll need it to blow up your date.", "If you really want to know about mistakes, you should ask your parents.", "Whatever kind of look you were going for, you missed.", "Hey, you have something on your chin... no, the 3rd one down.", "I don't know what makes you so stupid, but it really works.", "You are proof that evolution can go in reverse.", "Brains aren't everything. In your case they're nothing.", "I thought of you today. It reminded me to take the garbage out.", "You're so ugly when you look in the mirror, your reflection looks away.", "Quick - check your face! I just found your nose in my business.", "It's better to let someone think you're stupid than open your mouth and prove it.", "You're such a beautiful, intelligent, wonderful person. Oh I'm sorry, I thought we were having a lying competition.", "I'd slap you but I don't want to make your face look any better.", "You have the right to remain silent because whatever you say will probably be stupid anyway."]
-        if str(user.id) == str(ctx.bot.user.id):
-            return await ctx.send(f"Uh?!! Nice try! I am not going to roast myself. Instead I am going to roast you now.\n\n {ctx.author.mention} {choice(roasts)}")
-        await ctx.send(f"{msg} {choice(roasts)}")
 
     @commands.command(aliases=['sc'])
     @commands.guild_only()
@@ -256,18 +247,6 @@ class Fun(Cog):
         await ctx.send(new)
     
             
-    @commands.command()
-    async def cringe(self,ctx,* ,message):
-        """mAkE ThE TeXt cRiNgY!!"""
-        text_list = list(message) #convert string to list to be able to edit it
-        for i in range(0,len(message)):
-            if i % 2 == 0:
-                text_list[i]= text_list[i].lower()
-            else:
-                text_list[i]=text_list[i].upper()
-        message ="".join(text_list) #convert list back to string(message) to print it as a word
-        await ctx.send(message)
-        await ctx.message.delete()
 
       
 def setup(bot):
