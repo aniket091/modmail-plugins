@@ -158,7 +158,6 @@ class Fun(Cog):
         Question must end with a question mark.
         """ 
         #ctx.author.color
-        print(colorr)
         embed = discord.Embed(title='Question: | :8ball:', description=question, color= ctx.author.color)
         embed.add_field(name='Answer:', value=choice(self.ball), inline=False)
         
