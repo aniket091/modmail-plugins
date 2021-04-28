@@ -52,9 +52,9 @@ class MemberResource:
         listt = "\n".join(role_list)
         rl = len(role_list)
         if m.bot:
-            bo = Yes
+            bo = "Yes"
         else:
-            bo = No    
+            bo = "No"    
         join_position = sorted(m.guild.members, key=lambda m: m.joined_at).index(m) + 1
 
         embed = discord.Embed(color=m.color, title="👥 USER INFORMATION 👥")
@@ -71,7 +71,9 @@ class MemberResource:
             activitytype = m.activity.type.name.title()
             activitytype += " to" if activitytype == "Listening" else ""
 
-            embed.add_field(name="Activity", value=f"```{activitytype} {m.activity.name}```")
+            embed.add_field(name="Activity", value=f"```{activitytype} {m.activity.name}```", inline = False)
+        else:
+            embed.add_field(name="Activity", value=f"```No Activity```")    
 
         # cont 
         embed.add_field(name="Joined this server on (MM/DD/YYYY)", value=f"```{format_time(m.joined_at)}```", inline=False)
