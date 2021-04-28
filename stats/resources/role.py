@@ -33,21 +33,24 @@ class RoleResource:
 
         rolecolor = str(r.color).upper()
 
-        embed = discord.Embed(color=r.color)
+        if r.hoist == "True":
+            hoist = "✔️ Yes"
+        else:    
+            hoist = "❌ No"
 
-        embed.set_author(name=f"Stats about {r.name}")
+        embed = discord.Embed(title=":construction_worker: ROLE INFORMATION :construction_worker:", color=r.color)
 
-        embed.add_field(name="Role Name", value=f"{r.name}")
-        embed.add_field(name="Color", value=rolecolor)
-        embed.add_field(name="Members", value=len(r.members))
-        embed.add_field(name="Created at", value=format_time(r.created_at))
-        embed.add_field(name="Role Position", value=r.position)
-        embed.add_field(name="Mention", value=r.mention)
-        embed.add_field(name="Hoisted", value=r.hoist)
-        embed.add_field(name="Mentionable", value=r.mentionable)
-        embed.add_field(name="Managed", value=r.managed)
+        embed.add_field(name="Role Name", value=f"```{r.name}```")
+        embed.add_field(name="Role ID", value=f"```{r.id}```")
 
+        embed.add_field(name="Hoisted", value=f"```{hoist}```", inline=False)
+        embed.add_field(name="Members", value=f"```{len(r.members)}```")
+        embed.add_field(name="Role Position", value=f"```{r.position}```")
+        embed.add_field(name="Color", value=f"```{rolecolor}```")
+
+        embed.add_field(name="Role created on (MM/DD/YYYY)", value=f"```{format_time(r.created_at)}```")
+        
         embed.set_thumbnail(url=f"https://placehold.it/100/{str(rolecolor)[1:]}?text=+")
-        embed.set_footer(text=f"Role ID: {r.id}")
+
 
         return embed

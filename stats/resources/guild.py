@@ -16,24 +16,26 @@ class GuildResource:
 
         bots = len([m for m in g.members if m.bot])
         humans = len([m for m in g.members if not m.bot])
-        online = len([m for m in g.members if not m.status != discord.Status.online])
+        animated = len([m for m in g.emojis if m.animated])
+        normal = len([m for m in g.emojis if not m.animated])
 
-        embed = discord.Embed(color=self.color)
+        embed = discord.Embed(title="🖥️ SERVER INFORMATION 🖥️", color=self.color)
 
-        embed.set_author(name=f"{g.name}'s Stats")
 
-        embed.add_field(name="👑Server Owner", value=g.owner.mention)
-        embed.add_field(name="⚡Categories", value=len(g.categories))
-        embed.add_field(name="🗻ChannelCount", value=len(g.channels))
+        embed.add_field(name="Server name", value=f"```{g.name}```")
+        embed.add_field(name="Server owner", value=f"```{g.owner.name}```")
+        embed.add_field(name=f"Server members [{g.member_count}]", value=f"```Members: {humans} | Bots: {bots}```", inline=False)
+        embed.add_field(name="Server ID", value=f"```{g.id}```")
+        embed.add_field(name="Server Region", value=f"```{g.region.name.title()}```")
+        num = len(g.channels) + len(g.categories)
         embed.add_field(
-            name=f"Member Count",
-            value=f"Online: {online}\nHumans: {humans}\nBots: {bots}\nMember Count: {g.member_count}",
+            name=f"Server categories and channels [{num}]", 
+            value=f"```Categories: {len(g.categories)} | Text: {len(g.text_channels)} | Voice: {len(g.voice_channels)}```",
+            inline = False
         )
-        embed.add_field(name="🏛️Roles", value=len(g.roles))
-        embed.add_field(name="🌎Server Region", value=g.region.name.title())
-        embed.add_field(name="📅Created", value=format_time(g.created_at))
+        embed.add_field(name=f"Server emojis [{len(g.emojis)}]", value=f"```Normal: {normal} | Animated: {animated}```", inline = False)
+        embed.add_field(name="Server created on (MM/DD/YYYY)", value=f"```{format_time(g.created_at)}```", inline=False)
 
         embed.set_thumbnail(url=str(g.icon_url))
-        embed.set_footer(text=f"Server ID: {g.id}")
 
         return embed

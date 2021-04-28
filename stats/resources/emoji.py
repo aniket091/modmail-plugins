@@ -13,18 +13,19 @@ class EmojiResource:
         """Create an embed containing the emoji's information."""
 
         e: discord.Emoji = self.emoji
+        
+        if e.animated == "False":
+            animate = "❌ No"
+        else:
+            animate = "✔️ Yes"
 
-        embed = discord.Embed(color=self.color)
-
-        embed.set_author(name=f"{e.name.title()}'s Stats")
-
-        embed.add_field(name="Created", value=format_time(e.created_at))
-        embed.add_field(name="Guild Name", value=e.guild.name)
-        embed.add_field(name="Guild ID", value=e.guild_id)
-        embed.add_field(name="Animated", value=e.animated)
-        embed.add_field(name="Managed", value=e.managed)
+        embed = discord.Embed(title=":laughing: EMOJI INFORMATION :laughing:", color=self.color)
+        embed.add_field(name="Emoji Name", value=f"```{e.name.title()}```")
+        embed.add_field(name="Emoji ID", value=f"```{e.id}```")
+        embed.add_field(name="Is animated", value=f"```{animate}```")
+        embed.add_field(name="Emoji URL", value=f"Open it in your browser [click here]({str(e.url)}).")
+        embed.add_field(name="Emoji created on (MM/DD/YYYY)", value=f"```{format_time(e.created_at)}```", inline = False) 
 
         embed.set_thumbnail(url=str(e.url))
-        embed.set_footer(text=f"Emoji ID: {e.id}")
 
         return embed

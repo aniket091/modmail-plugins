@@ -91,7 +91,7 @@ class MemberResource:
         embed = discord.Embed(color=m.color)
 
         embed.set_author(name=f"{str(m)}'s Avatar")
-
+        embed.add_field(name="Avatar URL", value=f"[**Link!**]({m.avatar_url})")
         embed.set_image(url=m.avatar_url)
         embed.set_footer(text=f"User ID: {m.id}")
 
