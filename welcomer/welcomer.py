@@ -70,10 +70,9 @@ class Welcomer(commands.Cog):
     @commands.has_permissions(manage_guild=True)
     @commands.command()
     async def welcomer(self, ctx, channel: discord.TextChannel, *, message):
-        """Sets up welcome command. Check [here](https://github.com/aniket091/modmail-plugins/blob/master/welcomer/README.md)
-        for complex usage.
+        """Sets up welcome command.
         """
-        # Example usage: `welcomer #general Hello {member.name}`
+        # Example usage: `welcomer #general`
         # """
         if message.startswith('https://') or message.startswith('http://'):
             # message is a URL
@@ -102,13 +101,15 @@ class Welcomer(commands.Cog):
         if config:
             channel = member.guild.get_channel(int(config['channel']))
             if channel:
-                message = self.format_message(member, config['message'], invite)
-                if message:
-                    await channel.send(**message)
-                else:
-                    await channel.send('Invalid welcome message')
-            else:
-                print('Welcomer plugin not found: {getattr(channel, "id", None}')
+                embed=discord.Embed(description="<:xRGB_logo2:827129630435573770> Welcome {member.mention}, Welcome To XRGB Server.")
+                embed.set_image(url=member.avatar_url)
+                embed.set_author(name=member,url=member.avatar_url,icon_url=member.avatar_url)
+                embed.set_footer(text="Welcome To XRGB Server",icon_url=member.avatar_url)
+                embed.add_field(name="<a:xRGB_Diamond:836677944487313479> Make Sure To Check These Channels", value="<a:xRGB_cube:740438963474530354> <#704493672309194822>", inline=True)
+                embed.add_field(name="<a:xRGB_Diamond:836677944487313479> Make Sure To Join Us In", value="<a:xRGB_cube:740438963474530354> <#638162275945152515>", inline=True)
+                channel.send(embed)
+
+                
 
 
 def setup(bot):
