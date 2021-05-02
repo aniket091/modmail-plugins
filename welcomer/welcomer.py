@@ -1,5 +1,4 @@
 import json
-
 import discord
 from box import Box
 from discord.ext import commands
@@ -94,6 +93,7 @@ class Welcomer(commands.Cog):
         else:
             await ctx.send('Invalid welcome message syntax.')
 
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         invite = await self.get_used_invite(member.guild)
@@ -101,13 +101,13 @@ class Welcomer(commands.Cog):
         if config:
             channel = member.guild.get_channel(int(config['channel']))
             if channel:
-                embed=discord.Embed(description="<:xRGB_logo2:827129630435573770> Welcome {member.mention}, Welcome To XRGB Server.")
+                embed=discord.Embed(description=f"<:xRGB_logo2:827129630435573770> Welcome {member.mention}, Welcome To XRGB Server.")
                 embed.set_image(url=member.avatar_url)
                 embed.set_author(name=member,url=member.avatar_url,icon_url=member.avatar_url)
                 embed.set_footer(text="Welcome To XRGB Server",icon_url=member.avatar_url)
                 embed.add_field(name="<a:xRGB_Diamond:836677944487313479> Make Sure To Check These Channels", value="<a:xRGB_cube:740438963474530354> <#704493672309194822>", inline=True)
                 embed.add_field(name="<a:xRGB_Diamond:836677944487313479> Make Sure To Join Us In", value="<a:xRGB_cube:740438963474530354> <#638162275945152515>", inline=True)
-                channel.send(embed)
+                await channel.send(f"{member.mention}", embed = embed)
 
                 
 
