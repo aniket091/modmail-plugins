@@ -224,6 +224,26 @@ class AnnoucementPlugin(commands.Cog):
                 )
                 foo = await self.bot.wait_for("message", check=footer_check)
                 embed.set_footer(text=foo.content)
+            
+            if foo.content:
+                await ctx.send(
+                    embed=await self.generate_embed("Will the embed have a footer icon?`[y/n]`")
+                )
+                fi_res: discord.Message = await self.bot.wait_for("message", check=check)
+                if cancel_check(fi_res) is True:
+                    await ctx.send("Cancelled")
+                    return
+                elif cancel_check(fi_res) is False and fi_res.content.lower() == "y":
+                    await ctx.send(
+                        embed=await self.generate_embed(
+                            "What's the image of the embed? Enter a " "valid URL"
+                        )
+                    )
+                    fi = await self.bot.wait_for("message", check=check)
+                    if foo.content:
+                        embed.set_footer(text=foo.content, icon_url=fi.content) 
+                    else:
+                        await ctx.send("no footer set")       
 
             await ctx.send(
                 embed=await self.generate_embed(
