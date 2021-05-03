@@ -211,6 +211,7 @@ class AnnoucementPlugin(commands.Cog):
             await ctx.send(
                 embed=await self.generate_embed("Will the embed have a footer?`[y/n]`")
             )
+            footer = False;
             f_res: discord.Message = await self.bot.wait_for("message", check=check)
             if cancel_check(f_res) is True:
                 await ctx.send("Cancelled")
@@ -222,10 +223,11 @@ class AnnoucementPlugin(commands.Cog):
                         "\n**Must not exceed 2048 characters**"
                     )
                 )
+                footer = True;
                 foo = await self.bot.wait_for("message", check=footer_check)
                 embed.set_footer(text=foo.content)
             
-            if foo.content:
+            if footer == True:
                 await ctx.send(
                     embed=await self.generate_embed("Will the embed have a footer icon?`[y/n]`")
                 )
